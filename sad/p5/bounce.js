@@ -6,7 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 let dvd;
-
+let x, y;
+let dx, dy;
 
 function preload() {
   dvd = loadImage("assets/dvd-logo-png-transparent.png");
@@ -14,6 +15,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  x = width/2;
+  y = height/2;
+  dx = random(3, 8);
+  dy = random(3, 8);
 }
 
 function draw() {
