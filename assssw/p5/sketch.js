@@ -1,164 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pong</title>
 
-// the snake is divided into small segments, which are drawn and edited on each 'draw' call
-var numSegments = 10;
-var direction = 'right';
-
-var xStart = 0; //starting x coordinate for snake
-var yStart = 250; //starting y coordinate for snake
-var diff = 10;
-
-var xCor = [];
-var yCor = [];
-
-var xFruit = 0;
-var yFruit = 0;
-var scoreElem;
-
-function setup() {
-  scoreElem = createDiv('Score = 0');
-  scoreElem.position(20, 20);
-  scoreElem.id = 'score';
-  scoreElem.style('color', 'white');
-
-  createCanvas(500, 500);
-  frameRate(15);
-  stroke(255);
-  strokeWeight(10);
-  updateFruitCoordinates();
-
-  for (var i = 0; i < numSegments; i++) {
-    xCor.push(xStart + (i * diff));
-    yCor.push(yStart);
-  }
+	<!-- Basic styling, centering the canvas -->
+	<style>
+	canvas {
+		display: block;
+		position: absolute;
+		margin: auto;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	</style>
+</head>
+<body>
+<script>
+var
+/**
+ * Constants
+ */
+WIDTH  = 700,
+HEIGHT = 600,
+pi = Math.PI,
+UpArrow   = 38,
+DownArrow = 40,
+/**
+ * Game elements
+ */
+canvas,
+ctx,
+keystate,
+/**
+ * The player paddle
+ *
+ * @type {Object}
+ */
+player = {
+	x: null,
+	y: null,
+	width:  20,
+	height: 100,
+	/**
+	 * Update the position depending on pressed keys
+	 */
+	update: function() {
+		if (keystate[UpArrow]) this.y -= 7;
+		if (keystate[DownArrow]) this.y += 7;
+		// keep the paddle inside of the canvas
+		this.y = Math.max(Math.min(this.y, HEIGHT - this.height), 0);
+	},
+	/**
+	 * Draw the player paddle to the canvas
+	 */
+	draw: function() {
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+},
+/**
+ * The ai paddle
+ *
+ * @type {Object}
+ */
+ai = {
+	x: null,
+	y: null,
+	width:  20,
+	height: 100,
+	/**
+	 * Update the position depending on the ball position
+	 */
+	update: function() {
+		// calculate ideal position
+		var desty = ball.y - (this.height - ball.side)*0.5;
+		// ease the movement towards the ideal position
+		this.y += (desty - this.y) * 0.1;
+		// keep the paddle inside of the canvas
+		this.y = Math.max(Math.min(this.y, HEIGHT - this.height), 0);
+	},
+	/**
+	 * Draw the ai paddle to the canvas
+	 */
+	draw: function() {
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+},
+/**
+ * The ball object
+ *
+ * @type {Object}
+ */
+ball = {
+	x:   null,
+	y:   null,
+	vel: null,
+	side:  20,
+	speed: 12,
+	/**
+	 * Serves the ball towards the specified side
+	 *
+	 * @param  {number} side 1 right
+	 *                       -1 left
+	 */
+	serve: function(side) {
+		// set the x and y position
+		var r = Math.random();
+		this.x = side===1 ? player.x+player.width : ai.x - this.side;
+		this.y = (HEIGHT - this.side)*r;
+		// calculate out-angle, higher/lower on the y-axis =>
+		// steeper angle
+		var phi = 0.1*pi*(1 - 2*r);
+		// set velocity direction and magnitude
+		this.vel = {
+			x: side*this.speed*Math.cos(phi),
+			y: this.speed*Math.sin(phi)
+		}
+	},
+	/**
+	 * Update the ball position and keep it within the canvas
+	 */
+	update: function() {
+		// update position with current velocity
+		this.x += this.vel.x;
+		this.y += this.vel.y;
+		// check if out of the canvas in the y direction
+		if (0 > this.y || this.y+this.side > HEIGHT) {
+			// calculate and add the right offset, i.e. how far
+			// inside of the canvas the ball is
+			var offset = this.vel.y < 0 ? 0 - this.y : HEIGHT - (this.y+this.side);
+			this.y += 2*offset;
+			// mirror the y velocity
+			this.vel.y *= -1;
+		}
+		// helper function to check intesectiont between two
+		// axis aligned bounding boxex (AABB)
+		var AABBIntersect = function(ax, ay, aw, ah, bx, by, bw, bh) {
+			return ax < bx+bw && ay < by+bh && bx < ax+aw && by < ay+ah;
+		};
+		// check againts target paddle to check collision in x
+		// direction
+		var pdle = this.vel.x < 0 ? player : ai;
+		if (AABBIntersect(pdle.x, pdle.y, pdle.width, pdle.height,
+				this.x, this.y, this.side, this.side)
+		) {
+			// set the x position and calculate reflection angle
+			this.x = pdle===player ? player.x+player.width : ai.x - this.side;
+			var n = (this.y+this.side - pdle.y)/(pdle.height+this.side);
+			var phi = 0.25*pi*(2*n - 1); // pi/4 = 45
+			// calculate smash value and update velocity
+			var smash = Math.abs(phi) > 0.2*pi ? 1.5 : 1;
+			this.vel.x = smash*(pdle===player ? 1 : -1)*this.speed*Math.cos(phi);
+			this.vel.y = smash*this.speed*Math.sin(phi);
+		}
+		// reset the ball when ball outside of the canvas in the
+		// x direction
+		if (0 > this.x+this.side || this.x > WIDTH) {
+			this.serve(pdle===player ? 1 : -1);
+		}
+	},
+	/**
+	 * Draw the ball to the canvas
+	 */
+	draw: function() {
+		ctx.fillRect(this.x, this.y, this.side, this.side);
+	}
+};
+/**
+ * Starts the game
+ */
+function main() {
+	// create, initiate and append game canvas
+	canvas = document.createElement("canvas");
+	canvas.width = WIDTH;
+	canvas.height = HEIGHT;
+	ctx = canvas.getContext("2d");
+	document.body.appendChild(canvas);
+	keystate = {};
+	// keep track of keyboard presses
+	document.addEventListener("keydown", function(evt) {
+		keystate[evt.keyCode] = true;
+	});
+	document.addEventListener("keyup", function(evt) {
+		delete keystate[evt.keyCode];
+	});
+	init(); // initiate game objects
+	// game loop function
+	var loop = function() {
+		update();
+		draw();
+		window.requestAnimationFrame(loop, canvas);
+	};
+	window.requestAnimationFrame(loop, canvas);
 }
-
+/**
+ * Initatite game objects and set start positions
+ */
+function init() {
+	player.x = player.width;
+	player.y = (HEIGHT - player.height)/2;
+	ai.x = WIDTH - (player.width + ai.width);
+	ai.y = (HEIGHT - ai.height)/2;
+	ball.serve(1);
+}
+/**
+ * Update all game objects
+ */
+function update() {
+	ball.update();
+	player.update();
+	ai.update();
+}
+/**
+ * Clear canvas and draw all game objects and net
+ */
 function draw() {
-  background(0);
-  for (var i = 0; i < numSegments - 1; i++) {
-    line(xCor[i], yCor[i], xCor[i + 1], yCor[i + 1]);
-  }
-  updateSnakeCoordinates();
-  checkGameStatus();
-  checkForFruit();
+	ctx.fillRect(0, 0, WIDTH, HEIGHT);
+	ctx.save();
+	ctx.fillStyle = "#fff";
+	ball.draw();
+	player.draw();
+	ai.draw();
+	// draw the net
+	var w = 4;
+	var x = (WIDTH - w)*0.5;
+	var y = 0;
+	var step = HEIGHT/20; // how many net segments
+	while (y < HEIGHT) {
+		ctx.fillRect(x, y+step*0.25, w, step*0.5);
+		y += step;
+	}
+	ctx.restore();
 }
-
-/*
- The segments are updated based on the direction of the snake.
- All segments from 0 to n-1 are just copied over to 1 till n, i.e. segment 0
- gets the value of segment 1, segment 1 gets the value of segment 2, and so on,
- and this results in the movement of the snake.
-
- The last segment is added based on the direction in which the snake is going,
- if it's going left or right, the last segment's x coordinate is increased by a
- predefined value 'diff' than its second to last segment. And if it's going up
- or down, the segment's y coordinate is affected.
-*/
-function updateSnakeCoordinates() {
-
-  for (var i = 0; i < numSegments - 1; i++) {
-    xCor[i] = xCor[i + 1];
-    yCor[i] = yCor[i + 1];
-  }
-  switch (direction) {
-    case 'right':
-      xCor[numSegments - 1] = xCor[numSegments - 2] + diff;
-      yCor[numSegments - 1] = yCor[numSegments - 2];
-      break;
-    case 'up':
-      xCor[numSegments - 1] = xCor[numSegments - 2];
-      yCor[numSegments - 1] = yCor[numSegments - 2] - diff;
-      break;
-    case 'left':
-      xCor[numSegments - 1] = xCor[numSegments - 2] - diff;
-      yCor[numSegments - 1] = yCor[numSegments - 2];
-      break;
-    case 'down':
-      xCor[numSegments - 1] = xCor[numSegments - 2];
-      yCor[numSegments - 1] = yCor[numSegments - 2] + diff;
-      break;
-  }
-}
-
-/*
- I always check the snake's head position xCor[xCor.length - 1] and
- yCor[yCor.length - 1] to see if it touches the game's boundaries
- or if the snake hits itself.
-*/
-function checkGameStatus() {
-  if (xCor[xCor.length - 1] > width ||
-      xCor[xCor.length - 1] < 0 ||
-      yCor[yCor.length - 1] > height ||
-      yCor[yCor.length - 1] < 0 ||
-      checkSnakeCollision()) {
-    noLoop();
-    var scoreVal = parseInt(scoreElem.html().substring(8));
-    scoreElem.html('Game ended! Your score was : ' + scoreVal);
-  }
-}
-
-/*
- If the snake hits itself, that means the snake head's (x,y) coordinate
- has to be the same as one of its own segment's (x,y) coordinate.
-*/
-function checkSnakeCollision() {
-  var snakeHeadX = xCor[xCor.length - 1];
-  var snakeHeadY = yCor[yCor.length - 1];
-  for (var i = 0; i < xCor.length - 1; i++) {
-    if (xCor[i] === snakeHeadX && yCor[i] === snakeHeadY) {
-      return true;
-    }
-  }
-}
-
-/*
- Whenever the snake consumes a fruit, I increment the number of segments,
- and just insert the tail segment again at the start of the array (basically
- I add the last segment again at the tail, thereby extending the tail)
-*/
-function checkForFruit() {
-  point(xFruit, yFruit);
-  if (xCor[xCor.length - 1] === xFruit && yCor[yCor.length - 1] === yFruit) {
-    var prevScore = parseInt(scoreElem.html().substring(8));
-    scoreElem.html('Score = ' + (prevScore + 1));
-    xCor.unshift(xCor[0]);
-    yCor.unshift(yCor[0]);
-    numSegments++;
-    updateFruitCoordinates();
-  }
-}
-
-function updateFruitCoordinates() {
-  /*
-    The complex math logic is because I wanted the point to lie
-    in between 100 and width-100, and be rounded off to the nearest
-    number divisible by 10, since I move the snake in multiples of 10.
-  */
-
-  xFruit = floor(random(10, (width - 100) / 10)) * 10;
-  yFruit = floor(random(10, (height - 100) / 10)) * 10;
-}
-
-function keyPressed() {
-  switch (keyCode) {
-    case 74:
-      if (direction != 'right') {
-        direction = 'left';
-      }
-      break;
-    case 76:
-      if (direction != 'left') {
-        direction = 'right';
-      }
-      break;
-    case 73:
-      if (direction != 'down') {
-        direction = 'up';
-      }
-      break;
-    case 75:
-      if (direction != 'up') {
-        direction = 'down';
-      }
-      break;
-  }
-}
+// start and run the game
+main();
+</script>
+</body>
+</html>
