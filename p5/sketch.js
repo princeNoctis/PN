@@ -1,4 +1,4 @@
-let timer = 1
+let timer = 30
 var button;
 
 
