@@ -3,18 +3,18 @@ var button;
 
 
 function setup() {
-  createCanvas(800, 600);
-  img = loadImage("assets/gardener.png");  // loading the image of the gardener
-  button = createButton('submit');
-
-
+  createCanvas(1024, 600);
+  gardener = loadImage("assets/gardener.png");  // loading the image of the gardener
+  crop = loadImage("assets/grass.png");
+  bg = loadImage("assets/bg.jpg");
 }
 
 function draw() {
-  background(220);
+  background(bg);
   textSize(25);
   // loading the image of the gardener
-  image(img, 0,50, img.width/2, img.height/2);
+  image(gardener, 0,50, gardener.width/2, gardener.height/2);
+  image(crop, 0,50,crop.width/2, crop.height/2);
   text(timer, width/2,50);
 
   // frameCount --> this keeps track of the number of times the program has gone throught the code, 60 = 1 second
@@ -28,5 +28,4 @@ function draw() {
     text("GAME OVER", width/2, height*0.7);
     textAlign(CENTER, CENTER);
   }
-
 }
