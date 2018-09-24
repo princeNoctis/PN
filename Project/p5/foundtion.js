@@ -2,19 +2,21 @@ var stars = [];
 var speed;
 
 function setup() {
+  noStroke();
   createCanvas(windowWidth, windowHeight);
-  for (var i = 0; i < 400; i++) {
-    stars[i] = new Star();
+  for (var e = 0; e < 400; e++) {
+    stars[e] = new Star();
   }
   textAlign(CENTER);
   textSize(50);
 }
 function draw() {
-  speed = map(mouseX, 5, width, 0, 50);
+  // Mapping the stars
+  speed = map(mouseX, 0, width/2, 0, 50);
   background(0);
-  translate(width / 2, height / 2);
-  for (var i = 0; i < stars.length; i++) {
-    stars[i].update();
-    stars[i].show();
+  translate(width/2, height/2);
+  for (var e = 0; e < stars.length; e++) {
+    stars[e].update();
+    stars[e].show();
   }
 }
