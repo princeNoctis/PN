@@ -1,5 +1,7 @@
-let timer = 5
+let timer = 1
 var button;
+
+
 
 
 function setup() {
@@ -11,10 +13,10 @@ function setup() {
 
 function draw() {
   background(bg);
-  textSize(25);
+  textSize(50);
   // loading the image of the gardener
-  image(gardener, 0,50, gardener.width/2, gardener.height/2);
-  image(crop, 0,50,crop.width/2, crop.height/2);
+  image(gardener, 20,50, gardener.width/2, gardener.height/2);
+  image(crop,225,125,crop.width/2, crop.height/2);
   text(timer, width/2,50);
 
   // frameCount --> this keeps track of the number of times the program has gone throught the code, 60 = 1 second
@@ -25,7 +27,9 @@ function draw() {
     timer --;
   }
   if (timer == 0) {
-    text("GAME OVER", width/2, height*0.7);
+    text("GAME OVER",200,175, width/2, height*0.7);
     textAlign(CENTER, CENTER);
+
   }
+
 }
