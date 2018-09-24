@@ -1,5 +1,5 @@
-let timer = 30
-var button;
+let timer = 1
+let button;
 
 
 
@@ -9,13 +9,21 @@ function setup() {
   gardener = loadImage("assets/gardener.png");  // loading the image of the gardener
   crop = loadImage("assets/grass.png");
   bg = loadImage("assets/bg.jpg");
+  button = createButton('submit');
+  button.position(50,width/2, 65);
+  button.mousePressed(switchscreen());
 }
+
+function switchscreen() {
+  if
+}
+
 
 function draw() {
   background(bg);
   textSize(50);
   // loading the image of the gardener
-  image(gardener, 20,50, gardener.width/2, gardener.height/2);
+  image(gardener, 0,50, gardener.width/2, gardener.height/2);
   image(crop,225,125,crop.width/2, crop.height/2);
   text(timer, width/2,50);
 
