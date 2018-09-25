@@ -6,6 +6,8 @@
 // changing according to time. You may want to investigate the millis()
 // function at https://p5js.org/reference/
 
+millis();
+
 function setup() {
   createCanvas(600, 600);
 }
@@ -22,8 +24,17 @@ function drawOutlineOfLights() {
   rect(width/2, height/2, 75, 200, 10);
 
   //lights
+  if (millis() >= 4000) {
+    fill(255,0,0);
+    ellipse(width/2, height/2 - 65, 50, 50); //top
+    fill(255);
+  }
+  else{
+    fill(255);
+    ellipse(width/2, height/2 - 65, 50, 50); //top
+  }
   fill(255);
-  ellipse(width/2, height/2 - 65, 50, 50); //top
   ellipse(width/2, height/2, 50, 50); //middle
+  fill(255);
   ellipse(width/2, height/2 + 65, 50, 50); //bottom
 }
