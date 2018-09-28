@@ -4,19 +4,18 @@ var y = 200;
 
 
 function setup() {
-	let button = createButton("reset");
-	button.position(700, 650);
-	button.mousePressed(resetSketch);
+	let button = createButton("Menu");
+	button.position(500, 550);
+	button.mousePressed(clickFunction);
   createCanvas(600, 600);
 }
 
 function draw() {
   background(220);
   fill(0);
-  ellipse(x,y,50,50);
-	rect(width/2,height/2,50,100);
-
-  //x = x + 1;
+  ellipse(x,y,25,25);
+	rect(width/2,height/2,10,60);
+	fill(34,0,34)
 
 
   if (x >= 600){
