@@ -1,9 +1,16 @@
+// Inereactive scene
+// Muhammad Sheikh
+// Mon.24,2018
+// Extra for Experts:
+// - added music
+
 function Star() {
+  // animate the stars
   this.x = random(-width, width);
   this.y = random(-height, height);
   this.z = random(width);
   this.pz = this.z;
-
+  // produce new ones
   this.update = function() {
     this.z = this.z - speed;
     if (this.z < 1) {
@@ -18,7 +25,7 @@ function Star() {
 
 
 
-
+  // show the new stars
   this.show = function() {
     fill(200,200,200);
     noStroke();

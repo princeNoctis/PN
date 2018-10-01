@@ -1,17 +1,25 @@
+// Inereactive scene
+// Muhammad
+// Mon.24,2018
+// Extra for Experts:
+// - added music
+
+// Making some new variables
 var stars = [];
 var speed;
 var x, y;
-
 var bg;
 
 let backgroundMusic;
-
+// preloading the music
 function preload() {
   backgroundMusic = loadSound("assets/song.mp3");
 }
 
 function setup() {
+  // set volume
   backgroundMusic.setVolume(0.2);
+  // make the music in loop
   backgroundMusic.loop();
   createCanvas(windowWidth, windowHeight);
   for (var e = 0; e < 400; e++) {
