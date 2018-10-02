@@ -8,6 +8,7 @@
 let pos = 25;
 let backgroundMusic;
 let spellSound;
+let pat;
 
 function preload() {
   // preload the background music and spell sound
@@ -22,6 +23,7 @@ function setup() {
   backgroundMusic.setVolume(0.4);
   spellSound.setVolume(0.9);
   backgroundMusic.loop();
+  pat = loadImage("assets/patrick.png");
 }
 
 function draw() {
@@ -30,10 +32,18 @@ function draw() {
   text("zoom in and out with mousewheel and hold mouse button + press e ", 22, 130);
   text("w for white screen or reset", 22, 150);
   text("b for black screen", 22, 170);
-  text(" press any mouse button to make Sheldon say Bazinga!! ", 22, 150);
+  text(" press any mouse button to make Sheldon say Bazinga!! ", 22, 190);
+  text(" and lastly press s and mouse for Patrick!! ", 22, 220);
+  //
   if (mouseIsPressed && keyIsPressed) {
     if (key === "e") {
       ellipse(mouseX, mouseY, 30, 30);
+    }
+  }
+  //
+  if (keyIsPressed) {
+    if (key === "s") {
+      image(pat, mouseX, mouseY, 100, 100);
     }
   }
   // the square is rgb and turn bigger and smaller when scrolled down and up
