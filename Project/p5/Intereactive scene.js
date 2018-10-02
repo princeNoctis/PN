@@ -6,16 +6,12 @@
 
 let backgroundMusic;
 let spellSound;
-let hitmaker;
 
 
 function preload() {
   backgroundMusic = loadSound("assets/326553__shadydave__the-sonata-piano-loop.mp3");
   spellSound = loadSound("assets/Hitmarker - MLG Sound Effect (HD).mp3");
-  hitmarker = loadImage("assets/hitmarker-transparent-white-5.png");
 }
-
-
 
 function setup() {
   createCanvas(400, 400);
@@ -27,12 +23,11 @@ function setup() {
 function draw() {
   if (mouseIsPressed && keyIsPressed) {
     if (key === "r") {
-      fill(random(255), random(255), random(255), random(255));
-      rect(mouseX, mouseY, 10, 10);
+      random(255,255,255);
+      rect(mouseX, mouseY, 10, 10,random(255,255,255));
     }
   	if (key === "e") {
-      fill(random(255), random(255), random(255), random(255));
-      ellipse(mouseX, mouseY, 10, 10);
+      ellipse(mouseX, mouseY, 10, 10,random(255,255,255));
     }
   }
 }
@@ -47,7 +42,5 @@ function keyTyped() {
 }
 
 function mousePressed() {
-  noStroke();
-  display(hitmarker);
   spellSound.play();
 }
