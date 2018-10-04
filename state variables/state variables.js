@@ -1,4 +1,4 @@
-// state variables
+// State variables
 // Muhammad Sheikh
 // Date
 //
@@ -18,7 +18,7 @@ function draw() {
   fill(0);
   ellipse(x,y,50,50);
 
-  //x = x + 1;
+
 
 
   if (x >= 400){
