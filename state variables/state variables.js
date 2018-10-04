@@ -7,18 +7,19 @@
 
 let x = 200;
 let y = 200;
-let player;
+let state;
+
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(600, 600);
 }
 
 function draw() {
-  background(220);
+  background(255);
   fill(0);
   ellipse(x,y,50,50);
 
-  if (x >= 400){
+  if (x >= 600){
     x = 0;
   }
 
