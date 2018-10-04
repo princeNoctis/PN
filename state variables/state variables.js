@@ -1,4 +1,4 @@
-// Project Title
+// state variables
 // Muhammad Sheikh
 // Date
 //
@@ -7,19 +7,21 @@
 
 let x = 200;
 let y = 200;
-let state;
 
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(400, 400);
 }
 
 function draw() {
-  background(255);
+  background(220);
   fill(0);
   ellipse(x,y,50,50);
 
-  if (x >= 600){
+  //x = x + 1;
+
+
+  if (x >= 400){
     x = 0;
   }
 
