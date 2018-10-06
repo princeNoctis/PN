@@ -5,36 +5,67 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
-
-var x, y;
+let bx;
+let by;
+let bubbleSize = 75;
+let overBubble = false;
+let locked = false;
+let xOffset = 0.0;
+let yOffset = 0.0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // Starts in the middle
-  x = width / 2;
-  y = height;
+
+  x = width/2;
+  y = height/2;
 }
 
 function draw() {
   background(200);
 
-  // Draw a circle
+
   noStroke(50);
   fill(255);
-  ellipse(x, y, 24, 24);
-  ellipse(x, y, 50, 50);
-
-  // Jiggling randomly on the horizontal axis
   x = x + random(-4, 2);
-  // Moving up at a constant speed
   y = y - 3;
 
-  // Reset to the bottom
-  if (y < 0) {
+
+  if (by < 0) {
     y = height;
   }
-  if (x < 0) {
+  if (bx < 0) {
     x = width;
   }
+}
+
+function bubbles() {
+  noStroke(50);
+  fill(255);
+  ellipse(bx, by, 50, 50);
+}
+
+  if (mouseX > bx-boxSize && mouseX < bx+boxSize &&
+      mouseY > by-boxSize && mouseY < by+boxSize) {
+    overBox = true;
+    if(!locked) {
+      stroke(255);
+      fill(244,122,158);
+    }
+  } else {
+    stroke(156,39,176);
+    fill(244,122,158);
+    overBox = false;
+  }
+
+
+function mousePressed() {
+  if(overBox) {
+    locked = true;
+    fill(255, 255, 255);
+  } else {
+    locked = false;
+  }
+  xOffset = mouseX-bx;
+  yOffset = mouseY-by;
+
 }
