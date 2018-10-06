@@ -12,6 +12,7 @@ let overBubble = false;
 let locked = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
+let x,y;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -24,7 +25,7 @@ function draw() {
   background(200);
 
 
-  noStroke(50);
+
   fill(255);
   x = x + random(-4, 2);
   y = y - 3;
@@ -41,18 +42,16 @@ function draw() {
 function bubbles() {
   noStroke(50);
   fill(255);
-  ellipse(bx, by, 50, 50);
+  ellipse(x, y, 50, 50);
 }
 
-  if (mouseX > bx-boxSize && mouseX < bx+boxSize &&
-      mouseY > by-boxSize && mouseY < by+boxSize) {
-    overBox = true;
+  if (mouseX > bx-bubbleSize && mouseX < bx+bubbleSize && mouseY > by-bubbleSize && mouseY < by+bubbleSize) {
+    overBubble = true;
     if(!locked) {
-      stroke(255);
       fill(244,122,158);
     }
-  } else {
-    stroke(156,39,176);
+  }
+  else {
     fill(244,122,158);
     overBox = false;
   }
@@ -62,7 +61,8 @@ function mousePressed() {
   if(overBox) {
     locked = true;
     fill(255, 255, 255);
-  } else {
+  }
+  else {
     locked = false;
   }
   xOffset = mouseX-bx;
