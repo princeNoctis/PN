@@ -1,45 +1,40 @@
-// State variables
+// State variables : pop the bubbles
 // Muhammad Sheikh
 // Date
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let x = 200;
-let y = 200;
 
+
+var x, y;
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
+  // Starts in the middle
+  x = width / 2;
+  y = height;
 }
 
 function draw() {
-  background(220);
-  fill(0);
-  ellipse(x,y,50,50);
+  background(200);
 
+  // Draw a circle
+  noStroke(50);
+  fill(255);
+  ellipse(x, y, 24, 24);
+  ellipse(x, y, 50, 50);
 
+  // Jiggling randomly on the horizontal axis
+  x = x + random(-4, 2);
+  // Moving up at a constant speed
+  y = y - 3;
 
-
-  if (x >= 400){
-    x = 0;
+  // Reset to the bottom
+  if (y < 0) {
+    y = height;
   }
-
-}
-
-
-function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    y = y - 10;
+  if (x < 0) {
+    x = width;
   }
-  else if (keyCode === DOWN_ARROW) {
-    y = y + 10;
-  }
-  if (keyCode === LEFT_ARROW) {
-    x = x - 5;
-  }
-  else if (keyCode === RIGHT_ARROW) {
-    x = x + 5;
-  }
-
 }
