@@ -1,43 +1,55 @@
-let timer = 1
-let button;
+int ballX;
+int ballY;
+int radius;
+int ballSpeed;
 
+void setup()
+{
+  size(400, 600);
+  background(255, 255, 255);
+  smooth();
+  frameRate(60);
 
+  ballX = width/2;
+  ballY = height/2;
+  radius = 25;
+  ballSpeed = 5;
 
-
-function setup() {
-  createCanvas(1024, 600);
-  gardener = loadImage("assets/gardener.png");  // loading the image of the gardener
-  crop = loadImage("assets/grass.png");
-  bg = loadImage("assets/bg.jpg");
-  button = createButton('submit');
-  button.position(50,width/2, 65);
-  button.mousePressed(switchscreen());
 }
 
-function switchscreen() {
-  if
+void draw()
+{
+  fill(255, 255, 255, 50);
+  noStroke();
+  rect(0, 0, width, height);
+
+  fill(255, 0, 0);
+  ellipse(ballX, ballY, radius*2, radius*2);
 }
 
 
-function draw() {
-  background(bg);
-  textSize(50);
-  // loading the image of the gardener
-  image(gardener, 0,50, gardener.width/2, gardener.height/2);
-  image(crop,225,125,crop.width/2, crop.height/2);
-  text(timer, width/2,50);
-
-  // frameCount --> this keeps track of the number of times the program has gone throught the code, 60 = 1 second
-  // % ---> this is the Modulo operator, it divides numbers and evaluates to the remainder: 17 % 5 = 2
-  // this can be used to determine if the number on the left is divisible by the number on the right
-
-  if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-    timer --;
+void keyPressed()
+{
+  if ( (keyCode == LEFT) && (ballX > radius) )
+  {
+    ballX = ballX - ballSpeed;
   }
-  if (timer == 0) {
-    text("GAME OVER",200,175, width/2, height*0.7);
-    textAlign(CENTER, CENTER);
 
+  if ( (keyCode == RIGHT) && (ballX < width-radius) )
+  {
+    ballX = ballX + ballSpeed;
   }
+
+  if ( (keyCode == UP) && (ballY > radius) )
+  {
+    ballY = ballY - ballSpeed;
+  }
+
+  if ( (keyCode == DOWN) && (ballY < height-radius) )
+  {
+    ballY = ballY + ballSpeed;
+  }
+
+
 
 }
