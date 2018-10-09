@@ -1,45 +1,47 @@
 // State variables
 // Muhammad Sheikh
-// Date
+// Oct,15.2018
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let x = 200;
-let y = 200;
+let x = 100;
+let y = 100;
 
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(220);
-  fill(0);
-  ellipse(x,y,50,50);
+  background(0,125,0);
+  fill(0,0,255);
+  ellipse(x,y,25,25);
 
 
+  if (y >= windowHeight){
+    y = 0;
+  }
 
-
-  if (x >= 400){
+  if (x >= windowWidth){
     x = 0;
   }
 
 }
 
 
-function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    y = y - 10;
+function keyIsPressed() {
+  while (keyIsDown(38)) {
+    y = y - 15;
   }
-  else if (keyCode === DOWN_ARROW) {
-    y = y + 10;
+  if (keyCode === DOWN_ARROW) {
+    y = y + 15;
   }
-  if (keyCode === LEFT_ARROW) {
-    x = x - 5;
+  else if (keyCode === LEFT_ARROW) {
+    x = x - 15;
   }
   else if (keyCode === RIGHT_ARROW) {
-    x = x + 5;
+    x = x + 15;
   }
 
 }
