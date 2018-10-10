@@ -5,47 +5,40 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let x = 200;
-let y = 200;
-
-// Preload Function
-function preload(){
-
-}
-
-
+let overCircle = false;
+let menu;
+let circle;
+let x, y;
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(720, 400);
+
+  x = width / 2;
+  y = height;
 }
 
 function draw() {
-  background(220);
-  fill(0);
-  ellipse(x,y,50,50);
-
-  if (x > width){
-    x = 0;
+  background(0);
+  overCircle = dist(mouseX,mouseY,x,y)
+  if overCircle < RADIUS {
+    fill(134,155,243);
   }
-  if (y <= height){
-    y = 0;
+  else {
+    fill(255);
   }
 
-}
+
+  stroke(50);
+
+  circle = ellipse(x, y,24, 24);
 
 
-function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    y = y - 15;
-  }
-  else if (keyCode === DOWN_ARROW) {
-    y = y + 15;
-  }
-  if (keyCode === LEFT_ARROW) {
-    x = x - 15;
-  }
-  else if (keyCode === RIGHT_ARROW) {
-    x = x + 15;
-  }
+  x = x + random(-3, 2);
 
+  y = y - 1;
+
+
+  if (y < 0) {
+    y = height;
+  }
 }
