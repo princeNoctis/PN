@@ -20,13 +20,13 @@ function setup() {
 function draw() {
   background(0);
   overCircle = dist(mouseX,mouseY,x,y)
-  if overCircle < RADIUS {
+  if overCircle > RADIUS {
     fill(134,155,243);
   }
   else {
     fill(255);
   }
-
+  ellipse(RADIUS)
 
   stroke(50);
 
