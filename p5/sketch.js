@@ -1,49 +1,56 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-
-let fish;
-let grayFish;
+// State Variables Rectangle Demo
+// Dan Schellenberg
+// Sept 24, 2018
 
 
-
-function preload() {
-  fish = loadImage("assets/fish.jpg");
-}
-
-
+let state = 1;
+let x = 0;
+let y = 0;
+let boxSize = 25;
+let speed = 5;
 
 function setup() {
-  createCanvas(600, 400);
-  image(fish,0,0);
-  grayFish = makeGrayscale(fish);
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(0);
+  background(255);
+  determineState();
+  moveRect();
+  fill(0);
+  rect(x, y, boxSize, boxSize);
 }
 
-function makeGrayscale(sourceImage) {
-  let img = createImage(sourceImage.width, sourceImage.height);
-
-  sourceImage.loadPixels();
-  img.loadPixels();
-
-  for (let x = 0; x < img.width; x++) {
-    for (let y = 0; y< img.height; x++) {
-      let thisPixel = sourceImage.get(x,y);
-      let r = red(thisPixel);
-      let g = green(thisPixel);
-      let b = blue(thisPixel);
-      let average = (r+g+b) /3;
-      let newPixel = color(average, average, average);
-      img.set(x,y, newPixel);
-
-    }
+function determineState() {
+  if (state === 1 && x >= width - boxSize) {
+    x = width - boxSize;
+    state = 2;
   }
-  img.updatePixels();
-  return img;
+  else if (state === 2 && y >= height - boxSize) {
+    y = height - boxSize;
+    state = 3;
+  }
+  else if (state === 3 && x <= 0) {
+    x = 0;
+    state = 4;
+  }
+  else if (state === 4 && y <= 0) {
+    y = 0;
+    state = 1;
+  }
+}
+
+function moveRect() {
+  if (state === 1) {
+    x += speed;
+  }
+  else if (state === 2) {
+    y += speed;
+  }
+  else if (state === 3) {
+    x -= speed;
+  }
+  else if (state === 4) {
+    y -= speed;
+  }
 }
