@@ -9,18 +9,19 @@ let overCircle = false;
 let menu;
 let circle;
 let x, y;
+let circleSize = random(x,y);
+
 
 function setup() {
   createCanvas(720, 400);
-
   x = width / 2;
   y = height;
 }
 
 function draw() {
   background(0);
-  overCircle = dist(mouseX,mouseY,x,y)
-  if overCircle < RADIUS {
+  overCircle = dist(mouseX,mouseY,x,y);
+  if (overCircle < RADIUS) {
     fill(134,155,243);
   }
   else {
@@ -29,8 +30,8 @@ function draw() {
 
 
   stroke(50);
-
-  circle = ellipse(x, y,24, 24);
+  ellipseMode(RADIUS);
+  circle = ellipse(x, y,circleSize, circleSize);
 
 
   x = x + random(-3, 2);
