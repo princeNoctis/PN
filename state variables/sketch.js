@@ -24,22 +24,30 @@ function setup() {
   boy = windowHeight;
   ellipseMode(RADIUS);
   noStroke();
+  state = 1;
 }
 
 function draw() {
   background(0);
-
-  stroke(50);
-  if (mouseX > box-circleSize && mouseX < box+circleSize &&
+  if (mouseisOver() && mouseX > box-circleSize && mouseX < box+circleSize &&
       mouseY > boy-circleSize && mouseY < boy+circleSize) {
     overcircle = true;
-
-
   }
   else {
     fill(244,56,200);
   }
 
+  stroke(50);
+  if (mouseX > box-circleSize && mouseX < box+circleSize &&
+      mouseY > boy-circleSize && mouseY < boy+circleSize) {
+    overcircle = true;
+  }
+  else {
+    fill(244,56,200);
+  }
+  if (state === 1) {
+    displayStartScreen();
+  }
   ellipse(RADIUS);
   ellipse(box, boy, circleSize, circleSize);
   translate(box,boy);
@@ -85,4 +93,10 @@ function displayStartScreen() {
   }
 
   rect(leftSide, topSide, buttonWidth, buttonHeight);
+}
+
+function switchScreen() {
+  if (state === 2) {
+    draw();
+  }
 }
