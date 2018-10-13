@@ -14,6 +14,7 @@ let yOffset = 0.0;
 let x, y;
 let state;
 let ballArray = [];
+let startScreen;
 
 
 
@@ -29,12 +30,13 @@ function setup() {
 
 function draw() {
   background(0);
-  stroke(50);
-  if (mouseX > box-circleSize && mouseX < box+circleSize &&
-      mouseY > boy-circleSize && mouseY < boy+circleSize) {
+  stroke(220);
+  if (mouseX < box-circleSize &&
+      mouseY < boy-circleSize) {
     clickedCircle = true;
-
   }
+  text("click on circles to score points before time run out",0,-900)
+  textSize(50)
 
   if (state === 1) {
     displayStartScreen();
@@ -43,7 +45,7 @@ function draw() {
   ellipse(box, boy, circleSize, circleSize);
   box = box + random(-8, 2);
   boy = boy - 4;
-
+  
   if (boy < 0) {
     boy = windowHeight;
     fill(255);
@@ -61,9 +63,10 @@ function score() {
 }
 
 function mousePressed() {
-  if(clickedCircle) {
-    fill(random(255, 255, 255));
+  if(clickedCircle === true) {
+    fill(0,0,255);
   }
+
   xOffset = mouseX-box;
   yOffset = mouseY-boy;
 }
@@ -75,7 +78,7 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
-  image(startScreen, 0, height/2, startScreen.width/2, startScreen.height/2);
+  image(startScreen, 0, 0);
 
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(200,200,34);
