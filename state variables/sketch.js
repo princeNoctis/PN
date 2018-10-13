@@ -29,20 +29,6 @@ function setup() {
 
 function draw() {
   background(0);
-<<<<<<< HEAD
-
-  overCircle = dist(mouseX,mouseY,x,y)
-  if overCircle > RADIUS {
-    fill(134,155,243);
-=======
-  if (mouseisOver() && mouseX > box-circleSize && mouseX < box+circleSize &&
-      mouseY > boy-circleSize && mouseY < boy+circleSize) {
-    overcircle = true;
-  }
-  else {
-    fill(244,56,200);
-  }
->>>>>>> 8165a997b6279b00f7907a160a8aa33d2e0770fc
 
   stroke(50);
   if (mouseX > box-circleSize && mouseX < box+circleSize &&
@@ -50,17 +36,16 @@ function draw() {
     overcircle = true;
   }
   else {
-    fill(244,56,200);
+    fill(50,200,0);
   }
-<<<<<<< HEAD
   ellipse(RADIUS)
 
-=======
+
   if (state === 1) {
     displayStartScreen();
   }
   ellipse(RADIUS);
->>>>>>> 8165a997b6279b00f7907a160a8aa33d2e0770fc
+
   ellipse(box, boy, circleSize, circleSize);
   translate(box,boy);
   box = box + random(-8, 2);
@@ -72,14 +57,11 @@ function draw() {
   if (box < 0) {
     box = windowWidth;
   }
-<<<<<<< HEAD
-=======
 
 
 }
 
 function score() {
->>>>>>> 8165a997b6279b00f7907a160a8aa33d2e0770fc
 
 }
 
@@ -101,7 +83,7 @@ function displayStartScreen() {
 
   fill(0);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
-    fill(125);
+    fill(125,rect(leftSide, topSide, buttonWidth, buttonHeight));
     if (mouseIsPressed) {
       state = 2;
     }
