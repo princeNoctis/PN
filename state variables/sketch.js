@@ -34,17 +34,14 @@ function draw() {
   if (mouseX > box-circleSize && mouseX < box+circleSize &&
       mouseY > boy-circleSize && mouseY < boy+circleSize) {
     overcircle = true;
-  }
-  else {
-    fill(50,200,0);
-  }
-  ellipse(RADIUS)
 
+  }
 
   if (state === 1) {
     displayStartScreen();
   }
-  ellipse(RADIUS);
+  ellipseMode(RADIUS);
+  
 
   ellipse(box, boy, circleSize, circleSize);
   translate(box,boy);
@@ -53,9 +50,11 @@ function draw() {
 
   if (boy < 0) {
     boy = windowHeight;
+    fill(255);
   }
   if (box < 0) {
     box = windowWidth;
+    fill(255);
   }
 
 
@@ -67,23 +66,22 @@ function score() {
 
 function mousePressed() {
   if(overcircle) {
-    fill(random(255, 255, 255));
+    fill(random(255), random(255), random(255));
   }
   xOffset = mouseX-box;
   yOffset = mouseY-boy;
 }
 
 function displayStartScreen() {
-  let buttonWidth = 400;
-  let buttonHeight = 200;
+  let buttonWidth = windowWidth;
+  let buttonHeight = windowHeight;
   let leftSide = width / 2 - buttonWidth / 2;
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
 
-  fill(0);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
-    fill(125,rect(leftSide, topSide, buttonWidth, buttonHeight));
+    fill(200,200,34);
     if (mouseIsPressed) {
       state = 2;
     }
