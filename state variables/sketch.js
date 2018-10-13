@@ -11,12 +11,14 @@ let circleSize = 30;
 let overcircle = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
-let x, y;
 let state;
 let ballArray = [];
 
 
 
+//function preload() {
+  //startScreen = loadImage("assets/moonwalk.jpg");
+//}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,7 +31,6 @@ function setup() {
 
 function draw() {
   background(0);
-  
   stroke(50);
   if (mouseX > box-circleSize && mouseX < box+circleSize &&
       mouseY > boy-circleSize && mouseY < boy+circleSize) {
@@ -43,7 +44,7 @@ function draw() {
     displayStartScreen();
   }
 
-
+  fill(255);
   ellipse(box, boy, circleSize, circleSize);
   translate(box,boy);
   box = box + random(-8, 2);

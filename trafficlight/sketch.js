@@ -81,3 +81,19 @@ function drawOutlineOfLights() {
   ellipse(width/2, height/2, 50, 50); //middle
   ellipse(width/2, height/2 + 65, 50, 50); //bottom
 }
+
+
+
+for (let i=0; i < windowWidth && windowHeight; i++) {
+  ballArray[i].box = ballArray[i].box + random(-8, 2);
+  ballArray[i].boy = ballArray[i].boy - 4;
+  if (ballArray[i].boy < 0) {
+    ballArray[i].boy = windowHeight;
+    fill(255);
+  }
+  if (ballArray[i].x < 0) {
+    ballArray[i].x = windowWidth;
+    fill(255);
+  }
+  ellipse(ballArray[i].x, ballArray[i].y, ballArray[i].radius*2, ballArray[i].radius*2);
+}
