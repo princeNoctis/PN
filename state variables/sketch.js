@@ -11,22 +11,20 @@ let circleSize = 30;
 let overcircle = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
+let x, y;
 let state;
 let ballArray = [];
 
 
 
-//function preload() {
-  //startScreen = loadImage("assets/moonwalk.jpg");
-//}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   box = windowWidth;
   boy = windowHeight;
   ellipseMode(RADIUS);
-  stroke(10);
   state = 1;
+  startScreen = loadImage("assets/start screen.PNG");
 }
 
 function draw() {
@@ -34,19 +32,15 @@ function draw() {
   stroke(50);
   if (mouseX > box-circleSize && mouseX < box+circleSize &&
       mouseY > boy-circleSize && mouseY < boy+circleSize) {
-    overcircle = true;
-  }
-  else {
-    overcircle = false;
+    clickedCircle = true;
+
   }
 
   if (state === 1) {
     displayStartScreen();
   }
-
-  fill(255);
+  else if (state === 2) {
   ellipse(box, boy, circleSize, circleSize);
-  translate(box,boy);
   box = box + random(-8, 2);
   boy = boy - 4;
 
@@ -58,7 +52,7 @@ function draw() {
     box = windowWidth;
     fill(255);
   }
-
+}
 
 }
 
@@ -67,8 +61,8 @@ function score() {
 }
 
 function mousePressed() {
-  if(overcircle === true) {
-    fill(0,0,255);
+  if(clickedCircle) {
+    fill(random(255, 255, 255));
   }
   xOffset = mouseX-box;
   yOffset = mouseY-boy;
@@ -81,15 +75,18 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
+  image(startScreen, 0, height/2, startScreen.width/2, startScreen.height/2);
 
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
-    fill(0);
+    fill(200,200,34);
     if (mouseIsPressed) {
       state = 2;
     }
   }
+  else {
+    fill(0);
+  }
 
-  rect(leftSide, topSide, buttonWidth, buttonHeight);
 }
 
 function switchScreen() {
