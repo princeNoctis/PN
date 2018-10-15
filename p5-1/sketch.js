@@ -112,6 +112,12 @@ function displaygame() {
 
 }
 
+function keyTyped() {
+  if (key === "r") {
+    redraw();
+  }
+}
+
 function mouseReleased() {
   locked = false;
 }
