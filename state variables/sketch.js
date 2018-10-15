@@ -45,15 +45,15 @@ function draw() {
     clickedCircle = true;
   }
 
-
+  time()
   texts();
   if (state === 1) {
     displayStartScreen();
   }
   else if (state === 2) {
-  ellipse(box, boy, circleSize, circleSize);
-  box = box + random(-8, 2);
-  boy = boy - 4;
+    ellipse(box, boy, circleSize, circleSize);
+    box = box + random(-8, 2);
+    boy = boy - 4;
   if (boy < 0) {
     boy = windowHeight;
     fill(255);
