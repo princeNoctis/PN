@@ -35,8 +35,6 @@ function draw() {
       mouseY < boy-circleSize) {
     clickedCircle = true;
   }
-  text("click on circles to score points before time run out",0,-900)
-  textSize(50)
 
   if (state === 1) {
     displayStartScreen();
@@ -45,7 +43,6 @@ function draw() {
   ellipse(box, boy, circleSize, circleSize);
   box = box + random(-8, 2);
   boy = boy - 4;
-  
   if (boy < 0) {
     boy = windowHeight;
     fill(255);
@@ -90,6 +87,11 @@ function displayStartScreen() {
     fill(0);
   }
 
+}
+
+function displayText() {
+  text("click on circles to score points before time runs out",0,900)
+  textSize(50)
 }
 
 function switchScreen() {
