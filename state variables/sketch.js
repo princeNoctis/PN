@@ -135,5 +135,6 @@ function scoreApoint() {
 function switchScreen() {
   if (state === 2) {
     draw();
-  }
+ 		}
+	}
 }
