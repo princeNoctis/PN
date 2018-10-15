@@ -34,9 +34,10 @@ function draw() {
   if (mouseX < box-circleSize &&
       mouseY < boy-circleSize) {
     clickedCircle = true;
+    mousePressed();
   }
-  text("click on circles to score points before time run out",width/2 ,height/2);
-  textSize(10);
+
+  texts();
 
   if (state === 1) {
     displayStartScreen();
@@ -78,7 +79,7 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
-  image(startScreen, width/2, height/2);
+  image(startScreen,0, 0);
 
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(200,200,34);
@@ -91,6 +92,14 @@ function displayStartScreen() {
   }
 
 }
+
+function texts() {
+  fill(0,0,255);
+  text("click on circles to score points before time run out",800 ,20);
+  textSize(20);
+}
+
+
 
 function switchScreen() {
   if (state === 2) {
