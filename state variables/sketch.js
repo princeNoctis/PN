@@ -44,17 +44,13 @@ function draw() {
       mouseY < boy-circleSize) {
     clickedCircle = true;
   }
-<<<<<<< HEAD
-=======
+
 
   texts();
->>>>>>> f75917c379dd04e02f065fd4d2676cc8246b3b5a
-
   if (state === 1) {
     displayStartScreen();
   }
   else if (state === 2) {
-<<<<<<< HEAD
   ellipse(box, boy, circleSize, circleSize);
   box = box + random(-8, 2);
   boy = boy - 4;
@@ -65,7 +61,6 @@ function draw() {
   if (box < 0) {
     box = windowWidth;
     fill(255);
-=======
     ellipse(box, boy, circleSize, circleSize);
     box = box + random(-8, 2);
     boy = boy - 4;
@@ -78,7 +73,6 @@ function draw() {
       box = windowWidth;
       fill(255);
     }
->>>>>>> f75917c379dd04e02f065fd4d2676cc8246b3b5a
   }
 
 }
@@ -115,11 +109,10 @@ function displayStartScreen() {
 
 }
 
-<<<<<<< HEAD
+
 function displayText() {
   text("click on circles to score points before time runs out",0,900)
   textSize(50)
-=======
 function texts() {
   fill(0,0,255);
   text("click on circles to score points before time run out",800 ,20);
@@ -141,7 +134,6 @@ function scoreApoint() {
     let prevScore = parseInt(score.html().substring(8));
     text("Score = " + score,"30px Comic Sans MS", 10, 30, "white");
   }
->>>>>>> f75917c379dd04e02f065fd4d2676cc8246b3b5a
 }
 
 function switchScreen() {
