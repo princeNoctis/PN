@@ -5,18 +5,24 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let box;
-let boy;
+
 let circleSize = 30;
 let clickedCircle = false;
+
+let box;
+let boy;
 let xOffset = 0.0;
 let yOffset = 0.0;
 let x, y;
 let state;
-let ballArray = [];
+
+
 let startScreen;
 let timer = 5;
+
 let score;
+let prevScore = parseInt(score.html().substring(8));
+
 
 
 function setup() {
@@ -108,6 +114,13 @@ function time(){
   if (timer === 0) {
     text("GAME OVER","score = ", width/2, height*0.7);
   }
+
+}
+
+function scoreApoint() {
+  if (mouseClicked())
+  let prevScore = parseInt(score.html().substring(8));
+  score.html('Score = ' + (prevScore + 1));
 
 }
 
