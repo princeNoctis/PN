@@ -109,10 +109,6 @@ function displayStartScreen() {
 
 }
 
-
-function displayText() {
-  text("click on circles to score points before time runs out",0,900)
-  textSize(50)
 function texts() {
   fill(0,0,255);
   text("click on circles to score points before time run out",800 ,20);
