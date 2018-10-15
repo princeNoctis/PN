@@ -4,6 +4,7 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+// got some help from p5js website.
 
 
 let circleSize = 30;
@@ -21,8 +22,6 @@ let startScreen;
 let timer = 5;
 
 let score;
-let prevScore = parseInt(score.html().substring(8));
-
 
 
 function setup() {
@@ -32,10 +31,10 @@ function setup() {
   ellipseMode(RADIUS);
   state = 1;
   startScreen = loadImage("assets/start screen.PNG");
-  score = createDiv('Score = 0');
+  score = createDiv("Score = 0");
   score.position(20, 20);
-  score.id = 'score';
-  score.style('color', 'white');
+  score.id = "score";
+  score.style("color", "white");
 }
 
 function draw() {
@@ -44,7 +43,6 @@ function draw() {
   if (mouseX < box-circleSize &&
       mouseY < boy-circleSize) {
     clickedCircle = true;
-    mousePressed();
   }
 
   texts();
@@ -71,7 +69,7 @@ function draw() {
 
 
 
-function mousePressed() {
+function mouseClicked() {
   if(clickedCircle === true) {
     fill(0,0,255);
   }
@@ -118,10 +116,10 @@ function time(){
 }
 
 function scoreApoint() {
-  if (mouseClicked())
-  let prevScore = parseInt(score.html().substring(8));
-  score.html('Score = ' + (prevScore + 1));
-
+  if (mouseClicked) {
+    let prevScore = parseInt(score.html().substring(8));
+    text("Score = " + score,"30px Comic Sans MS", 10, 30, "white");
+  }
 }
 
 function switchScreen() {
