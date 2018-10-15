@@ -15,8 +15,8 @@ let x, y;
 let state;
 let ballArray = [];
 let startScreen;
-
-
+let timer = 5;
+let score;
 
 
 function setup() {
@@ -26,6 +26,10 @@ function setup() {
   ellipseMode(RADIUS);
   state = 1;
   startScreen = loadImage("assets/start screen.PNG");
+  score = createDiv('Score = 0');
+  score.position(20, 20);
+  score.id = 'score';
+  score.style('color', 'white');
 }
 
 function draw() {
@@ -59,9 +63,7 @@ function draw() {
 
 }
 
-function score() {
 
-}
 
 function mousePressed() {
   if(clickedCircle === true) {
@@ -99,7 +101,15 @@ function texts() {
   textSize(20);
 }
 
+function time(){
+  if (frameCount % 60 === 0 && timer > 0) {
+    timer --;
+  }
+  if (timer === 0) {
+    text("GAME OVER","score = ", width/2, height*0.7);
+  }
 
+}
 
 function switchScreen() {
   if (state === 2) {
