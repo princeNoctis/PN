@@ -5,13 +5,13 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-var cx;
-var cy;
-var circleSize = 75;
-var overcircle = false;
-var locked = false;
-var xOffset = 0.0;
-var yOffset = 0.0;
+let cx;
+let cy;
+let circleSize = 75;
+let overcircle = false;
+let locked = false;
+let xOffset = 0.0;
+let yOffset = 0.0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -22,7 +22,7 @@ function setup() {
 }
 
 function draw() {
-  background(237,34,93);
+  background(0,0,200);
 
   // Test if the cursor is over the box
   if (mouseX > cx-circleSize && mouseX < cx+circleSize &&
@@ -43,14 +43,14 @@ function draw() {
 }
 
 function mousePressed() {
-  if(overBox) {
+  if(overcircle) {
     locked = true;
     fill(255, 255, 255);
   } else {
     locked = false;
   }
-  xOffset = mouseX-bx;
-  yOffset = mouseY-by;
+  xOffset = mouseX-cx;
+  yOffset = mouseY-cy;
 
 }
 
