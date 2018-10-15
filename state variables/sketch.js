@@ -12,14 +12,12 @@ let clickedCircle = false;
 
 let box;
 let boy;
-let xOffset = 0.0;
-let yOffset = 0.0;
 let x, y;
 let state;
 
 
 let startScreen;
-let timer = 5;
+let timer = 10;
 
 let score;
 
@@ -38,14 +36,14 @@ function setup() {
 }
 
 function draw() {
+
   background(0);
   stroke(220);
-  if (mouseX < box-circleSize &&
-      mouseY < boy-circleSize) {
+  if (mouseX > box-circleSize && mouseX < box+circleSize &&
+      mouseY > boy-circleSize && mouseY < boy+circleSize) {
     clickedCircle = true;
   }
-
-  time()
+  time();
   texts();
   if (state === 1) {
     displayStartScreen();
@@ -54,24 +52,24 @@ function draw() {
     ellipse(box, boy, circleSize, circleSize);
     box = box + random(-8, 2);
     boy = boy - 4;
-  if (boy < 0) {
-    boy = windowHeight;
-    fill(255);
-  }
-  if (box < 0) {
-    box = windowWidth;
-    fill(255);
-    ellipse(box, boy, circleSize, circleSize);
-    box = box + random(-8, 2);
-    boy = boy - 4;
-
     if (boy < 0) {
       boy = windowHeight;
       fill(255);
     }
+    mouseIsPressed();
     if (box < 0) {
       box = windowWidth;
       fill(255);
+      box = box + random(-8, 2);
+      boy = boy - 4;
+
+      if (boy < 0) {
+        boy = windowHeight;
+        fill(255);
+      }
+      if (box < 0) {
+        box = windowWidth;
+        fill(255);
     }
   }
 
@@ -79,14 +77,16 @@ function draw() {
 
 
 
-function mouseClicked() {
-  if(clickedCircle === true) {
-    fill(0,0,255);
+function mousePressed() {
+  // Check if mouse is inside the circle
+  let d = dist(mouseX, mouseY, box, boy);
+  if (d < box) {
+    // Pick new random color values
+    r = random(255);
+    g = random(255);
+    b = random(255);
+    }
   }
-
-  xOffset = mouseX-box;
-  yOffset = mouseY-boy;
-}
 
 function displayStartScreen() {
   let buttonWidth = windowWidth;
@@ -115,12 +115,17 @@ function texts() {
   textSize(20);
 }
 
-function time(){
+function time() {
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  text(timer, 0, 0);
   if (frameCount % 60 === 0 && timer > 0) {
     timer --;
   }
   if (timer === 0) {
-    text("GAME OVER","score = ", width/2, height*0.7);
+    text("GAME OVER", width/2, height*0.7);
+  }
+
   }
 
 }
@@ -135,6 +140,5 @@ function scoreApoint() {
 function switchScreen() {
   if (state === 2) {
     draw();
- 		}
-	}
+ 	}
 }
