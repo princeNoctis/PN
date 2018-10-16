@@ -6,39 +6,35 @@
 // - describe what you did to take this project "above and beyond"
 // global variables
 
-let cx;
-let cy;
-let bocSize = 30;
+let x;
+let y;
+let bocSize = 35;
 let overBoc = false;
 let locked = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
 let time = 60;
 let state;
-let bugs = [];
-
+let score;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  cx = random(width/2.0);
-  cy = random(height/2.0);
   ellipseMode(RADIUS);
   strokeWeight(2);
   state = 1;
-  for (var i=0; i<50; i++) {
-    bugs.push(new Jitter());
-  }
+  x = width / 2;
+  y = height;
 }
 
 function draw() {
+  text(nf(num, 1), 125, 175);
   if (state === 1) {
     displayStartScreen();
   }
   else if (state === 2) {
     displaygame();
   }
-
 }
 
 function displayStartScreen() {
@@ -52,7 +48,7 @@ function displayStartScreen() {
   let middle = color(204, 153, 0);
   let outside = color(153, 51, 0);
 
-  fill(0);
+  fill(0,0,240);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
@@ -64,7 +60,7 @@ function displayStartScreen() {
   fill(outside);
   textAlign(CENTER, CENTER);
   textSize(25);
-  text("CLICK RECTANGLE",850,400);
+  text("CLICK RECTANGLE",400,400);
   pop();
   rect(leftSide, topSide, buttonWidth, buttonHeight);
 }
@@ -77,13 +73,16 @@ function mousePressed() {
     locked = false;
   }
 
-  xOffset = mouseX-bx;
-  yOffset = mouseY-by;
-
+  xOffset = mouseX-x;
+  yOffset = mouseY-y;
+  let d = dist(mouseX, mouseY, x, y);
+  if (d < 35) {
+    fill(255,0,0);
+    num = (num + 10);
+  }
 }
 
 function timer() {
-  fill(255);
   textAlign(CENTER, CENTER);
   textSize(25);
   text(time, 50, 50);
@@ -97,36 +96,38 @@ function timer() {
 }
 
 function displaygame() {
-  background(234,12,123);
-  for (var i=0; i<bugs.length; i++) {
-    bugs[i].move();
-    bugs[i].display();
+  background(234,150,50);
+  ellipse(x,y,bocSize,bocSize);
+  // Jiggling randomly on the horizontal axis
+  x = x + random(-10, 8);
+  // Moving up at a constant speed
+  y = y - 5;
+
+  // Reset to the bottom
+  if (y < 0) {
+    y = random(height);
+    fill(0);
+  }else if (x < 0) {
+    x = random(width);
+    fill(0);
   }
 
+
   // Test if the cursor is over the box
-  if (mouseX > cx-bocSize && mouseX < cx+bocSize &&
-      mouseY > cy-bocSize && mouseY < cy+bocSize) {
+  if (mouseX > x-bocSize && mouseX < x+bocSize &&
+      mouseY > y-bocSize && mouseY < y+bocSize) {
     overBoc = true;
     if(!locked) {
       stroke(255);
-      fill(244,122,158);
+      fill(255);
     }
   } else {
     stroke(156,39,176);
-    fill(244,122,158);
+    fill(255);
     overBoc = false;
   }
   timer();
-  // Jiggling randomly on the horizontal axis
-  cx = cx + random(-1, 1);
-  // Moving up at a constant speed
-  cy = cy - 1;
 
-  // Reset to the bottom
-  if (cy < 0) {
-    cy = height;
-  }
-  // Draw the box
 
 }
 
@@ -138,30 +139,4 @@ function keyTyped() {
 
 function mouseReleased() {
   locked = false;
-}
-
-
-function Jitter() {
-  this.x = random(width);
-  this.y = random(height);
-  this.diameter = random(10, 100);
-  this.speed = 1;
-
-  this.move = function() {
-    if (this.y < 0) {
-      this.y = height;
-    }
-    if (this.x < 0) {
-      this.x = width;
-    }
-    this.x = this.x + random(-8, 3);
-    // Moving up at a constant speed
-    this.y = this.y - 2;
-    this.x += random(-this.speed, this.speed);
-    this.y += random(-this.speed, this.speed);
-  };
-
-  this.display = function() {
-    ellipse(this.x, this.y, this.diameter, this.diameter);
-  };
 }

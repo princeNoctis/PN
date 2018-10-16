@@ -15,7 +15,7 @@ let xOffset = 0.0;
 let yOffset = 0.0;
 let time = 60;
 let state;
-let bugs = [];
+let ca = [];
 
 
 
@@ -27,7 +27,7 @@ function setup() {
   strokeWeight(2);
   state = 1;
   for (var i=0; i<50; i++) {
-    bugs.push(new Jitter());
+    ca.push(new Jitter());
   }
 }
 
@@ -77,8 +77,8 @@ function mousePressed() {
     locked = false;
   }
 
-  xOffset = mouseX-bx;
-  yOffset = mouseY-by;
+  xOffset = mouseX-cx;
+  yOffset = mouseY-cy;
 
 }
 
@@ -98,12 +98,12 @@ function timer() {
 
 function displaygame() {
   background(234,12,123);
-  for (var i=0; i<bugs.length; i++) {
-    bugs[i].move();
-    bugs[i].display();
+  for (var i=0; i<ca.length; i++) {
+    ca[i].move();
+    ca[i].display();
   }
 
-  // Test if the cursor is over the box
+  // if the cursor is over the box
   if (mouseX > cx-bocSize && mouseX < cx+bocSize &&
       mouseY > cy-bocSize && mouseY < cy+bocSize) {
     overBoc = true;
@@ -117,7 +117,7 @@ function displaygame() {
     overBoc = false;
   }
   timer();
-  // Jiggling randomly on the horizontal axis
+
   cx = cx + random(-1, 1);
   // Moving up at a constant speed
   cy = cy - 1;
@@ -126,7 +126,6 @@ function displaygame() {
   if (cy < 0) {
     cy = height;
   }
-  // Draw the box
 
 }
 
@@ -141,10 +140,10 @@ function mouseReleased() {
 }
 
 
-function Jitter() {
+function moveEllipses() {
   this.x = random(width);
   this.y = random(height);
-  this.diameter = random(10, 100);
+  this.wdth = random(10, 100);
   this.speed = 1;
 
   this.move = function() {
@@ -162,6 +161,6 @@ function Jitter() {
   };
 
   this.display = function() {
-    ellipse(this.x, this.y, this.diameter, this.diameter);
+    ellipse(this.x, this.y, this.wdth, this.wdth);
   };
 }
