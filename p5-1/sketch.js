@@ -13,7 +13,7 @@ let overBoc = false;
 let locked = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
-let time = 60;
+let time = 1;
 let state;
 let score;
 
@@ -25,10 +25,11 @@ function setup() {
   state = 1;
   x = width / 2;
   y = height;
+  score = 0;
+  draw();
 }
 
 function draw() {
-  text(nf(num, 1), 125, 175);
   if (state === 1) {
     displayStartScreen();
   }
@@ -77,8 +78,9 @@ function mousePressed() {
   yOffset = mouseY-y;
   let d = dist(mouseX, mouseY, x, y);
   if (d < 35) {
+    score = score + 1;
     fill(255,0,0);
-    num = (num + 10);
+    redraw();
   }
 }
 
@@ -91,11 +93,14 @@ function timer() {
   }
   if (time === 0) {
     text("!!GAME OVER!!", width/2, height*0.7);
+    text("score: " + score, width/2, height*0.5);
     noLoop();
   }
 }
 
 function displaygame() {
+
+  text("score: " + score, width/2, height*0.5);
   background(234,150,50);
   ellipse(x,y,bocSize,bocSize);
   // Jiggling randomly on the horizontal axis
@@ -111,8 +116,6 @@ function displaygame() {
     x = random(width);
     fill(0);
   }
-
-
   // Test if the cursor is over the box
   if (mouseX > x-bocSize && mouseX < x+bocSize &&
       mouseY > y-bocSize && mouseY < y+bocSize) {
