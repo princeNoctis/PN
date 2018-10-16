@@ -3,11 +3,11 @@
 //
 // Extra for Experts:
 // i used the translate function and state function as the starting screen and added some a sound
-//and background music. press r to RESET
-// global variables
+// and background music. press r to RESET
 
 
-// ALL REQURED LET VALUES
+// ALL REQURED GLOBAL LET VALUES
+
 let x;
 let y;
 let bocSize = 35;
@@ -21,11 +21,21 @@ let time = 50;
 let state;
 
 let score;
+let spellSound;
+let backgroundMusic;
 
+// PRELOADING THE SPELLBOUND SOUND AND BACKGRROUND MUSIC
+
+function preload() {
+  backgroundMusic = loadSound("assets/back.mp3");
+  spellSound = loadSound("assets/pop.flac");
+}
 
 
 function setup() {
-
+  //SET THE VOLUME AND MAKE IT LOOP
+  backgroundMusic.setVolume(0.3);
+  backgroundMusic.loop();
   createCanvas(windowWidth, windowHeight);
   ellipseMode(RADIUS);
   strokeWeight(2);
@@ -87,7 +97,7 @@ function displayStartScreen() {
 
   textAlign(CENTER, CENTER);
   textSize(25);
-  text("CLICK RECTANGLE",400,400);
+  text("CLICK ----->",400,400);
 
   pop();
   rect(leftSide, topSide, buttonWidth, buttonHeight);
@@ -163,6 +173,7 @@ function mousePressed() {
   // AND MAKING IT DO IT EVERYTIME
   // MOUSE IS CLICKED IN THE RADIUS OF THE CIRCLE
   if (d < 35) {
+    spellSound.play();
     score = (1 + score);
     fill(255,0,0);
     redraw();
