@@ -37,7 +37,7 @@ function draw() {
 }
 function displayRects() {
   for (let i = 0; i < rects.length; i++) {
-    rect(rects[i].x,w,h,[tl],[tr],[br],[bl])
+    rect(rects[i].x,rects[i].y,h,[tl],[tr],[br],[bl])
   }
 }
 
