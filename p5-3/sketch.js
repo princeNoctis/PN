@@ -7,16 +7,19 @@
 
 let cols = 3;
 let rows = 3;
+let colors = [];
 
 function setup() {
   createCanvas(300, 300);
+  for (let i = 0; i<cols; i++ ){
+    colors[i] = [];
+    for (let j = 0; j<rows; j++ ){
+      colors[i][j] = random(255);
+    }
+  }
 }
 
 function draw() {
-  let board = [[0,0,1],
-    [0,1,0],
-    [] 
-  ];
 
   background(51);
   for (let i = 0; i<cols; i++ ){
@@ -24,18 +27,14 @@ function draw() {
       let x = i*30;
       let y = j*30;
       stroke(0);
-      fill (color[i][j]);
-      fill(255);
+      fill(colors[i][j]);
       rect(x,y,30,30);
     }
   }
 }
 
 function newGrid() {
-
 }
 
-
 function mouseClicked() {
-  draw();
 }
