@@ -1,56 +1,57 @@
-// State Variables Rectangle Demo
-// Dan Schellenberg
-// Sept 24, 2018
-
-
-let state = 1;
-let x = 0;
-let y = 0;
-let boxSize = 25;
-let speed = 5;
+let rows = 10;
+let cols = 10;
+let grid;
+let cellSize;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(600, 600);
+  cellSize = width / cols;
+  grid = createRandom2dArray(cols, rows);
 }
 
 function draw() {
   background(255);
-  determineState();
-  moveRect();
-  fill(0);
-  rect(x, y, boxSize, boxSize);
+  displayGrid();
 }
 
-function determineState() {
-  if (state === 1 && x >= width - boxSize) {
-    x = width - boxSize;
-    state = 2;
+function mousePressed() {
+  let x = floor(mouseX / cellSize);
+  let y = floor(mouseY / cellSize);
+
+  if (grid[y][x] === 1) {
+    grid[y][x] = 0;
   }
-  else if (state === 2 && y >= height - boxSize) {
-    y = height - boxSize;
-    state = 3;
-  }
-  else if (state === 3 && x <= 0) {
-    x = 0;
-    state = 4;
-  }
-  else if (state === 4 && y <= 0) {
-    y = 0;
-    state = 1;
+  else if (grid[y][x] === 0) {
+    grid[y][x] = 1;
   }
 }
 
-function moveRect() {
-  if (state === 1) {
-    x += speed;
+function displayGrid() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (grid[y][x] === 0) {
+        fill(0);
+      }
+      else {
+        fill(255);
+      }
+      rect(x*cellSize, y*cellSize, cellSize, cellSize);
+    }
   }
-  else if (state === 2) {
-    y += speed;
+}
+
+function createRandom2dArray(cols, rows) {
+  let randomGrid = [];
+  for (let y = 0; y < rows; y++) {
+    randomGrid.push([]);
+    for (let x = 0; x < cols; x++) {
+      if (random(100) < 50) {
+        randomGrid[y].push(0);
+      }
+      else {
+        randomGrid[y].push(1);
+      }
+    }
   }
-  else if (state === 3) {
-    x -= speed;
-  }
-  else if (state === 4) {
-    y -= speed;
-  }
+  return randomGrid;
 }
