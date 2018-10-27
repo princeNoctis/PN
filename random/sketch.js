@@ -1,551 +1,1262 @@
-var grid_x;// = window.innerWidth / 3.;
-var grid_y;// = window.innerHeight/ 6.;
-var noughtChoicesBoxX = [];
-var noughtChoicesBoxY = [];
-var crossChoicesBoxX = [];
-var crossChoicesBoxY = [];
+let seaLifeSketch = function(p) {
+  // Global letiables
+  let fishes = [];
+	let jellys = [];
+  let whales = [];
+	let hammers = [];
+	let repulsionDist = 30;
+	let alignDist = 50;
+	let attractionDist = 150;
+	let huntDist = 200;
+	let limitDist = 300;
+	let maxVel = 5;
+	let repulsionDistSq = p.sq(repulsionDist);
+	let alignDistSq = p.sq(alignDist);
+	let attractionDistSq = p.sq(attractionDist);
+	let huntDistSq = p.sq(huntDist);
+	let limitDistSq = p.sq(limitDist);
+	let maxVelSq = p.sq(maxVel);
+	let paintLines = false;
+	let paintLimits = false;
+	let paintDetails = true;
+	let bgImg;
 
+	// Creates and adds the canvas element
+	function addCanvas(canvasWidth, canvasHeight) {
+		let referenceElement, maxCanvasWidth, canvas;
 
-var holdDrawing = false;
-var hasWon = false;
-var playersTurn = 1;
-var loc1 = [];
-var loc2 = [];
-var timer = 0;
-var choice = 0;
-// if 0, unoccupied, if 1 : nought, if -1: cross
-var game = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0
+		// Calculate the canvas dimensions
+		referenceElement = document.getElementById("widthRef");
+		maxCanvasWidth = referenceElement.clientWidth - 1;
+
+		if (canvasWidth > maxCanvasWidth) {
+			canvasHeight = maxCanvasWidth * canvasHeight / canvasWidth;
+			canvasWidth = maxCanvasWidth;
+		}
+
+		// Create the canvas
+		canvas = p.createCanvas(canvasWidth, canvasHeight);
+
+		// Resize the canvas if necessary
+		maxCanvasWidth = referenceElement.clientWidth - 1;
+
+		if (canvasWidth > maxCanvasWidth) {
+			p.resizeCanvas(maxCanvasWidth, maxCanvasWidth * canvasHeight / canvasWidth, true);
+		}
+
+		return canvas;
+	}
+
+	// Load the image before the sketch is run
+	p.preload = function() {
+		// This image was created with the createWaterImage() method
+		bgImg = p.loadImage("img/deepWater.png");
+	};
+
+	// Initial setup
+	p.setup = function() {
+		// Add the canvas element
+		addCanvas(bgImg.width, bgImg.height);
+
+		// Resize the image if necessary
+		if (bgImg.width > p.width) {
+			bgImg.resize(p.width, p.height);
+		}
+
+		// Create the water-like image to be used as the background
+		// bgImg = createWaterImage(p.width, p.height);
+
+		// Update some of the key distances
+		limitDist = 0.4 * Math.min(bgImg.width, bgImg.height);
+		limitDistSq = p.sq(limitDist);
+		attractionDist = 0.5 * limitDist;
+		attractionDistSq = p.sq(attractionDist);
+
+		// Create all the species
+		createFishes(Math.round(0.3 * bgImg.height));
+		createJellys(Math.round(0.1 * bgImg.height));
+		createWhales(1);
+		createHammers(Math.round(0.004 * bgImg.height));
+
+		// Add the GUI
+		createGUI();
+	};
+
+	// Execute the sketch
+	p.draw = function() {
+		let i, fish, jelly, whale, hammer;
+
+		// Paint the water-like image
+		p.background(bgImg);
+
+		// Fishes
+		for (i = 0; i < fishes.length; i++) {
+			fish = fishes[i];
+
+			// Update the fish properties
+			fish.evaluateInteractions(fishes, true, true, true, false, false);
+			fish.evaluateInteractions(whales, false, false, false, true, false);
+			fish.evaluateInteractions(hammers, false, false, false, true, false);
+			fish.keepClose();
+			fish.update();
+
+			// Paint the fish
+			if (paintDetails) {
+				fish.paintDetail();
+			} else {
+				fish.paint();
+			}
+
+			// Paint the limits if necessary
+			if (paintLimits && i === 0) {
+				fish.paintLimits();
+			}
+		}
+
+		// Jelly-fishes
+		for (i = 0; i < jellys.length; i++) {
+			jelly = jellys[i];
+
+			// Update the jelly-fish properties
+			jelly.evaluateInteractions(jellys, true, true, true, false, false);
+			jelly.evaluateInteractions(whales, false, false, false, true, false);
+			jelly.evaluateInteractions(hammers, false, false, false, true, false);
+			jelly.keepClose();
+			jelly.update();
+
+			// Paint the jelly-fish
+			if (paintDetails) {
+				jelly.paintDetail();
+			} else {
+				jelly.paint();
+			}
+		}
+
+		// Killer whales
+		for (i = 0; i < whales.length; i++) {
+			whale = whales[i];
+
+			// Update the killer whale properties
+			whale.evaluateInteractions(whales, true, false, false, false, false);
+			whale.evaluateInteractions(fishes, false, false, false, false, true);
+			whale.evaluateInteractions(jellys, false, false, false, false, true);
+			whale.evaluateInteractions(hammers, true, false, false, false, false);
+			whale.keepClose();
+			whale.update();
+
+			// Paint the killer whale
+			if (paintDetails) {
+				whale.paintDetail();
+			} else {
+				whale.paint();
+			}
+		}
+
+		// Hammer sharks
+		for (i = 0; i < hammers.length; i++) {
+			hammer = hammers[i];
+
+			// Update the hammer shark properties
+			hammer.evaluateInteractions(hammers, true, true, true, false, false);
+			hammer.evaluateInteractions(fishes, false, false, false, false, true);
+			hammer.evaluateInteractions(jellys, false, false, false, false, true);
+			hammer.evaluateInteractions(whales, true, false, false, false, false);
+			hammer.keepClose();
+			hammer.update();
+
+			// Paint the hammer shark
+			if (paintDetails) {
+				hammer.paintDetail();
+			} else {
+				hammer.paint();
+			}
+		}
+	};
+
+	//
+	// Creates the water-like image
+	//
+	function createWaterImage(imgWidth, imgHeight) {
+		let x, y, dx, dy, dist, ang, red, pixel;
+
+		// Create the image and fill the pixel colors
+		let img = p.createImage(imgWidth, imgHeight);
+		let xCenter = 0.5 * imgWidth;
+		let yCenter = 0.5 * imgHeight;
+
+		img.loadPixels();
+
+		for (x = 0; x < imgWidth; x++) {
+			for (y = 0; y < imgHeight; y++) {
+				dx = x - xCenter;
+				dy = y - yCenter;
+				dist = Math.sqrt(p.sq(dx) + p.sq(dy));
+				ang = Math.abs(p.atan2(dy, dx));
+				red = (3 + 0.04 * dist) * Math.random();
+				pixel = 4 * (x + y * imgWidth);
+				img.pixels[pixel] = red;
+				img.pixels[pixel + 1] = red + 15 * p.noise(ang, 0.01 * dist) + 0.07 * dist;
+				img.pixels[pixel + 2] = red + 20 * p.noise(ang, 0.03 * dist) + 0.07 * dist + 20;
+				img.pixels[pixel + 3] = 255;
+			}
+		}
+
+		img.updatePixels();
+
+		// Return the image
+		return img;
+	}
+
+	//
+	// Fills the fishes array
+	//
+	function createFishes(n) {
+		let oldSize = fishes.length;
+
+		if (n < oldSize) {
+			fishes.splice(n, Number.MAX_VALUE);
+		} else if (n > oldSize) {
+			let i, ang, mag, pos, vel, col, headSize;
+
+			for (i = oldSize; i < n; i++) {
+				ang = p.TWO_PI * Math.random();
+				mag = limitDist * Math.random();
+				pos = p.createVector(0.5 * p.width + mag * Math.cos(ang), 0.5 * p.height + mag * Math.sin(ang));
+				ang = p.TWO_PI * Math.random();
+				vel = p.createVector(Math.cos(ang), Math.sin(ang));
+				col = p.color(50, 50, 155);
+				headSize = 7;
+				fishes[i] = new Fish(pos, vel, col, headSize);
+			}
+		}
+	}
+
+	//
+	// Fills the jellys array
+	//
+	function createJellys(n) {
+		let oldSize = jellys.length;
+
+		if (n < oldSize) {
+			jellys.splice(n, Number.MAX_VALUE);
+		} else if (n > oldSize) {
+			let i, ang, mag, pos, vel, col, headSize, nArms, lengthArms;
+
+			for (i = oldSize; i < n; i++) {
+				ang = p.TWO_PI * Math.random();
+				mag = limitDist * Math.random();
+				pos = p.createVector(0.5 * p.width + mag * Math.cos(ang), 0.5 * p.height + mag * Math.sin(ang));
+				ang = p.TWO_PI * Math.random();
+				vel = p.createVector(Math.cos(ang), Math.sin(ang));
+				col = p.color(200, 200, 230, 150);
+				headSize = 8 + 3 * Math.random();
+				nArms = 4;
+				lengthArms = Math.round(headSize * (0.5 + 0.1 * Math.random()));
+				jellys[i] = new Jellyfish(pos, vel, col, headSize, nArms, lengthArms);
+			}
+		}
+	}
+
+	//
+	// Fills the whales array
+	//
+	function createWhales(n) {
+		let oldSize = whales.length;
+
+		if (n < oldSize) {
+			whales.splice(n, Number.MAX_VALUE);
+		} else if (n > oldSize) {
+			let i, ang, mag, pos, vel, col, headSize;
+
+			for (i = oldSize; i < n; i++) {
+				ang = p.TWO_PI * Math.random();
+				mag = limitDist * Math.random();
+				pos = p.createVector(0.5 * p.width + mag * Math.cos(ang), 0.5 * p.height + mag * Math.sin(ang));
+				ang = p.TWO_PI * Math.random();
+				vel = p.createVector(Math.cos(ang), Math.sin(ang));
+				col = p.color(0);
+				headSize = 8 + 3 * Math.random();
+				whales[i] = new Whale(pos, vel, col, headSize);
+			}
+		}
+	}
+
+	//
+	// Fills the hammers array
+	//
+	function createHammers(n) {
+		let oldSize = hammers.length;
+
+		if (n < oldSize) {
+			hammers.splice(n, Number.MAX_VALUE);
+		} else if (n > oldSize) {
+			let i, ang, mag, pos, vel, col, headSize;
+
+			for (i = oldSize; i < n; i++) {
+				ang = p.TWO_PI * Math.random();
+				mag = limitDist * Math.random();
+				pos = p.createVector(0.5 * p.width + mag * Math.cos(ang), 0.5 * p.height + mag * Math.sin(ang));
+				ang = p.TWO_PI * Math.random();
+				vel = p.createVector(Math.cos(ang), Math.sin(ang));
+				col = p.color(100, 100, 100);
+				headSize = 5 + Math.random();
+				hammers[i] = new Hammer(pos, vel, col, headSize);
+			}
+		}
+	}
+
+	//
+	// Creates the sketch GUI
+	//
+	function createGUI() {
+		// Create the GUI
+		gui = new dat.GUI({
+			autoPlace : false
+		});
+
+		// Add the GUI to the correct DOM element
+		document.getElementById(guiContainer).appendChild(gui.domElement);
+
+		// The control keys
+		let keys = {
+			"Fish" : fishes.length,
+			"Jelly fish" : jellys.length,
+			"Killer whales" : whales.length,
+			"Hammer sharks" : hammers.length,
+			"Repulsion dist." : repulsionDist,
+			"Alignment dist." : alignDist,
+			"Attraction dist." : attractionDist,
+			"Hunt dist." : huntDist,
+			"Limit dist." : limitDist,
+			"Max. velocity" : maxVel,
+			"Paint details" : paintDetails,
+			"Paint lines" : paintLines,
+			"Paint limits" : paintLimits
+		};
+
+		// Add the GUI sections
+		let f1 = gui.addFolder("Species");
+		let f2 = gui.addFolder("Flocking parameters");
+		let f3 = gui.addFolder("Display options");
+
+		// Add the controllers to the different sections
+		let controller = f1.add(keys, "Fish", 0, 500).step(1);
+		controller.onFinishChange(function(value) {
+			createFishes(value);
+		});
+
+		controller = f1.add(keys, "Jelly fish", 0, 200).step(1);
+		controller.onFinishChange(function(value) {
+			createJellys(value);
+		});
+
+		controller = f1.add(keys, "Killer whales", 0, 10).step(1);
+		controller.onFinishChange(function(value) {
+			createWhales(value);
+		});
+
+		controller = f1.add(keys, "Hammer sharks", 0, 10).step(1);
+		controller.onFinishChange(function(value) {
+			createHammers(value);
+		});
+
+		controller = f2.add(keys, "Repulsion dist.", 5, 60);
+		controller.onFinishChange(function(value) {
+			repulsionDist = value;
+			repulsionDistSq = p.sq(repulsionDist);
+		});
+
+		controller = f2.add(keys, "Alignment dist.", 0, 100);
+		controller.onFinishChange(function(value) {
+			alignDist = value;
+			alignDistSq = p.sq(alignDist);
+		});
+
+		controller = f2.add(keys, "Attraction dist.", 0, 300);
+		controller.onFinishChange(function(value) {
+			attractionDist = value;
+			attractionDistSq = p.sq(attractionDist);
+		});
+
+		controller = f2.add(keys, "Hunt dist.", 10, 300);
+		controller.onFinishChange(function(value) {
+			huntDist = value;
+			huntDistSq = p.sq(huntDist);
+		});
+
+		controller = f2.add(keys, "Limit dist.", 50, 500);
+		controller.onFinishChange(function(value) {
+			limitDist = value;
+			limitDistSq = p.sq(limitDist);
+		});
+
+		controller = f2.add(keys, "Max. velocity", 1, 10);
+		controller.onFinishChange(function(value) {
+			maxVel = value;
+			maxVelSq = p.sq(maxVel);
+		});
+
+		controller = f3.add(keys, "Paint details");
+		controller.onFinishChange(function(value) {
+			paintDetails = value;
+		});
+
+		controller = f3.add(keys, "Paint lines");
+		controller.onFinishChange(function(value) {
+			paintLines = value;
+		});
+
+		controller = f3.add(keys, "Paint limits");
+		controller.onFinishChange(function(value) {
+			paintLimits = value;
+		});
+	}
+
+	/*
+	 * The Flock class
+	 */
+	function Flock(pos, vel, col) {
+		this.pos = pos;
+		this.vel = vel;
+		this.force = p.createVector(0, 0);
+		this.col = col;
+		this.isClose = false;
+
+		// Useful letiable used to avoid garbage collection
+		this.forceDir = p.createVector(0, 0);
+	}
+
+	//
+	// Update the flock coordinates (position and velocity)
+	//
+	Flock.prototype.updateCoordinates = function() {
+		let velMagSq, scaleFactor, ang;
+
+		// Increase the velocity depending on the force and add some friction
+		this.vel.x = 0.99 * (this.vel.x + this.force.x);
+		this.vel.y = 0.99 * (this.vel.y + this.force.y);
+
+		// Make sure that the velocity remains within some reasonable limits
+		velMagSq = p.sq(this.vel.x) + p.sq(this.vel.y);
+
+		if (velMagSq > maxVelSq) {
+			scaleFactor = Math.sqrt(maxVelSq / velMagSq);
+			this.vel.x *= scaleFactor;
+			this.vel.y *= scaleFactor;
+		} else if (velMagSq < 1) {
+			if (velMagSq !== 0) {
+				scaleFactor = Math.sqrt(1 / velMagSq);
+				this.vel.x *= scaleFactor;
+				this.vel.y *= scaleFactor;
+			} else {
+				ang = p.TWO_PI * Math.random();
+				this.vel.x = Math.cos(ang);
+				this.vel.y = Math.sin(ang);
+			}
+		}
+
+		// Update the position
+		this.pos.x += this.vel.x;
+		this.pos.y += this.vel.y;
+
+		// Reset the force vector
+		this.force.x = 0;
+		this.force.y = 0;
+	};
+
+	//
+	// Evaluates which interactions are taking place
+	//
+	Flock.prototype.evaluateInteractions = function(flocks, repulsionCond, alignCond, attractionCond, huntedCond,
+			huntCond) {
+		let i, f, distanceSq;
+
+		for (i = 0; i < flocks.length; i++) {
+			f = flocks[i];
+
+			// Calculate the separation vector and the distance
+			this.forceDir.x = f.pos.x - this.pos.x;
+			this.forceDir.y = f.pos.y - this.pos.y;
+			distanceSq = p.sq(this.forceDir.x) + p.sq(this.forceDir.y);
+
+			if (repulsionCond) {
+				this.repulsion(this.forceDir, distanceSq);
+			}
+
+			if (alignCond) {
+				this.align(f.vel, distanceSq);
+			}
+
+			if (attractionCond) {
+				this.attraction(this.forceDir, distanceSq);
+			}
+
+			if (huntedCond) {
+				this.hunted(this.forceDir, distanceSq);
+			}
+
+			if (huntCond) {
+				this.hunt(this.forceDir, distanceSq);
+			}
+		}
+	};
+
+	//
+	// Adds a repulsion force to prevent that two flocks get too close
+	//
+	Flock.prototype.repulsion = function(forceDir, distSq) {
+		if (distSq < repulsionDistSq && distSq !== 0) {
+			let distance = Math.sqrt(distSq);
+			let forceFactor = -(repulsionDist / distance - 1) / distance;
+			this.force.x += forceFactor * forceDir.x;
+			this.force.y += forceFactor * forceDir.y;
+
+			if (paintLines) {
+				p.stroke(p.color(255, 0, 0));
+				p.line(this.pos.x, this.pos.y, this.pos.x + forceDir.x, this.pos.y + forceDir.y);
+			}
+		}
+	};
+
+	//
+	// Adds a force that aligns the velocities between relatively close flocks
+	//
+	Flock.prototype.align = function(forceDir, distSq) {
+		if (distSq > repulsionDistSq && distSq < alignDistSq) {
+			let distance = Math.sqrt(distSq);
+			let forceFactor = 0.05 * (1 - Math.cos(p.TWO_PI * (distance - repulsionDist) / (alignDist - repulsionDist))) / distance;
+			this.force.x += forceFactor * forceDir.x;
+			this.force.y += forceFactor * forceDir.y;
+		}
+	};
+
+	//
+	// Adds an attraction force between flocks
+	//
+	Flock.prototype.attraction = function(forceDir, distSq) {
+		if (distSq > alignDistSq && distSq < attractionDistSq) {
+			let distance = Math.sqrt(distSq);
+			let forceFactor = 0.005 * (1 - Math.cos(p.TWO_PI * (distance - alignDist) / (attractionDist - alignDist))) / distance;
+			this.force.x += forceFactor * forceDir.x;
+			this.force.y += forceFactor * forceDir.y;
+		}
+	};
+
+	//
+	// Adds a repulsive force to escape from a flock that is hunting it
+	//
+	Flock.prototype.hunted = function(forceDir, distSq) {
+		if (distSq < huntDistSq) {
+			let distance = Math.sqrt(distSq);
+			let forceFactor = -0.5 * (huntDist / distance - 1) / distance;
+			this.force.x += forceFactor * forceDir.x;
+			this.force.y += forceFactor * forceDir.y;
+
+			if (distance < 15) {
+				this.isClose = true;
+			}
+		}
+	};
+
+	//
+	// Adds an attractive force to catch the hunted flock
+	//
+	Flock.prototype.hunt = function(forceDir, distSq) {
+		if (distSq < huntDistSq) {
+			let distance = Math.sqrt(distSq);
+			let forceFactor = 0.2 * (huntDist / distance - 1) / distance;
+			this.force.x += forceFactor * forceDir.x;
+			this.force.y += forceFactor * forceDir.y;
+
+			if (distance < 15) {
+				this.isClose = true;
+			}
+		}
+	};
+
+	//
+	// Adds a repulsive force to avoid that the flock leaves the screen
+	//
+	Flock.prototype.keepClose = function() {
+		this.forceDir.x = 0.5 * p.width - this.pos.x;
+		this.forceDir.y = 0.5 * p.height - this.pos.y;
+		let distSq = p.sq(this.forceDir.x) + p.sq(this.forceDir.y);
+
+		if (distSq > limitDistSq) {
+			let forceFactor = 1 / limitDist;
+			this.force.x += forceFactor * this.forceDir.x;
+			this.force.y += forceFactor * this.forceDir.y;
+		}
+	};
+
+	//
+	// Paints the flock with a simple triangular shape
+	//
+	Flock.prototype.paint = function() {
+		let ang = p.atan2(this.vel.y, this.vel.x);
+		let v1x = this.pos.x + 8 * p.cos(ang);
+		let v1y = this.pos.y + 8 * p.sin(ang);
+		let v2x = this.pos.x + 4 * p.cos(ang + 2.356);
+		let v2y = this.pos.y + 4 * p.sin(ang + 2.356);
+		let v3x = this.pos.x + 4 * p.cos(ang + 3.927);
+		let v3y = this.pos.y + 4 * p.sin(ang + 3.927);
+
+		p.noStroke();
+		p.fill(this.col);
+		p.triangle(v1x, v1y, v2x, v2y, v3x, v3y);
+	};
+
+	//
+	// Paints the flock like a simple point
+	//
+	Flock.prototype.paintPoint = function() {
+		p.stroke(this.col);
+		p.strokeWeight(4);
+		p.point(this.pos.x, this.pos.y);
+		p.strokeWeight(1);
+	};
+
+	//
+	// Paints the force limits
+	//
+	Flock.prototype.paintLimits = function() {
+		p.noFill();
+		p.stroke(p.color(255, 0, 0));
+		p.ellipse(this.pos.x, this.pos.y, 2 * repulsionDist, 2 * repulsionDist);
+		p.stroke(p.color(0, 255, 0));
+		p.ellipse(this.pos.x, this.pos.y, 2 * alignDist, 2 * alignDist);
+		p.stroke(p.color(0, 0, 255));
+		p.ellipse(this.pos.x, this.pos.y, 2 * attractionDist, 2 * attractionDist);
+		p.stroke(p.color(255));
+		p.ellipse(0.5 * p.width, 0.5 * p.height, 2 * limitDist, 2 * limitDist);
+	};
+
+	/*
+	 * The Fish class
+	 */
+	function Fish(pos, vel, col, headSize) {
+		Flock.apply(this, arguments);
+		this.headSize = headSize;
+	}
+
+	// Set Fish's prototype to Flock's prototype
+	Fish.prototype = Object.create(Flock.prototype);
+
+	// Set constructor back to Fish
+	Fish.prototype.constructor = Fish;
+
+	//
+	// Updates the fish coordinates
+	//
+	Fish.prototype.update = function() {
+		this.updateCoordinates();
+	};
+
+	//
+	// Paints the fish with details
+	//
+	Fish.prototype.paintDetail = function() {
+		p.push();
+		p.noStroke();
+		p.fill(this.col);
+		p.translate(this.pos.x, this.pos.y);
+		p.rotate(p.HALF_PI + p.atan2(this.vel.y, this.vel.x));
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, 0);
+		p.curveVertex(0, 1.5 * this.headSize);
+		p.curveVertex(-0.2 * this.headSize, 0);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, 0);
+		p.curveVertex(0, 1.5 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	/*
+	 * The Hammer class
+	 */
+	function Hammer(pos, vel, col, headSize) {
+		Flock.apply(this, arguments);
+		this.headSize = headSize;
+		this.posHead = this.pos.copy();
+		this.posBody = p.createVector(this.posHead.x, this.posHead.y + 2.1 * this.headSize);
+		this.posMed = p.createVector(this.posBody.x, this.posBody.y + 5.5 * this.headSize);
+		this.posTail = p.createVector(this.posMed.x, this.posMed.y + 2.2 * this.headSize);
+		this.posEnd = p.createVector(this.posTail.x, this.posTail.y + 1.8 * this.headSize);
+		this.angHead = 0;
+		this.angBody = 0;
+		this.angMed = 0;
+		this.angTail = 0;
+	}
+
+	// Set Hammer's prototype to Flock's prototype
+	Hammer.prototype = Object.create(Flock.prototype);
+
+	// Set constructor back to Hammer
+	Hammer.prototype.constructor = Hammer;
+
+	//
+	// Updates the hammer shark coordinates and shape
+	//
+	Hammer.prototype.update = function() {
+		// Update the coordinates
+		this.updateCoordinates();
+
+		// Move the head
+		this.posHead.x = this.pos.x;
+		this.posHead.y = this.pos.y;
+		this.angHead = p.atan2(this.vel.y, this.vel.x);
+
+		// Oscillate the head a bit
+		if (this.isClose) {
+			this.angHead += 0.5 * Math.sin(0.4 * p.frameCount);
+			this.isClose = false;
+		} else {
+			this.angHead += 0.3 * Math.sin(0.2 * p.frameCount);
+		}
+
+		// Move the rest of the body
+		this.posBody.x = this.posHead.x - 2.1 * this.headSize * Math.cos(this.angHead);
+		this.posBody.y = this.posHead.y - 2.1 * this.headSize * Math.sin(this.angHead);
+		this.angBody = p.atan2(this.posBody.y - this.posMed.y, this.posBody.x - this.posMed.x);
+
+		this.posMed.x = this.posBody.x - 5.5 * this.headSize * Math.cos(this.angBody);
+		this.posMed.y = this.posBody.y - 5.5 * this.headSize * Math.sin(this.angBody);
+		this.angMed = p.atan2(this.posMed.y - this.posTail.y, this.posMed.x - this.posTail.x);
+
+		this.posTail.x = this.posMed.x - 2.2 * this.headSize * Math.cos(this.angMed);
+		this.posTail.y = this.posMed.y - 2.2 * this.headSize * Math.sin(this.angMed);
+		this.angTail = p.atan2(this.posTail.y - this.posEnd.y, this.posTail.x - this.posEnd.x);
+
+		this.posEnd.x = this.posTail.x - 1.8 * this.headSize * Math.cos(this.angTail);
+		this.posEnd.y = this.posTail.y - 1.8 * this.headSize * Math.sin(this.angTail);
+	};
+
+	//
+	// Paints the hammer shark with details
+	//
+	Hammer.prototype.paintDetail = function() {
+		p.noStroke();
+		p.fill(this.col);
+		this.paintHead(this.posHead, this.angHead);
+		this.paintBody(this.posBody, this.angBody);
+		this.paintMed(this.posMed, this.angMed);
+		this.paintTail(this.posTail, this.angTail);
+	};
+
+	//
+	// Paints the hammer shark head
+	//
+	Hammer.prototype.paintHead = function(cen, ang) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(1.1 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(2.0 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(2.3 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(2.25 * this.headSize, 0.4 * this.headSize);
+		p.curveVertex(2.1 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(1.5 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 0.4 * this.headSize);
+		p.curveVertex(0.8 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(0.8 * this.headSize, 2.1 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, 1.9 * this.headSize);
+		p.curveVertex(0, 1.8 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, 1.9 * this.headSize);
+		p.curveVertex(-0.8 * this.headSize, 2.1 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(-0.8 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 0.4 * this.headSize);
+		p.curveVertex(-1.5 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(-2.1 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(-2.25 * this.headSize, 0.4 * this.headSize);
+		p.curveVertex(-2.3 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(-2.0 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(-1.1 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(1.1 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(2.0 * this.headSize, -0.3 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the hammer shark body
+	//
+	Hammer.prototype.paintBody = function(cen, ang) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.7 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 0.0 * this.headSize);
+		p.curveVertex(1.1 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(2.4 * this.headSize, 0.7 * this.headSize);
+		p.curveVertex(3.3 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(3.1 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(1.5 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(1.0 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(0.85 * this.headSize, 2.8 * this.headSize);
+		p.curveVertex(0.95 * this.headSize, 3.2 * this.headSize);
+		p.curveVertex(1.2 * this.headSize, 3.55 * this.headSize);
+		p.curveVertex(1.5 * this.headSize, 4.0 * this.headSize);
+		p.curveVertex(1.1 * this.headSize, 3.95 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 3.95 * this.headSize);
+		p.curveVertex(0.7 * this.headSize, 4.1 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, 5.3 * this.headSize);
+		p.curveVertex(0, 5.2 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, 5.3 * this.headSize);
+		p.curveVertex(-0.7 * this.headSize, 4.1 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 3.95 * this.headSize);
+		p.curveVertex(-1.1 * this.headSize, 3.95 * this.headSize);
+		p.curveVertex(-1.5 * this.headSize, 4.0 * this.headSize);
+		p.curveVertex(-1.2 * this.headSize, 3.55 * this.headSize);
+		p.curveVertex(-0.95 * this.headSize, 3.2 * this.headSize);
+		p.curveVertex(-0.85 * this.headSize, 2.8 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(-1.0 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(-1.5 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(-3.1 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(-3.3 * this.headSize, 1.1 * this.headSize);
+		p.curveVertex(-2.4 * this.headSize, 0.7 * this.headSize);
+		p.curveVertex(-1.1 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 0.0 * this.headSize);
+		p.curveVertex(-0.7 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.7 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 0.0 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the hammer shark medium body
+	//
+	Hammer.prototype.paintMed = function(cen, ang) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, 1.8 * this.headSize);
+		p.curveVertex(0, 2 * this.headSize);
+		p.curveVertex(-0.2 * this.headSize, 1.8 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, 1.8 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the hammer shark tail
+	//
+	Hammer.prototype.paintTail = function(cen, ang) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, -0.05 * this.headSize);
+		p.curveVertex(0, 2.8 * this.headSize);
+		p.curveVertex(-0.2 * this.headSize, -0.05 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.2 * this.headSize, -0.05 * this.headSize);
+		p.curveVertex(0, 2.8 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	/*
+	 * The Whale class
+	 */
+	function Whale(pos, vel, col, headSize) {
+		Flock.apply(this, arguments);
+		this.headSize = headSize;
+		this.posHead = this.pos.copy();
+		this.posBody = p.createVector(this.posHead.x, this.posHead.y + 0.6 * this.headSize);
+		this.posMed = p.createVector(this.posBody.x, this.posBody.y + 4.5 * this.headSize);
+		this.posTail = p.createVector(this.posMed.x, this.posMed.y + 2.4 * this.headSize);
+		this.posEnd = p.createVector(this.posTail.x, this.posTail.y + 1.8 * this.headSize);
+		this.angHead = 0;
+		this.angBody = 0;
+		this.angMed = 0;
+		this.angTail = 0;
+	}
+
+	// Set Whale's prototype to Flock's prototype
+	Whale.prototype = Object.create(Flock.prototype);
+
+	// Set constructor back to Hammer
+	Whale.prototype.constructor = Whale;
+
+	//
+	// Updates the killer whale coordinates and shape
+	//
+	Whale.prototype.update = function() {
+		// Update the coordinates
+		this.updateCoordinates();
+
+		// Move the head
+		this.posHead.x = this.pos.x;
+		this.posHead.y = this.pos.y;
+		this.angHead = p.atan2(this.vel.y, this.vel.x);
+
+		// Oscillate the head a bit
+		if (this.isClose) {
+			this.angHead += 0.5 * Math.sin(0.4 * p.frameCount);
+			this.isClose = false;
+		}
+
+		// Move the rest of the body
+		this.posBody.x = this.posHead.x - 0.6 * this.headSize * Math.cos(this.angHead);
+		this.posBody.y = this.posHead.y - 0.6 * this.headSize * Math.sin(this.angHead);
+		this.angBody = p.atan2(this.posBody.y - this.posMed.y, this.posBody.x - this.posMed.x);
+
+		this.posMed.x = this.posBody.x - 4.5 * this.headSize * Math.cos(this.angBody);
+		this.posMed.y = this.posBody.y - 4.5 * this.headSize * Math.sin(this.angBody);
+		this.angMed = p.atan2(this.posMed.y - this.posTail.y, this.posMed.x - this.posTail.x);
+
+		this.posTail.x = this.posMed.x - 2.4 * this.headSize * Math.cos(this.angMed);
+		this.posTail.y = this.posMed.y - 2.4 * this.headSize * Math.sin(this.angMed);
+		this.angTail = p.atan2(this.posTail.y - this.posEnd.y, this.posTail.x - this.posEnd.x);
+
+		this.posEnd.x = this.posTail.x - 1.8 * this.headSize * Math.cos(this.angTail);
+		this.posEnd.y = this.posTail.y - 1.8 * this.headSize * Math.sin(this.angTail);
+	};
+
+	//
+	// Paints the killer whale with details
+	//
+	Whale.prototype.paintDetail = function() {
+		p.noStroke();
+		this.paintHead(this.posHead, this.angHead, this.col);
+		this.paintBody(this.posBody, this.angBody, this.col);
+		this.paintMed(this.posMed, this.angMed, this.col);
+		this.paintTail(this.posTail, this.angTail, this.col);
+	};
+
+	//
+	// Paints the killer whale head
+	//
+	Whale.prototype.paintHead = function(cen, ang, c) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+
+		// The head
+		p.fill(c);
+		p.beginShape();
+		p.curveVertex(0, -1.5 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, -1.1 * this.headSize);
+		p.curveVertex(0.85 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(1.0 * this.headSize, 0.6 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(0, 0.2 * this.headSize);
+		p.curveVertex(-0.6 * this.headSize, 0.5 * this.headSize);
+		p.curveVertex(-1.0 * this.headSize, 0.6 * this.headSize);
+		p.curveVertex(-0.85 * this.headSize, -0.3 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, -1.1 * this.headSize);
+		p.curveVertex(0, -1.5 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, -1.1 * this.headSize);
+		p.curveVertex(0.85 * this.headSize, -0.3 * this.headSize);
+		p.endShape();
+
+		// The white patches
+		p.fill(255, 150);
+		p.beginShape();
+		p.curveVertex(0.4 * this.headSize, -0.7 * this.headSize);
+		p.curveVertex(0.65 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(0.85 * this.headSize, 0.2 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0.5 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, -0.7 * this.headSize);
+		p.curveVertex(0.65 * this.headSize, -0.4 * this.headSize);
+		p.endShape();
+		p.beginShape();
+		p.curveVertex(-0.4 * this.headSize, -0.7 * this.headSize);
+		p.curveVertex(-0.65 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(-0.85 * this.headSize, 0.2 * this.headSize);
+		p.curveVertex(-0.6 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(-0.5 * this.headSize, -0.4 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, -0.7 * this.headSize);
+		p.curveVertex(-0.65 * this.headSize, -0.4 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the killer whale body
+	//
+	Whale.prototype.paintBody = function(cen, ang, c) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+
+		// The body
+		p.fill(c);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(1.05 * this.headSize, 0.2 * this.headSize);
+		p.curveVertex(1.25 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(1.85 * this.headSize, 0.7 * this.headSize);
+		p.curveVertex(2.2 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(2.1 * this.headSize, 1.9 * this.headSize);
+		p.curveVertex(1.7 * this.headSize, 2.1 * this.headSize);
+		p.curveVertex(1.2 * this.headSize, 2.0 * this.headSize);
+		p.curveVertex(1.1 * this.headSize, 2.0 * this.headSize);
+		p.curveVertex(0.85 * this.headSize, 4.4 * this.headSize);
+		p.curveVertex(0, 4.2 * this.headSize);
+		p.curveVertex(-0.85 * this.headSize, 4.4 * this.headSize);
+		p.curveVertex(-1.1 * this.headSize, 2.0 * this.headSize);
+		p.curveVertex(-1.2 * this.headSize, 2.0 * this.headSize);
+		p.curveVertex(-1.7 * this.headSize, 2.1 * this.headSize);
+		p.curveVertex(-2.1 * this.headSize, 1.9 * this.headSize);
+		p.curveVertex(-2.2 * this.headSize, 1.3 * this.headSize);
+		p.curveVertex(-1.85 * this.headSize, 0.7 * this.headSize);
+		p.curveVertex(-1.25 * this.headSize, 0.3 * this.headSize);
+		p.curveVertex(-1.05 * this.headSize, 0.2 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(1.05 * this.headSize, 0.2 * this.headSize);
+		p.endShape();
+
+		// The white patches
+		p.fill(255, 150);
+		p.beginShape();
+		p.curveVertex(0.6 * this.headSize, 2.7 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 3.6 * this.headSize);
+		p.curveVertex(0.8 * this.headSize, 4.1 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, 3.8 * this.headSize);
+		p.curveVertex(0.4 * this.headSize, 3.3 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, 2.7 * this.headSize);
+		p.curveVertex(0.9 * this.headSize, 3.6 * this.headSize);
+		p.endShape();
+		p.beginShape();
+		p.curveVertex(-0.6 * this.headSize, 2.7 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 3.6 * this.headSize);
+		p.curveVertex(-0.8 * this.headSize, 4.1 * this.headSize);
+		p.curveVertex(-0.6 * this.headSize, 3.8 * this.headSize);
+		p.curveVertex(-0.4 * this.headSize, 3.3 * this.headSize);
+		p.curveVertex(-0.6 * this.headSize, 2.7 * this.headSize);
+		p.curveVertex(-0.9 * this.headSize, 3.6 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the killer whale medium body
+	//
+	Whale.prototype.paintMed = function(cen, ang, c) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.fill(c);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.8 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, 1.2 * this.headSize);
+		p.curveVertex(0.3 * this.headSize, 2.2 * this.headSize);
+		p.curveVertex(0, 2.1 * this.headSize);
+		p.curveVertex(-0.3 * this.headSize, 2.2 * this.headSize);
+		p.curveVertex(-0.6 * this.headSize, 1.2 * this.headSize);
+		p.curveVertex(-0.8 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.8 * this.headSize, -0.1 * this.headSize);
+		p.curveVertex(0.6 * this.headSize, 1.2 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	//
+	// Paints the killer whale tail
+	//
+	Whale.prototype.paintTail = function(cen, ang, c) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.fill(c);
+		p.beginShape();
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.25 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0.3 * this.headSize, 0.6 * this.headSize);
+		p.curveVertex(1.3 * this.headSize, 1.2 * this.headSize);
+		p.curveVertex(1.6 * this.headSize, 1.8 * this.headSize);
+		p.curveVertex(1.2 * this.headSize, 1.7 * this.headSize);
+		p.curveVertex(0.3 * this.headSize, 1.7 * this.headSize);
+		p.curveVertex(0.0 * this.headSize, 1.55 * this.headSize);
+		p.curveVertex(0, 1.5 * this.headSize);
+		p.curveVertex(-0.0 * this.headSize, 1.55 * this.headSize);
+		p.curveVertex(-0.3 * this.headSize, 1.7 * this.headSize);
+		p.curveVertex(-1.2 * this.headSize, 1.7 * this.headSize);
+		p.curveVertex(-1.6 * this.headSize, 1.8 * this.headSize);
+		p.curveVertex(-1.3 * this.headSize, 1.2 * this.headSize);
+		p.curveVertex(-0.3 * this.headSize, 0.6 * this.headSize);
+		p.curveVertex(-0.25 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0, -0.5 * this.headSize);
+		p.curveVertex(0.25 * this.headSize, -0.2 * this.headSize);
+		p.curveVertex(0.3 * this.headSize, 0.6 * this.headSize);
+		p.endShape();
+		p.pop();
+	};
+
+	/*
+	 * The Jelly-fish class
+	 */
+	function Jellyfish(pos, vel, col, headSize, nArms, lengthArms) {
+		Flock.apply(this, arguments);
+		this.headSize = headSize;
+		this.arms = [];
+		this.ang = 0;
+
+		// Create the jelly-fish arms
+		let i, offset, nLinks;
+
+		for (i = 0; i < nArms; i++) {
+			offset = (nArms > 1) ? this.headSize * (-0.3 + 0.6 * i / (nArms - 1)) : 0;
+			nLinks = Math.round(lengthArms * (0.7 + 0.3 * Math.random()));
+			this.arms[i] = new Arm(offset, nLinks);
+		}
+	}
+
+	// Set Jellyfish's prototype to Flock's prototype
+	Jellyfish.prototype = Object.create(Flock.prototype);
+
+	// Set constructor back to Jellyfish
+	Jellyfish.prototype.constructor = Jellyfish;
+
+	//
+	// Updates the jelly-fish coordinates and shape
+	//
+	Jellyfish.prototype.update = function() {
+		// Update the coordinates
+		this.updateCoordinates();
+
+		// Update the head angle
+		this.ang = p.atan2(this.vel.y, this.vel.x);
+
+		// Update the arms positions
+		for (let i = 0; i < this.arms.length; i++) {
+			this.arms[i].update(this.pos, this.ang);
+		}
+	};
+
+	//
+	// Paints the jelly-fish with details
+	//
+	Jellyfish.prototype.paintDetail = function() {
+		// Paint the head
+		p.noStroke();
+		p.fill(this.col);
+		this.paintHead(this.pos, this.ang);
+
+		// Paint the arms
+		p.stroke(this.col);
+
+		for (let i = 0; i < this.arms.length; i++) {
+			this.arms[i].paint();
+		}
+
+		// Reset the stroke weight
+		p.strokeWeight(1);
+	};
+
+	//
+	// Paints the jelly-fish head
+	//
+	Jellyfish.prototype.paintHead = function(cen, ang) {
+		p.push();
+		p.translate(cen.x, cen.y);
+		p.rotate(p.HALF_PI + ang);
+		p.beginShape();
+		p.curveVertex(-this.headSize, 0);
+		p.curveVertex(0, -0.7 * this.headSize);
+		p.curveVertex(this.headSize, 0);
+		p.curveVertex(0, 0.3 * this.headSize);
+		p.curveVertex(-this.headSize, 0);
+		p.curveVertex(0, -0.7 * this.headSize);
+		p.curveVertex(this.headSize, 0);
+		p.endShape();
+		p.pop();
+	};
+
+	/*
+	 * The Arm class
+	 */
+	function Arm(offset, nLinks) {
+		this.topLink = p.createVector(0, 0);
+		this.offset = offset;
+		this.links = [];
+
+		// Create the links
+		let i, sep, diam;
+
+		for (i = 0; i < nLinks; i++) {
+			sep = (nLinks - i) + 5;
+			diam = (sep - 3) / 1.4;
+			this.links[i] = new Link(sep, diam);
+		}
+	}
+
+	//
+	// Updates the arm coordinates
+	//
+	Arm.prototype.update = function(newPos, ang) {
+		this.topLink.x = newPos.x + this.offset * Math.cos(p.HALF_PI + ang);
+		this.topLink.y = newPos.y + this.offset * Math.sin(p.HALF_PI + ang);
+
+		// Update the links
+		this.links[0].update(this.topLink);
+
+		for (let i = 1; i < this.links.length; i++) {
+			this.links[i].update(this.links[i - 1].pos);
+		}
+	};
+
+	//
+	// Paints the arm
+	//
+	Arm.prototype.paint = function() {
+		this.links[0].paint(this.topLink);
+
+		for (let i = 1; i < this.links.length; i++) {
+			this.links[i].paint(this.links[i - 1].pos);
+		}
+	};
+
+	/*
+	 * The Link class
+	 */
+	function Link(sep, diam) {
+		this.pos = p.createVector(0, 0);
+		this.sep = sep;
+		this.diam = diam;
+	}
+
+	//
+	// Updates the link coordinates
+	//
+	Link.prototype.update = function(topPos) {
+		let ang = p.atan2(topPos.y - this.pos.y, topPos.x - this.pos.x);
+		this.pos.x = topPos.x - this.sep * Math.cos(ang);
+		this.pos.y = topPos.y - this.sep * Math.sin(ang);
+	};
+
+	//
+	// Paints the link
+	//
+	Link.prototype.paint = function(topPos) {
+		p.strokeWeight(this.diam);
+		p.line(topPos.x, topPos.y, this.pos.x, this.pos.y);
+	};
 };
-
-function setup() {
-    // we don't need a very high framerate
-    frameRate(10);
-    // setup a full screen canvas
-    createCanvas(screen.width, screen.height);
-}
-
-
-function draw() {
-    if (holdDrawing) {
-        if (hasWon) {
-            strokeWeight(10);
-            stroke(0, 255, 0);
-            line(loc1[0] + grid_x / 6., loc1[1] + grid_x / 6., loc2[0] + grid_x / 6., loc2[1] + grid_x / 6.);
-            messageBox("You lose", [255, 0, 0]);
-        } else {
-            messageBox("It's a draw!", [0, 0, 255]);
-        }
-        timer++;
-        if (timer > 10) {
-            timer = 0;
-            holdDrawing = false;
-        }
-        return;
-    }
-
-    grid_x = window.innerWidth / 3.;
-    grid_y = window.innerHeight / 6.;
-    background(95, 67, 165);
-
-    handleGame();
-    // Draw the tic tac toe grid
-    setupTicTacToeGrid();
-    if (playersTurn == 1) {
-        // Wherever the mouse hovers, offer the symbol there
-        drawObject(getMouseLocationQuadrant(mouseX, mouseY), choice, true);
-    }
-    // Draw the boardgame
-    drawBoard();
-
-    if (choice == 0) {
-        offerChoice();
-    }
-
-}
-
-function mouseReleased() {
-    if (holdDrawing) {
-        return;
-    }
-    if (choice !== 0) {
-        if (playersTurn == 1) {
-            quadrant = getMouseLocationQuadrant(mouseX, mouseY);
-            if (isQuadrantEmpty(quadrant)) {
-                drawObject(quadrant, choice, false);
-                game[quadrant] = choice;
-                playersTurn = -1;
-            }
-        }
-    } else {
-        if (mouseX < noughtChoicesBoxX[1] && mouseX > noughtChoicesBoxX[0] &&
-            mouseY < noughtChoicesBoxY[1] && mouseY > noughtChoicesBoxY[0]) {
-            choice = 1;
-
-        }
-        if (mouseX < crossChoicesBoxX[1] && mouseX > crossChoicesBoxX[0] &&
-            mouseY < crossChoicesBoxY[1] && mouseY > crossChoicesBoxY[0]) {
-            choice = -1;
-        }
-    }
-
-}
-
-function messageBox(dispStr, text_colour) {
-    strokeWeight(1);
-    fill(255);
-    rect(1.25 * grid_x, 0.25 * grid_y, grid_x / 2., grid_y / 2.);
-    fill(text_colour[0], text_colour[1], text_colour[2]);
-    stroke(0);
-    textSize(30);
-    text(dispStr, 1.25 * grid_x + grid_x / 9., 0.25 * grid_y + grid_y / 3.);
-}
-
-function offerChoice() {
-    strokeWeight(1);
-    fill(255);
-    var innerX = 1.15 * grid_x;
-    var innerY = grid_y + grid_x / 6.;
-    var widthX = 2 * grid_x / 3;
-    var widthY = 2 * grid_x / 3;
-    rect(innerX, innerY, widthX, widthY);
-
-    noughtChoicesBoxX = [innerX + 0.1 * widthX, innerX + 0.1 * widthX + (widthX / 2 - 0.125 * widthX)];
-    noughtChoicesBoxY = [innerY + 0.1 * widthY, innerY + 0.1 * widthY + (0.8 * widthY)];
-
-    crossChoicesBoxX = [innerX + 0.5 * widthX, innerX + 0.5 * widthX + (widthX / 2 - 0.125 * widthX)];
-    crossChoicesBoxY = [innerY + 0.1 * widthY, innerY + 0.1 * widthY + (0.8 * widthY)];
-
-    ellipseMode(CORNER);
-    strokeWeight(10);
-    stroke(0, 122, 0);
-    noFill();
-    ellipse(noughtChoicesBoxX[0] + 10, noughtChoicesBoxY[0] + 0.25 * (noughtChoicesBoxY[1] - noughtChoicesBoxY[0]) + 10,
-        noughtChoicesBoxX[1] - noughtChoicesBoxX[0] - 20);
-
-    strokeWeight(10);
-    stroke(122, 0, 0);
-    line(crossChoicesBoxX[0] + 10, crossChoicesBoxY[0] + 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]) + 10,
-        crossChoicesBoxX[1] - 10, crossChoicesBoxY[1] - 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]) - 20);
-    line(crossChoicesBoxX[1] - 10, crossChoicesBoxY[0] + 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]) + 10,
-        crossChoicesBoxX[0] + 10, crossChoicesBoxY[1] - 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]) - 20);
-
-    if (mouseX < noughtChoicesBoxX[1] && mouseX > noughtChoicesBoxX[0] &&
-        mouseY < noughtChoicesBoxY[1] && mouseY > noughtChoicesBoxY[0]) {
-        noStroke();
-        fill(0, 255, 0, 130);
-        rect(noughtChoicesBoxX[0], noughtChoicesBoxY[0] + 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]),
-            noughtChoicesBoxX[1] - noughtChoicesBoxX[0], noughtChoicesBoxX[1] - noughtChoicesBoxX[0]);
-    }
-    if (mouseX < crossChoicesBoxX[1] && mouseX > crossChoicesBoxX[0] &&
-        mouseY < crossChoicesBoxY[1] && mouseY > crossChoicesBoxY[0]) {
-        noStroke();
-        fill(0, 255, 0, 130);
-        rect(crossChoicesBoxX[0], crossChoicesBoxY[0] + 0.25 * (crossChoicesBoxY[1] - crossChoicesBoxY[0]),
-            noughtChoicesBoxX[1] - noughtChoicesBoxX[0], noughtChoicesBoxX[1] - noughtChoicesBoxX[0]);
-    }
-    strokeWeight(1);
-    noStroke();
-    fill(0);
-    textSize(30);
-    text("Pick one!", innerX + widthX * 0.3, innerY + widthY * 0.15);
-    textSize(20);
-    //text("(you'll take turns going first)", innerX + widthX * 0.1, innerY + widthY * 0.15 + (crossChoicesBoxY[1] - crossChoicesBoxY[0]));
-
-
-}
-
-function getMouseLocationQuadrant(mouseX, mouseY) {
-    // check if actually inside the grid
-    if (mouseX < grid_x || mouseX > 2 * grid_x ||
-        mouseY < grid_y || mouseY > grid_x + grid_y) {
-        return -1;
-    }
-    var i = Math.floor(3 * (mouseX - grid_x) / grid_x);
-    var j = Math.floor(3 * (mouseY - grid_y) / grid_x);
-    return i + 3 * j;
-}
-
-function getQuadrantTopLeft(quadrant) {
-    var xLoc = grid_x + (quadrant % 3) * (grid_x / 3);
-    var yLoc = grid_y + Math.floor(quadrant / 3) * (grid_x / 3);
-    return [xLoc, yLoc];
-}
-
-
-//
-//
-//  The actual game logic
-//
-//
-
-function isQuadrantEmpty(quadrant) {
-    return game[quadrant] == 0;
-}
-
-function handleGame() {
-    if (playersTurn !== 1) {
-        messageBox("Thinking", [0, 0, 155]);
-        if (timer > 5) {
-            getNextMove();
-            timer = 0;
-        } else {
-            timer++;
-        }
-    }
-
-    if (isFinished()) {
-        // if the game is in an end state, we should start a new game after some delay!
-        setTimeout(resetGame, 100);
-    }
-}
-
-function getNextMove() {
-    // Here is the AI
-
-    // First look at the game board
-    var potentialGame = getGameState();
-    // make the best move possible!
-    game[getBestMove(potentialGame)] = choice * -1;
-    playersTurn = 1;
-}
-
-function getGameState() {
-    var board = {};
-    for (var i = 0; i < 9; i++) {
-        // copies the state of the board to a new variable so we can recurse
-        board[i] = game[i];
-    }
-    // getGameState() is only ever for the AI, so it will be the AI's turn when getGameState is called.
-    // Therefore set turn to be the opposite of what player is playing at.
-    return {board: board, turn: choice * -1};
-}
-
-function scoreGame(potentialGame, depth) {
-    // One of the most important functions of the Minimax algorithm.
-
-    // This looks at a given board game (not necessarily the one in play)
-    // and returns how good that board is for the computer, as follows:
-
-    // The game is not finished             :   0
-    // The game is a tie                    :   0
-    // The computer player has 3 in a row   :  10
-    // The human player has 3 in a row      : -10
-
-    // The board is :
-    // 0 | 1 | 2
-    // ----------
-    // 3 | 4 | 5
-    // ----------
-    // 6 | 7 | 8
-    // So each of these arrays corresponds to either a row, col or diagonal.
-    var winStates = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-
-    for (var i = 0; i < winStates.length; i++) {
-        // game.board[index] returns either 0 for currently empty, 1 for O and -1 for a X at location index, from the above board
-        var score = potentialGame.board[winStates[i][0]] + potentialGame.board[winStates[i][1]] + potentialGame.board[winStates[i][2]];
-
-        // Player can either be O's (+1) or X's (-1)
-        if (choice == -1) {
-            // Player is X
-            if (score === -3) {
-                // Player has won
-                return depth - 10;
-            } else if (score === 3) {
-                // Computer has won
-                return 10 - depth;
-            }
-        } else {
-            // Player is O
-            if (score === 3) {
-                return depth - 10;
-            } else if (score === -3) {
-                return 10 - depth;
-            }
-        }
-    }
-    return 0;
-}
-
-var scores = [];
-var moves = [];
-
-function getBestMove(potentialGame) {
-    // Returns what the computer should do next, given some potential game (not necessarily the one currently in play)
-    var best = -1;
-    var bestInd = -1;
-
-    // Get all valid moves the computer can do right
-    var availableMoves = getAvailableMoves(potentialGame);
-
-    for (var i = 0; i < availableMoves.length; i++) {
-        // For each possible move, create a new game board (possibleGame) to analyse.
-        var possibleGame = makeMove(potentialGame, availableMoves[i]);
-        // If this move leads to a game where the computer wins, immediately do it.
-        if (scoreGame(possibleGame, 0) === 10) {
-            print("We can win");
-            return availableMoves[i];
-        }
-        // Otherwise, compute the "value" of this move, using Minimax (recursive)
-        var reward = minimax(possibleGame, 0);
-        if (reward > best) {
-            best = reward;
-            bestInd = i;
-        }
-        console.log(availableMoves[i]);
-        console.log(reward);
-    }
-    return availableMoves[bestInd];
-
-}
-
-function minimax(potentialGame, depth) {
-    // This algorithm returns the "value" of a given move, such that good moves are likely to lead to
-    // game states that give a high score from scoreGame(potentialGame, depth)
-
-    var scores = [];
-    var moves = [];
-
-    // First, get all the moves we can do currently.
-    var availableMoves = getAvailableMoves(potentialGame);
-    if (availableMoves.length === 0) {
-        // If we can't do a move, the game must be in an end state and the value of this move is simply the
-        // value of the end state (0, +10 or -10). Depth allows prioritising moves that lead to earlier wins.
-        return scoreGame(potentialGame, depth);
-    }
-
-    // Otherwise, we need to loop through all potential moves and score them
-    for (var i = 0; i < availableMoves.length; i++) {
-        // Once again, construct a new game board, this board should be
-        // what the board will look like once the move is made.
-        var possibleGame = makeMove(potentialGame, availableMoves[i]);
-        // Calculate the value of minimax for that move and store that so we can check later what to do
-
-        // Note that since here we have the function minimax calling minimax, this is a recursive function.
-        // A good way of thinking about how recursion works is the factorial function
-        // n! = n * (n - 1) * (n - 2) * ... * 3 * 2 * 1
-        // we can solve this as:
-        // function factorial(n) {
-        //  if (n == 2) return 2;
-        //  return n * factorial(n - 1);
-        // }
-        // Lets consider what happens if we call factorial(5);
-        // n = 5, not 2, so we don't return 2
-        // instead, return n * factorial(4), but what is factorial(4)?
-        // For that we need factorial(3), and for that we need factorial(2)...
-        // When we get to factorial 2, we know that is 2, so it returns 2.
-        // Now factorial(3) knows what factorial(2) is, so factorial(3) returns 3 * 2;
-        // similarly factorial (4) now knows factorial(3) and itself can return 4 * 3 * 2;
-        // Finally, factorial(5) returns 5 * 4 * 3 * 2 * 1.
-
-        //In TicTacToe we take a similar approach, we construct a new game board from a possible move, and ask what
-        // that move is scored according to minimax. Minimax only knows a move gets +0, +10 or -10 if the game is currently
-        // in an end state, otherwise it needs to call minimax on this new board (which itself adds yet another move and recurses)
-        scores.push(minimax(possibleGame, depth + 1));
-        moves.push(availableMoves[i]);
-    }
-
-    // After all that recursion, we'll have figured out what each move is valued at by Minimax.
-
-    var index = -1;
-    //console.log(scores);
-    if (choice === potentialGame.turn) {
-        // If the move we just tested was for the human player, we want to minimise his score
-        // MINI
-        index = getMinIndex(scores);
-    } else {
-        // If the move to make was for the computer, we want to maximise that.
-        // MAX
-        index = getMaxIndex(scores);
-    }
-
-    // Finally return the score of this move.
-    return scores[index];
-
-}
-
-function makeMove(potentialGame, quadrant) {
-    // potential game is a {board: game, turn: +-1} object
-    // quadrant is the quadrant you want to make the move in
-    // returns a new potentialGame
-    var newBoard = {};
-    for (var i = 0; i < 9; i++) {
-        if (i == quadrant) {
-            newBoard[i] = potentialGame.turn
-        } else {
-            newBoard[i] = potentialGame.board[i];
-        }
-    }
-    return {board: newBoard, turn: potentialGame.turn * -1};
-}
-
-function getAvailableMoves(potentialGame) {
-    if (Math.abs(scoreGame(potentialGame, 0)) == 10) {
-        return [];
-    }
-    var moves = [];
-    for (var i = 0; i < 9; i++) {
-        if (potentialGame.board[i] === 0) {
-            moves.push(i);
-        }
-    }
-    return moves;
-}
-
-
-function resetGame() {
-    game = {
-        0: 0,
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0
-    };
-}
-
-
-function getMinIndex(arr) {
-    var currMin = 1e10;
-    var currIndex = -1;
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i] < currMin || currIndex === -1) {
-            currMin = arr[i];
-            currIndex = i;
-        }
-    }
-    return currIndex;
-}
-
-function getMaxIndex(arr) {
-    var currMax = -1e10;
-    var currIndex = -1;
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i] > currMax || currIndex === -1) {
-            currMax = arr[i];
-            currIndex = i;
-        }
-    }
-    return currIndex;
-}
-
-function isFinished() {
-    if (checkRows() || checkCols() || checkDiags()) {
-        holdDrawing = true;
-        hasWon = true;
-        return true;
-    }
-
-    hasWon = false;
-    var keys = Object.keys(game);
-    for (var quadCheck = 0; quadCheck < keys.length; quadCheck++) {
-        if (game[keys[quadCheck]] == 0) {
-            return false;
-        }
-    }
-    holdDrawing = true;
-    return true;
-}
-
-function checkRows() {
-    var locations = [0, 3, 6];
-    for (var i = 0; i < locations.length; i++) {
-        if (Math.abs(game[locations[i]] + game[locations[i] + 1] + game[locations[i] + 2]) == 3) {
-            loc1 = getQuadrantTopLeft(locations[i]);
-            loc2 = getQuadrantTopLeft(locations[i] + 2);
-            return true;
-        }
-    }
-    return false;
-}
-
-function checkCols() {
-    var locations = [0, 1, 2];
-    for (var i = 0; i < locations.length; i++) {
-        if (Math.abs(game[locations[i]] + game[locations[i] + 3] + game[locations[i] + 6]) == 3) {
-            loc1 = getQuadrantTopLeft(locations[i]);
-            loc2 = getQuadrantTopLeft(locations[i] + 6);
-            return true;
-        }
-    }
-    return false;
-}
-
-function checkDiags() {
-    var locations = [0, 2];
-    for (var i = 0; i < locations.length; i++) {
-        if (Math.abs(game[locations[i]] + game[4] + game[8 - locations[i]]) == 3) {
-            loc1 = getQuadrantTopLeft(locations[i]);
-            loc2 = getQuadrantTopLeft(8 - locations[i]);
-            return true;
-        }
-    }
-    return false;
-}
-
-function drawObject(quadrant, whichObject, checkOverlap) {
-    if (checkOverlap && !isQuadrantEmpty(quadrant)) {
-        return;
-    }
-    if (whichObject == 1) {
-        drawNought(quadrant);
-    } else if (whichObject == -1) {
-        drawCross(quadrant);
-    }
-}
-
-function drawCross(quadrant) {
-    if (quadrant !== -1) {
-        var crossTopLeft = getQuadrantTopLeft(quadrant);
-        var crossTopLeftX = crossTopLeft[0] + grid_x / 18.;
-        var crossTopLeftY = crossTopLeft[1] + grid_x / 18.;
-        var innerWidth = (grid_x / 3) * 4 / 6.;
-        strokeWeight(10);
-        stroke(122, 0, 0);
-        line(crossTopLeftX, crossTopLeftY + innerWidth, crossTopLeftX + innerWidth, crossTopLeftY);
-        line(crossTopLeftX, crossTopLeftY, crossTopLeftX + innerWidth, crossTopLeftY + innerWidth);
-    }
-}
-
-function drawNought(quadrant) {
-    if (quadrant !== -1) {
-        var crossTopLeft = getQuadrantTopLeft(quadrant);
-        var crossTopLeftX = crossTopLeft[0] + grid_x / 18.;
-        var crossTopLeftY = crossTopLeft[1] + grid_x / 18.;
-        var innerWidth = (grid_x / 3) * 4 / 6.;
-        ellipseMode(CORNER);
-        strokeWeight(10);
-        stroke(0, 122, 0);
-        noFill();
-        ellipse(crossTopLeftX, crossTopLeftY, innerWidth, innerWidth);
-    }
-}
-
-function setupTicTacToeGrid() {
-    strokeWeight(10);
-    stroke(0);
-    fill(55, 123, 152);
-    rect(grid_x, grid_y, grid_x, grid_x, grid_x / 8);
-    line(grid_x * (1 + 1. / 3.), grid_y, grid_x * (1 + 1. / 3.), grid_y + grid_x);
-    line(grid_x * (1 + 2. / 3.), grid_y, grid_x * (1 + 2. / 3.), grid_y + grid_x);
-    line(grid_x, grid_y + grid_x * (1. / 3.), 2 * grid_x, grid_y + grid_x * (1. / 3.));
-    line(grid_x, grid_y + grid_x * (2. / 3.), 2 * grid_x, grid_y + grid_x * (2. / 3.));
-}
-
-function drawBoard() {
-    var keys = Object.keys(game);
-    for (var i = 0; i < keys.length; i++) {
-        drawObject(keys[i], game[keys[i]], false);
-    }
-}
