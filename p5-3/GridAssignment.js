@@ -1,135 +1,135 @@
-// Grid
-// Dan Schellenberg
-// Oct 24, 2018
-
-let rows = 10;
-let cols = 10;
-let grid;
-let cellSize;
-
-function setup() {
-  if (windowWidth > windowHeight) {
-    createCanvas(windowHeight, windowHeight);
-  }
-  else {
-    createCanvas(windowWidth, windowWidth);
-  }
-
-  cellSize = width / cols;
-  grid = createRandom2dArray(cols, rows);
-}
-
-function draw() {
-  background(255);
-  displayGrid();
-}
-
-function keyTyped() {
-  if (key === "r") {
-    grid = createRandom2dArray(cols, rows);
-  }
-  else if (key === " ") {
-    update();
-  }
-  else if (key === "c") {
-    resetGrid();
-  }
-}
-
-function update() {
-  //need a second 2d array, so you don't mess up the first one
-  let nextTurn = [];
-  for (let i = 0; i < rows; i++) {
-    nextTurn[i] = [];
-  }
-
-  //loop through the grid
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-
-      let neighbors = 0;
-
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          if (x+i >= 0 && x+i < cols && y+j >= 0 && y+j < rows) {
-            neighbors += grid[y + j][x + i];
-          }
-        }
-      }
-
-      neighbors -= grid[y][x];
-
-      // applying rules of the game
-      if (grid[y][x] === 1) { //alive
-        if (neighbors === 2 || neighbors === 3) {
-          nextTurn[y][x] = 1;
-        }
-        else {
-          nextTurn[y][x] = 0;
-        }
-      }
-
-      if (grid[y][x] === 0) { //dead
-        if (neighbors === 3) {
-          nextTurn[y][x] = 1;
-        }
-        else {
-          nextTurn[y][x] = 0;
-        }
-      }
-
-    }
-  }
-  grid = nextTurn;
-}
-
-function mousePressed() {
-  let x = floor(mouseX / cellSize);
-  let y = floor(mouseY / cellSize);
-
-  if (grid[y][x] === 1) {
-    grid[y][x] = 0;
-  }
-  else if (grid[y][x] === 0) {
-    grid[y][x] = 1;
-  }
-}
-
-function displayGrid() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === 0) {
-        fill(255);
-      }
-      else {
-        fill(0);
-      }
-      rect(x*cellSize, y*cellSize, cellSize, cellSize);
-    }
-  }
-}
-
-function resetGrid() {
-  for (let x = 0; x < cols; x++) {
-    for (let y = 0; y < rows; y++) {
-      grid[y][x] = 0;
-    }
+let canvasWidth = 600;
+let canvasHeight = 400;
+let score = 0;
+//player
+let player = {
+	color : "#FFF",
+	x : 280,
+	width : 40,
+  y : 355,
+	height: 40,
+	draw : function(){
+		image(img_player, this.x, this.y, this.width, this.height);
   }
 }
 
 
-function createRandom2dArray(cols, rows) {
-  let randomGrid = [];
-  for (let y = 0; y < rows; y++) {
-    randomGrid.push([]);
-    for (let x = 0; x < cols; x++) {
-      if (random(100) < 50) {
-        randomGrid[y].push(0);
-      }
-      else {
-        randomGrid[y].push(1);
-      }
-    }
-  }
-  return randomGrid;
+//bullet
+let bullets = [];
+function Bullet(I){
+	I.active = true;
+	I.x = player.x + player.width/2;
+	I.y = player.y +  player.height/2;
+	I.width = 3;
+	I.height = 6;
+  I.yVelocity = 5;
+	I.inBounds = function(){
+    return I.x >= 0 && I.y >= 0 && I.x < canvasWidth - I.width && I.y < canvasHeight - I.height;
+  };
+  I.update = function(){
+		I.active  = I.active && I.inBounds();
+		I.y -= I.yVelocity;
+	}
+	I.draw = function(){
+		image(img_bullet, I.x, I.y, I.width, I.height);
+	}
+	return I;
+}
+
+//enemies
+let enemies  = [];
+function Enemy(I){
+	I.active = true;
+	I.x = Math.random() * canvasWidth;
+	I.y = 0;
+	I.width = 30;
+	I.height = 30;
+	I.yVelocity = 2;
+	I.inBounds = function(){
+		return I.x >= 0 && I.y >= 0 && I.x < canvasWidth - I.width && I.y < canvasHeight - I.height;
+	}
+	I.draw = function(){
+		image(img_enemy, I.x, I.y, I.width, I.height);
+	}
+	I.update= function(){
+		I.active = I.active && I.inBounds();
+		I.y += I.yVelocity;
+	}
+	return I;
+}
+
+
+//collision function
+
+function collision(enemy, bullet){
+	return bullet.x + bullet.width >= enemy.x && bullet.x < enemy.x + enemy.width &&
+			bullet.y + bullet.height >= enemy.y && bullet.y < enemy.y + enemy.height;
+}
+//canvas functions
+let img_enemy, img_player, img_bullet;
+function setup(){
+	createCanvas(canvasWidth, canvasHeight);
+	noCursor();
+}
+function draw(){
+	fill(255);
+	clear();
+	background("#000");
+	text("score : " + score, 10, 10);
+	fill(player.color);
+	if(keyIsDown(LEFT_ARROW)){
+		if(player.x-5 >= 0)
+			player.x -= 5;
+		else
+			player.x = 0;
+	}
+	if(keyIsDown(RIGHT_ARROW)){
+		if(player.x + 5 <= canvasWidth-player.width)
+			player.x += 5;
+		else
+			player.x = canvasWidth - player.width;
+	}
+	if(keyIsDown(32)){
+		bullets.push(Bullet({}));
+	}
+	player.draw();
+
+
+	bullets = bullets.filter(function(bullet){
+		return bullet.active;
+	});
+	bullets.forEach(function(bullet){
+		bullet.update();
+		bullet.draw();
+	});
+
+	if(Math.random()<0.05){
+		enemies.push(Enemy({}));
+	}
+	enemies = enemies.filter(function(enemy){
+		return enemy.active;
+	});
+	enemies.forEach(function(enemy){
+		enemy.update();
+		enemy.draw();
+	});
+
+	bullets.forEach(function(bullet){
+		enemies.forEach(function(enemy){
+			if(collision(enemy, bullet)){
+				enemy.active = false;
+				bullet.active = false;
+				score++;
+			}
+		});
+	});
+
+	enemies.forEach(function(enemy){
+		if(collision(enemy, player)){
+			enemy.active = false;
+			noLoop();
+			textSize(40);
+			text("GAME OVER", 180, 200);
+		}
+	});
 }
