@@ -1,56 +1,39 @@
-// State Variables Rectangle Demo
-// Dan Schellenberg
-// Sept 24, 2018
+// Project Title
+// Your Name
+// Date
+//
+// Extra for Experts:
+// - describe what you did to take this project "above and beyond"
 
-
-let state = 1;
-let x = 0;
-let y = 0;
-let boxSize = 25;
-let speed = 5;
+let cols = 5;
+let rows = 5;
+let largo = 20;
+let r = 0;
+let g = 0 ;
+let b = 0;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(300,300);
 }
 
 function draw() {
-  background(255);
-  determineState();
-  moveRect();
-  fill(0);
-  rect(x, y, boxSize, boxSize);
-}
+  for (let x = 0; x < cols; x+=20){
+    for (let y = 0; y < rows; y+=20){
+      stroke(255);
+      fill(r,g,b);
+      rect(x,y,largo+1,largo+1);
+    }
+  }
 
-function determineState() {
-  if (state === 1 && x >= width - boxSize) {
-    x = width - boxSize;
-    state = 2;
-  }
-  else if (state === 2 && y >= height - boxSize) {
-    y = height - boxSize;
-    state = 3;
-  }
-  else if (state === 3 && x <= 0) {
-    x = 0;
-    state = 4;
-  }
-  else if (state === 4 && y <= 0) {
-    y = 0;
-    state = 1;
-  }
-}
 
-function moveRect() {
-  if (state === 1) {
-    x += speed;
+  if ( r > 255 ){
+    r = 0;
   }
-  else if (state === 2) {
-    y += speed;
+  if ( g > 255 ){
+    g = 0;
   }
-  else if (state === 3) {
-    x -= speed;
-  }
-  else if (state === 4) {
-    y -= speed;
+
+  if ( b > 255 ){
+    b = 0;
   }
 }
