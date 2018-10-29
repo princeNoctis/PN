@@ -5,35 +5,25 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let cols = 5;
-let rows = 5;
-let largo = 20;
-let r = 0;
-let g = 0 ;
-let b = 0;
+
+let myArray = [ [236, 189, 189,   0],
+  [236,  80, 189, 189],
+  [236,   0, 189,  80],
+  [236, 189, 189,  80]];
 
 function setup() {
-  createCanvas(300,300);
+  createCanvas(windowHeight,windowHeight);
+
 }
 
 function draw() {
-  for (let x = 0; x < cols; x+=20){
-    for (let y = 0; y < rows; y+=20){
-      stroke(255);
-      fill(r,g,b);
-      rect(x,y,largo+1,largo+1);
-    }
-  }
+  let maze = [
+    [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  ];
 
 
-  if ( r > 255 ){
-    r = 0;
-  }
-  if ( g > 255 ){
-    g = 0;
-  }
-
-  if ( b > 255 ){
-    b = 0;
-  }
 }
