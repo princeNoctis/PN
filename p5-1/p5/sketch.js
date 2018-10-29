@@ -1,193 +1,87 @@
-// State variables Assignment
-// Muhammad Sheikh
-//
-// Extra for Experts:
-// i used the translate function and state function as the starting screen and added some a sound
-// and background music. press r to RESET
-
-
-// ALL REQURED GLOBAL LET VALUES
-
-let x;
-let y;
-let bocSize = 35;
-
-let overBoc = false;
-let locked = false;
-let xOffset = 0.0;
-
-let yOffset = 0.0;
-let time = 50;
-let state;
-
-let score;
-let spellSound;
-let backgroundMusic;
-
-// PRELOADING THE SPELLBOUND SOUND AND BACKGRROUND MUSIC
-
-function preload() {
-  backgroundMusic = loadSound("assets/back.mp3");
-  spellSound = loadSound("assets/pop.flac");
-}
-
+var w;
+var columns;
+var rows;
+var board;
+var next;
 
 function setup() {
-  //SET THE VOLUME AND MAKE IT LOOP
-  backgroundMusic.setVolume(0.3);
-  backgroundMusic.loop();
-  createCanvas(windowWidth, windowHeight);
-  ellipseMode(RADIUS);
-  strokeWeight(2);
-  // SET THE STATE TO 1
-  state = 1;
-  x = width / 2;
-  y = height;
-//SET SCORE INT VAL TO 0
-  score = 0;
-  draw();
+  createCanvas(720, 400);
+  w = 20;
+  // Calculate columns and rows
+  columns = floor(width/w);
+  rows = floor(height/w);
+  // Wacky way to make a 2D array is JS
+  board = new Array(columns);
+  for (var i = 0; i < columns; i++) {
+    board[i] = new Array(rows);
+  }
+  // Going to use multiple 2D arrays and swap them
+  next = new Array(columns);
+  for (i = 0; i < columns; i++) {
+    next[i] = new Array(rows);
+  }
+  init();
 }
 
 function draw() {
-  //DECLARE THE EACH STATE IS AND INPUT THE SCORE TEXT PLUS THE CURRENT INT VALUE OF SCORE
-  let outside = color(0);
-  if (state === 1) {
-    displayStartScreen();
-  }
-  else if (state === 2) {
-    displaygame();
-  }
-
-  push();
-  translate(80, 80);
-  fill(outside);
-
-  textAlign(CENTER, CENTER);
-  textSize(25);
-  text("score =" + score, 100, 10);
-
-  pop();
-}
-
-function displayStartScreen() {
-  // variables FOR THIS FUNCTION
-  let buttonWidth = 400;
-  let buttonHeight = 200;
-  let leftSide = width / 2 - buttonWidth / 2;
-
-  let topSide = height / 2 - buttonHeight / 2;
-  let rightSide = leftSide + buttonWidth;
-  let bottomSide = topSide + buttonHeight;
-
-  let inside = color(204, 102, 0);
-  let middle = color(204, 153, 0);
-  let outside = color(153, 51, 0);
-  // IF THE MOUSE CURSOR IS OVER THE RECTANGLE CHANGE COLOR AND IF CLICKED CHANGE TO STATE 2, SO THE ACTUAL GAME
-  fill(0,0,240);
-  if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
-    fill(125);
-    if (mouseIsPressed) {
-      state = 2;
+  background(255);
+  generate();
+  for ( var i = 0; i < columns;i++) {
+    for ( var j = 0; j < rows;j++) {
+      if ((board[i][j] == 1)) fill(0);
+      else fill(255);
+      stroke(0);
+      rect(i*w, j*w, w-1, w-1);
     }
   }
-  // TEXT FOR CLICKING ON RECT
-  push();
-  translate(80, 80);
-  fill(outside);
-
-  textAlign(CENTER, CENTER);
-  textSize(25);
-  text("CLICK ----->",400,400);
-
-  pop();
-  rect(leftSide, topSide, buttonWidth, buttonHeight);
-}
-
-function displaygame() {
-  // SEPREAT FUNCTION FOR THE GAME LOADING THE BACKGROUND AND ELLIPSE AND SET THE X AND Y VALUES PLUS
-  // IF THE Y OR X IS LESS THAN 0 RESET RANDOMLY SO IT WILL APPEAR RANDOMLY
-  background(234,150,50);
-  ellipse(x,y,bocSize,bocSize);
-  // Jiggling randomly on the horizontal axis
-  x = x + random(-10, 8);
-  // Moving at a constant speed
-  y = y - 5;
-
-  // Reset to the bottom or right
-  if (y < 0) {
-    y = random(height);
-    fill(0);
-  }
-  else if (x < 0) {
-    x = random(width);
-    fill(0);
-  }
-  // Test if the cursor is over the CIRCLE
-  if (mouseX > x-bocSize && mouseX < x+bocSize &&
-      mouseY > y-bocSize && mouseY < y+bocSize) {
-    overBoc = true;
-    if(!locked) {
-      stroke(255);
-      fill(255);
-    }
-  } else {
-    stroke(156,39,176);
-    fill(255);
-    overBoc = false;
-  }
-  timer();
-
 
 }
 
-function timer() {
-  // THE TIMER FUNCTION, IF THE TIME IS LOWER THAN THE VALUE OF TIME GAME OVER AND SHOW YOUR SCORE
-  textAlign(CENTER, CENTER);
-  textSize(25);
-  text(time, 50, 50);
-
-  if (frameCount % 60 === 0 && time > 0) {
-    time --;
-  }
-
-  if (time === 0) {
-    text("!!GAME OVER!!", width/2, height*0.7);
-    text("score: " + score, width/2, height*0.5);
-    noLoop();
-  }
-}
-
+// reset board when mouse is pressed
 function mousePressed() {
-  // FUNCTION FOR IF THE MOUSE IS OVER CIRCLE CHANGE THE COLOR
-  if(overBoc) {
-    locked = true;
-    fill(255, 255, 255);
-  } else {
-    locked = false;
-  }
-  // FUNCTION FOR CLICKING INSIDE OF THE CIRCLE AND MAKING IT SCORE
-  xOffset = mouseX-x;
-  yOffset = mouseY-y;
-  let d = dist(mouseX, mouseY, x, y);
-  // CLICKING TO SCORE A POINT
-  // AND MAKING IT DO IT EVERYTIME
-  // MOUSE IS CLICKED IN THE RADIUS OF THE CIRCLE
-  if (d < 35) {
-    spellSound.play();
-    score = (1 + score);
-    fill(255,0,0);
-    redraw();
+  init();
+}
+
+// Fill board randomly
+function init() {
+  for (var i = 0; i < columns; i++) {
+    for (var j = 0; j < rows; j++) {
+      // Lining the edges with 0s
+      if (i == 0 || j == 0 || i == columns-1 || j == rows-1) board[i][j] = 0;
+      // Filling the rest randomly
+      else board[i][j] = floor(random(2));
+      next[i][j] = 0;
+    }
   }
 }
 
-function keyTyped() {
-  // TYPE THE R TO RESET THE GAME AND RERUN SETUP()
-  if (key === "r") {
-    setup();
-  }
-}
+// The process of creating the new generation
+function generate() {
 
-function mouseReleased() {
-  // IF MOUSE IS OFF THE CIRCLE MAKE LOCKED FALSE
-  locked = false;
+  // Loop through every spot in our 2D array and check spots neighbors
+  for (var x = 1; x < columns - 1; x++) {
+    for (var y = 1; y < rows - 1; y++) {
+      // Add up all the states in a 3x3 surrounding grid
+      var neighbors = 0;
+      for (var i = -1; i <= 1; i++) {
+        for (var j = -1; j <= 1; j++) {
+          neighbors += board[x+i][y+j];
+        }
+      }
+
+      // A little trick to subtract the current cell's state since
+      // we added it in the above loop
+      neighbors -= board[x][y];
+      // Rules of Life
+      if      ((board[x][y] == 1) && (neighbors <  2)) next[x][y] = 0;           // Loneliness
+      else if ((board[x][y] == 1) && (neighbors >  3)) next[x][y] = 0;           // Overpopulation
+      else if ((board[x][y] == 0) && (neighbors == 3)) next[x][y] = 1;           // Reproduction
+      else                                             next[x][y] = board[x][y]; // Stasis
+    }
+  }
+
+  // Swap!
+  var temp = board;
+  board = next;
+  next = temp;
 }
