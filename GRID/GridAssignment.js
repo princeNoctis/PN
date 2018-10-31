@@ -4,6 +4,10 @@
 // Extra for Experts:
 //
 
+let playerWidth = 20;
+let playerHeight = 20 ;
+let moveY = 20;
+let moveX = 35;
 let rows = 5;
 let cols = 5;
 let grid;
@@ -25,6 +29,7 @@ function setup() {
 function draw() {
   background(255);
   displayGrid();
+  player();
 }
 
 function cleanUpTheGrid() {
@@ -36,13 +41,30 @@ function cleanUpTheGrid() {
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === "0") {
-        fill(0);
+      if (grid[y][x] === "2") {
+        fill(150);
+      }
+      else if (grid[y][x] === "0"){
+        fill(0,150,0);
       }
       else {
         fill(255);
       }
+      noStroke();
       rect(x*cellSize, y*cellSize, cellSize, cellSize);
     }
   }
+}
+
+
+function keyPressed(){
+  if (key === "d"){
+    moveX = moveX++;
+  }
+}
+
+
+function player(){
+  fill(255);
+  ellipse(moveX,moveY,playerWidth,playerHeight);
 }
