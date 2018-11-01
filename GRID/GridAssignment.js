@@ -6,8 +6,6 @@
 
 let playerWidth = 20;
 let playerHeight = 20 ;
-let moveY = 20;
-let moveX = 35;
 let rows = 5;
 let cols = 5;
 let grid;
@@ -29,7 +27,6 @@ function setup() {
 function draw() {
   background(255);
   displayGrid();
-  player();
 }
 
 function cleanUpTheGrid() {
@@ -38,17 +35,25 @@ function cleanUpTheGrid() {
   }
 }
 
+
+function collision(){
+
+}
+
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       if (grid[y][x] === "2") {
-        fill(150);
+        fill(0,0,255);
       }
       else if (grid[y][x] === "0"){
-        fill(0,150,0);
+        fill(255);
+      }
+      else if (grid[y][x] === "3"){
+        fill(255,0,0);
       }
       else {
-        fill(255);
+        fill(0,150,0);
       }
       noStroke();
       rect(x*cellSize, y*cellSize, cellSize, cellSize);
@@ -58,13 +63,8 @@ function displayGrid() {
 
 
 function keyPressed(){
-  if (key === "d"){
-    moveX = moveX++;
-  }
+
 }
 
-
-function player(){
-  fill(255);
-  ellipse(moveX,moveY,playerWidth,playerHeight);
+function move(){
 }
