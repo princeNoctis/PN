@@ -4,6 +4,7 @@
 // Extra for Experts:
 //
 
+
 let rows = 5;
 let cols = 5;
 let grid;
