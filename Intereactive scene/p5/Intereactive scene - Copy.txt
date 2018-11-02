@@ -1,8 +1,8 @@
 // Intereactive scene
-// Muhammad Sheikh
-// Mon.24,2018
+// Name
+// Mon.7,2018
 // Extra for Experts:
-// - added music, keyIsPressed mouse zoom out, and made own shape and resize window
+//
 
 // varaiables and Lets
 let pos = 25;
