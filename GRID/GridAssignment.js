@@ -4,11 +4,15 @@
 // Extra for Experts:
 //
 
-
+let playerWidth;
+let playerHeight;
+let px = 0;
+let py = 0;
 let rows = 5;
 let cols = 5;
 let grid;
 let cellSize;
+let player = grid[6][4];
 
 function preload() {
   grid = loadStrings("assets/Levels.txt");
@@ -24,6 +28,7 @@ function setup() {
 }
 
 function draw() {
+  rect(px,py,playerWidth,playerHeight,player);
   background(255);
   displayGrid();
 }
@@ -34,16 +39,47 @@ function cleanUpTheGrid() {
   }
 }
 
+
+function collision(){
+
+}
+
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === "0") {
-        fill(0);
+      if (grid[y][x] === "2") {
+        fill(0,0,255);
       }
-      else {
+      else if (grid[y][x] === "0"){
         fill(255);
       }
+      else if (grid[y][x] === "3"){
+        fill(random(255),0,0);
+      }
+      else {
+        fill(0,150,0);
+      }
+      noStroke();
       rect(x*cellSize, y*cellSize, cellSize, cellSize);
     }
   }
+}
+
+
+function cube(){
+  for (let i = 0; i < px; i++){
+    for (let j = 0; j < py; j++){
+      if (grid[stage][i][j]==2||level[stage][i][j]==7) {
+        px=j;
+        py=i;
+        return;
+      }
+    }
+  }
+
+}
+
+
+function move(){
+
 }
