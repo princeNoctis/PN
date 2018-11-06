@@ -1,4 +1,4 @@
-// Grid Assignment
+// levelone Assignment
 // Muhammad Sheikh
 // oct.27,2018
 // Extra for Experts:
@@ -8,56 +8,59 @@ let playerWidth;
 let playerHeight;
 let px = 5;
 let py = 5;
-let rows = 5;
-let cols = 5;
-let grid;
-let cellSize;
+let rows1 = 5;
+let cols1 = 5;
+let levelone;
+let cellsize1;
 let state = 0;
 let leveltwo;
 
 function preload() {
-  grid = loadStrings("assets/Level1.txt");
+  levelone = loadStrings("assets/Level1.txt");
   leveltwo = loadStrings("assets/Level2.txt");
 }
 
 function setup() {
   createCanvas(600, 600);
-  rows = grid[0].length;
-  cols = grid[0].length;
-  cellSize = width / cols;
-  //grid = createRandom2dArray(cols, rows);
-  cleanUpTheGrid();
+  rows1 = levelone[0].length;
+  cols1 = levelone[0].length;
+  cellsize1 = width / cols1;
+  //levelone = createRandom2dArray(cols, rows);
+  cleanUplevelone();
 }
 
 function draw() {
   background(255);
-  displayGrid();
+  displaylevelone();
 }
 
-function cleanUpTheGrid() {
-  for (let i=0; i<grid.length; i++) {
-    grid[i] = grid[i].split("");  //turns it into a 2d array
+function cleanUplevelone() {
+  for (let i=0; i<levelone.length; i++) {
+    levelone[i] = levelone[i].split("");  //turns it into a 2d array
   }
 }
 
 
-function displayGrid() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === "2") {
+function displaylevelone() {
+  for (let y = 0; y < rows1; y++) {
+    for (let x = 0; x < cols1; x++) {
+      if (levelone[y][x] === "2") {
         fill(0,0,255);
       }
-      else if (grid[y][x] === "0"){
+      else if (levelone[y][x] === "0"){
         fill(255);
       }
-      else if (grid[y][x] === "3"){
+      else if (levelone[y][x] === "3"){
         fill(random(255),0,0);
+      }
+      else if (levelone[y][x] === "5"){
+        fill(255,0,0);
       }
       else {
         fill(0,150,0);
       }
       noStroke();
-      rect(x*cellSize, y*cellSize, cellSize, cellSize);
+      rect(x*cellsize1, y*cellsize1, cellsize1, cellsize1);
     }
   }
 }
@@ -66,7 +69,7 @@ function displayGrid() {
 function cube(){
   for (let i = 0; i < px; i++){
     for (let j = 0; j < py; j++){
-      if (grid[state][i][j] === 2 ) {
+      if (levelone[state][i][j] === 2 ) {
         px=j;
         py=i;
         return;
@@ -77,6 +80,7 @@ function cube(){
 }
 
 
-function move(){
+function keyIsPressed(){
+
 
 }
