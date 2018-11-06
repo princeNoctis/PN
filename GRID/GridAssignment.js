@@ -14,6 +14,9 @@ let levelone;
 let cellsize1;
 let state = 0;
 let leveltwo;
+let cellsize2;
+let rows2 = 5;
+let cols2 = 5;
 
 function preload() {
   levelone = loadStrings("assets/Level1.txt");
@@ -32,6 +35,8 @@ function setup() {
 function draw() {
   background(255);
   displaylevelone();
+  displayleveltwo();
+
 }
 
 function cleanUplevelone() {
@@ -40,6 +45,30 @@ function cleanUplevelone() {
   }
 }
 
+
+function displayleveltwo() {
+  for (let y = 0; y < rows2; y++) {
+    for (let x = 0; x < cols2; x++) {
+      if (leveltwo[y][x] === "2") {
+        fill(0,0,255);
+      }
+      else if (leveltwo[y][x] === "0"){
+        fill(255);
+      }
+      else if (leveltwo[y][x] === "3"){
+        fill(random(255),0,0);
+      }
+      else if (leveltwo[y][x] === "5"){
+        fill(255,0,0);
+      }
+      else {
+        fill(100,150,170);
+      }
+      noStroke();
+      rect(x*cellsize2, y*cellsize2, cellsize2, cellsize2);
+    }
+  }
+}
 
 function displaylevelone() {
   for (let y = 0; y < rows1; y++) {
@@ -69,7 +98,7 @@ function displaylevelone() {
 function cube(){
   for (let i = 0; i < px; i++){
     for (let j = 0; j < py; j++){
-      if (levelone[state][i][j] === 2 ) {
+      if (levelone[state] === 0 && [i][j] === 2 ) {
         px=j;
         py=i;
         return;
@@ -80,7 +109,15 @@ function cube(){
 }
 
 
-function keyIsPressed(){
-
-
+function keyPressed(){
+  if (keyCode === RIGHT_ARROW ){
+    for (let i = 0; i< "1";i++){
+      levelone[6][4] = "2";
+    }
+  }
+   if (keyCode === RIGHT_ARROW ){
+    for (let i = 0; i< "1";i++){
+      levelone[6][4] = "2";
+    }
+  }
 }
