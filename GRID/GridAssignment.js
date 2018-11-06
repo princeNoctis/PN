@@ -6,17 +6,18 @@
 
 let playerWidth;
 let playerHeight;
-let px = 0;
-let py = 0;
+let px = 5;
+let py = 5;
 let rows = 5;
 let cols = 5;
 let grid;
 let cellSize;
-let player = grid[6][4];
 let state = 0;
+let leveltwo;
 
 function preload() {
-  grid = loadStrings("assets/Levels.txt");
+  grid = loadStrings("assets/Level1.txt");
+  leveltwo = loadStrings("assets/Level2.txt");
 }
 
 function setup() {
@@ -29,7 +30,6 @@ function setup() {
 }
 
 function draw() {
-  rect(px,py,playerWidth,playerHeight,player);
   background(255);
   displayGrid();
 }
@@ -40,10 +40,6 @@ function cleanUpTheGrid() {
   }
 }
 
-
-function collision(){
-
-}
 
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
@@ -70,7 +66,7 @@ function displayGrid() {
 function cube(){
   for (let i = 0; i < px; i++){
     for (let j = 0; j < py; j++){
-      if (grid[stage][i][j]==2||level[stage][i][j]==7) {
+      if (grid[state][i][j] === 2 ) {
         px=j;
         py=i;
         return;
