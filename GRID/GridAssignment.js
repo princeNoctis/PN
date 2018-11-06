@@ -13,6 +13,7 @@ let cols = 5;
 let grid;
 let cellSize;
 let player = grid[6][4];
+let state = 0;
 
 function preload() {
   grid = loadStrings("assets/Levels.txt");
