@@ -14,10 +14,9 @@ let x;
 let y;
 let play = 2;
 
-<<<<<<< HEAD
 function preload() {
   grid = loadStrings("assets/Levels.txt");
-=======
+
 // function preload() {
 //   levelone = loadStrings("assets/Level1.txt");
 //   leveltwo = loadStrings("assets/Level2.txt");
@@ -35,8 +34,6 @@ function  level() {
             [0,0,0,0,0,0,0,0,0],
             ]
 ]
-
->>>>>>> 56163ea2c219e84b320ff17651f4423dc6ab3210
 }
 
 
@@ -90,13 +87,6 @@ function displayGrid() {
 }
 
 
-<<<<<<< HEAD
-function keyPressed(){
-  for (let i = 0; i<"1";i++){
-    if (keyCode === UP_ARROW){
-      grid[6][3] = "2"
-      return (grid[6][2] = "0");
-=======
 function cube(){
   for (let i = 0; i < px; i++){
     for (let j = 0; j < py; j++){
@@ -143,7 +133,6 @@ function keyPressed(){
     for (let i = 0; i< "1";i++){
       levelone[5][3] = "0";
       levelone[6][3] = "2";
->>>>>>> 56163ea2c219e84b320ff17651f4423dc6ab3210
     }
   }
 }
