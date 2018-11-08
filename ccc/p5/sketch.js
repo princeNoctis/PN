@@ -5,12 +5,15 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
+let maze = [[0,5,0,5,0,5,0],
+  [0,0,5,0,0,0,0],
+  [0,0,0,5,0,5,0]
+];
 
 
 function setup() {
   createCanvas(500, 500);
-  frameRate(30);
+  frameRate(60);
 
   mapSize = 20; // 20 grids by 20 grids
   gridsize = width/mapSize; // assuming width and height are the same value
@@ -22,6 +25,8 @@ function draw() {
   stroke(127);
   noFill();
   rectMode(CORNER);
+  displayGrid();
+
   // --- Drawing the grid
   for (let i = 0; i < gridsize; i++) { // rows
     for (let j = 0; j < gridsize; j++) { // columns
@@ -40,6 +45,25 @@ function draw() {
   rectMode(CENTER);
   rect(pixelposition.x, pixelposition.y, gridsize/2, gridsize/2);
 }
+
+function displayGrid() {
+  for (let y = 0; y < gridsize; y++) {
+    for (let x = 0; x < gridsize; x++) {
+      if (maze[y][x] === "5") {
+        fill(0,0,255);
+      }
+      else if (maze[y][x] === "0"){
+        fill(255);
+      }
+      else {
+        fill(0,150,0);
+      }
+      noStroke();
+    }
+  }
+}
+
+
 
 function mousePressed() {
   // Do we want to move vertically or horizontally? Lets see how close to the player in X Y we clicked
