@@ -23,17 +23,16 @@ function preload() {
 // }
 
 function  level() {
- let levelone = [[0,0,0,0,0,0,0,0,0]],
-            [[0,1,1,1,1,1,1,1,0]],
+ let levelone = [[0,0,0,0,0,0,0,0,0],
+            [0,1,1,1,1,1,1,1,0],
             [0,1,0,0,0,0,0,1,0],
-            [0,1,0,0,1,0,0,1,0].
+            [0,1,0,0,1,0,0,1,0],
             [0,1,0,0,0,0,3,1,0],
             [0,1,0,0,0,0,0,1,0],
             [0,1,1,2,0,1,0,1,0],
             [0,1,1,1,1,1,1,1,0],
             [0,0,0,0,0,0,0,0,0],
-            ]
-]
+          ];
 }
 
 
@@ -90,7 +89,7 @@ function displayGrid() {
 function cube(){
   for (let i = 0; i < px; i++){
     for (let j = 0; j < py; j++){
-      if (levelone[state] === 0 && [i][j] === 2 ) {
+      if (levelone[i][j] === 0 && levelone[i][j] === 2 ) {
         px=j;
         py=i;
         return;
@@ -100,10 +99,6 @@ function cube(){
 
 }
 
-
-function changeLevel() {
-  if (levelone[x][y] =
-}
 
 
 function move() {

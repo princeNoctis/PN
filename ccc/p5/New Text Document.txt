@@ -1,0 +1,4 @@
+let gridsize;
+let gridposition;
+let mapSize;
+let pixelposition;
