@@ -5,21 +5,10 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let maze;
-let rows = 5;
-let cols = 5;
-let cellSize;
-
-function preload() {
-  maze = loadStrings("assets/maze.txt")
-}
-
 function setup() {
   createCanvas(500, 500);
   frameRate(60);
-  rows = grid[0].length;
-  cols = grid[0].length;
-  cellSize = width / cols;
+
   mapSize = 20; // 20 grids by 20 grids
   gridsize = width/mapSize; // assuming width and height are the same value
   gridposition = createVector(10, 10); // start at 0, 0 (top left)
@@ -30,7 +19,7 @@ function draw() {
   stroke(127);
   noFill();
   rectMode(CORNER);
-  displayGrid();
+  time();
 
   // --- Drawing the grid
   for (let i = 0; i < gridsize; i++) { // rows
@@ -51,25 +40,6 @@ function draw() {
   rect(pixelposition.x, pixelposition.y, gridsize/2, gridsize/2);
 }
 
-function displayGrid() {
-  for (let y = 0; y < gridsize; y++) {
-    for (let x = 0; x < gridsize; x++) {
-      if (maze[y][x] === "5") {
-        fill(0,0,255);
-      }
-      else if (maze[y][x] === "0"){
-        fill(255);
-      }
-      else {
-        fill(0,150,0);
-      }
-      noStroke();
-    }
-  }
-}
-
-
-
 function mousePressed() {
   // Do we want to move vertically or horizontally? Lets see how close to the player in X Y we clicked
   // and calculate the abosulate value
@@ -89,4 +59,12 @@ function mousePressed() {
       gridposition.y--;
     }
   }
+}
+
+
+function time() {
+  let timer = 20;
+  colo
+  textSize(100);
+  text(timer, width/2, height/2);
 }
