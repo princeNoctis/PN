@@ -5,16 +5,21 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let maze = [[0,5,0,5,0,5,0],
-  [0,0,5,0,0,0,0],
-  [0,0,0,5,0,5,0]
-];
+let maze;
+let rows = 5;
+let cols = 5;
+let cellSize;
 
+function preload() {
+  maze = loadStrings("assets/maze.txt")
+}
 
 function setup() {
   createCanvas(500, 500);
   frameRate(60);
-
+  rows = grid[0].length;
+  cols = grid[0].length;
+  cellSize = width / cols;
   mapSize = 20; // 20 grids by 20 grids
   gridsize = width/mapSize; // assuming width and height are the same value
   gridposition = createVector(10, 10); // start at 0, 0 (top left)
