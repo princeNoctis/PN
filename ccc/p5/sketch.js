@@ -9,7 +9,7 @@ let nombreLigne = 20;
 let fps = 10;
 
 let heightG;
-let hud = 200;
+let hud = 100;
 let score = 0;
 
 let x = 1;
@@ -26,12 +26,10 @@ let c;
 
 let gameOver;
 
-//-------------------------------------| SETUP |------------------------------------------------
-
 function setup() {
 	createCanvas(600, 600 + hud);
 	frameRate(fps);
-	background(150);
+	background(255);
 
 	heightG = height - hud;
 	gameOver = false;
@@ -48,7 +46,6 @@ function setup() {
 	rect(0, hud, width - 1, height - hud -1);
 }
 
-//-------------------------------------| DRAW |------------------------------------------------
 
 function draw() {
 	rectMode(CORNER);
@@ -67,7 +64,6 @@ function draw() {
 	scoreD();
 }
 
-//-------------------------------------| GRID |------------------------------------------------
 
 function grid() {
 	for (let i = 1; i <= nombreLigne; i++) {
@@ -76,7 +72,7 @@ function grid() {
 	}
 }
 
-//-------------------------------------| SNAKE |------------------------------------------------
+
 
 function snake() {
 	rectMode(CENTER);
@@ -84,7 +80,6 @@ function snake() {
 	rect(x / 2, y / 2 + hud, sizeX - 5, sizeY - 5);
 }
 
-//-------------------------------------| MOVE |------------------------------------------------
 
 function move() {
 	if(gameOver == false)
@@ -123,7 +118,6 @@ function move() {
 	}
 }
 
-//-------------------------------------| FOOD |------------------------------------------------
 
 function food() {
 	fill(0);
@@ -137,7 +131,6 @@ function food() {
 	}
 }
 
-//-------------------------------------| SCORE |------------------------------------------------
 
 function scoreD(){
 	textSize(32);
@@ -146,7 +139,6 @@ function scoreD(){
 	text(score, 135, 32);
 }
 
-//-------------------------------------| GAME OVER |------------------------------------------------
 
 function game_over(){
 	c = get(x / 2, y / 2 + hud);
