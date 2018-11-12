@@ -5,129 +5,137 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let area = [];
+let scene = [];
 let nx = 0;
-let nx = 0;
-let bx = 125;
-let by = 125;
-let wid = 0;
-let hei = 0;
+let ny = 0;
+let wid = 125;
+let hei = 125;
+let nsx = 0;
+let nsy = 0;
 let finish = 0;
+
 
 function setup() {
 	createCanvas(600, 400);
-	//generate area
+	//generate scene
 	for (let x = 0; x < 50; x++) {
-		area[x] = [];
+		scene[x] = [];
 		for (let y = 0; y < 50; y++) {
 			if (x < 5 && y < 5 || x > 44 && y > 44) {
-				area[x][y] = 0;
+				scene[x][y] = 0;
 			}
 			else {
-				if (random(1) < 0.8) {
-					area[x][y] = 0;
+				if (random(1) < 0.9) {
+					scene[x][y] = 0;
 				}
 				else {
-					area[x][y] = 1;
+					scene[x][y] = 1;
 				}
 
 			}
 			if (x == 49 && y == 49) {
-				area[x][y] = 2;
+				scene[x][y] = 2;
 			}
 		}
 	}
 }
 
-function draw() {
+function movePlayer() {
 	//player movment
 	if (keyIsDown(UP_ARROW)) {
-		hei -= 0.05;
+		nsy -= 0.1;
 	}
 	if (keyIsDown(LEFT_ARROW)) {
-		wid -= 0.05;
+		nsx -= 0.1;
 	}
 	if (keyIsDown(DOWN_ARROW)) {
-		hei += 0.05;
+		nsy += 0.1;
 	}
 	if (keyIsDown(RIGHT_ARROW)) {
-		wid += 0.05;
+		nsx += 0.1;
 	}
-	wid = wid / 1.03;
-	hei = hei / 1.03;
-	by += hei;
-	bx += wid;
+}
+
+
+
+function draw() {
+	background(0);
+	movePlayer();
+	nsx = nsx / 1.03;
+	nsy = nsy / 1.03;
+	hei += nsy;
+	wid += nsx;
 		//screen movement and safe gaurds
-	if (nx + 10 * 50 < bx) {
-		nx += abs(wid);
+	if (nx + 10 * 50 < wid) {
+		nx += abs(nsx);
 	}
-	if (nx + 2 * 50 > bx) {
-		nx -= abs(wid);
+	if (nx + 2 * 50 > wid) {
+		nx -= abs(nsx);
 	}
-	if (nx + 6 * 50 < by) {
-		nx += abs(hei);
+	if (ny + 6 * 50 < hei) {
+		ny += abs(nsy);
 	}
-	if (nx + 2 * 50 > by) {
-		nx -= abs(hei);
+	if (ny + 2 * 50 > hei) {
+		ny -= abs(nsy);
 	}
-	if (bx < 0) {
-		bx = 0;
+	if (wid < 0) {
+		wid = 0;
 	}
-	if (by < 0) {
-		by = 0;
+	if (hei < 0) {
+		hei = 0;
 	}
-	if (bx > 50 * 50) {
-		bx = 50 * 50;
+	if (wid > 50 * 50) {
+		wid = 50 * 50;
 	}
-	if (by > 50 * 50) {
-		by = 50 * 50;
-	}
-	if (nx < 0) {
-		nx = 0;
+	if (hei > 50 * 50) {
+		hei = 50 * 50;
 	}
 	if (nx < 0) {
 		nx = 0;
+	}
+	if (ny < 0) {
+		ny = 0;
 	}
 	if (nx > 37.99 * 50) {
 		nx = 37.99 * 50;
 	}
-	if (nx > 42 * 50) {
-		nx = 42 * 50;
+	if (ny > 42 * 50) {
+		ny = 42 * 50;
 	}
-	//display area
-	for (let x = round(nx / 50 - 0.5); x < round(nx / 50 - 0.5) + 13; x++) {
-		for (let y = round(nx / 50 - 0.5); y < round(nx / 50 - 0.5) + 9; y++) {
-			if (area[x][y] === 0) {
-				fill(200, 200, 200);
-				rect(x * 50 - nx, y * 50 - nx, 50, 50);
-			} else if (area[x][y] == 1) {
+	//genarate new scene
+	for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
+		for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
+			if (scene[x][y] === 0) {
+				fill(200, 200, 0);
+				rect(x * 50 - nx, y * 50 - ny, 50, 50);
+			} else if (scene[x][y] == 1) {
 				fill(0, 0, 0);
-				rect(x * 50 - nx, y * 50 - nx, 50, 50);
-				if (bx > x * 50 && by > y * 50 && bx < x * 50 + 50 && by < y * 50 + 50) {
+				rect(x * 50 - nx, y * 50 - ny, 50, 50);
+				if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50) {
 					nx = 0;
-					nx = 0;
-					bx = 125;
-					by = 125;
-					wid = 0;
-					hei = 0;
+					ny = 0;
+					wid = 125;
+					hei = 125;
+					nsx = 0;
+					nsy = 0;
 				}
 			}
 			else {
-				fill(0, 255, 0);
-				rect(x * 50 - nx, y * 50 - nx, 50, 50);
-				if (bx > x * 50 && by > y * 50 && bx < x * 50 + 50 && by < y * 50 + 50 && finish === 0) {
+				fill(random(255), random(255), random(255));
+				rect(x * 50 - nx, y * 50 - ny, 50, 50);
+				if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50 && finish === 0) {
 					finish = 1;
 				}
 			}
 		}
 	}
-	fill(100, 100, 255);
-	ellipse(bx - nx, by - nx, 10, 10);
+	fill(255);
+	ellipse(wid - nx, hei - ny, 10, 10);
 		//run finish animtion
 	if (finish > 0) {
 		finish = finish * 1.1;
 		background(255, 255, 255, finish);
-		fill(0);
+		fill(255,0,0);
 		textSize(50);
 		text("YAY you win", 270, 200);
 		if (finish > 255) {
