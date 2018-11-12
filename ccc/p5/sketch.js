@@ -6,18 +6,24 @@
 // - describe what you did to take this project "above and beyond"
 
 let scene = [];
+
 let nx = 0;
 let ny = 0;
+
 let wid = 125;
 let hei = 125;
+
 let nsx = 0;
 let nsy = 0;
+
 let finish = 0;
 
 
 function setup() {
 	createCanvas(600, 400);
+
 	//generate scene
+
 	for (let x = 0; x < 50; x++) {
 		scene[x] = [];
 		for (let y = 0; y < 50; y++) {
@@ -40,8 +46,12 @@ function setup() {
 	}
 }
 
+
+
 function movePlayer() {
+
 	//player movment
+
 	if (keyIsDown(UP_ARROW)) {
 		nsy -= 0.1;
 	}
@@ -60,12 +70,17 @@ function movePlayer() {
 
 function draw() {
 	background(0);
+
 	movePlayer();
+
 	nsx = nsx / 1.03;
 	nsy = nsy / 1.03;
+
 	hei += nsy;
 	wid += nsx;
+
 		//screen movement and safe gaurds
+
 	if (nx + 10 * 50 < wid) {
 		nx += abs(nsx);
 	}
@@ -101,8 +116,11 @@ function draw() {
 	}
 	if (ny > 42 * 50) {
 		ny = 42 * 50;
+
 	}
+
 	//genarate new scene
+
 	for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
 		for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
 			if (scene[x][y] === 0) {
@@ -129,9 +147,12 @@ function draw() {
 			}
 		}
 	}
+
 	fill(255);
 	ellipse(wid - nx, hei - ny, 10, 10);
+
 		//run finish animtion
+
 	if (finish > 0) {
 		finish = finish * 1.1;
 		background(255, 255, 255, finish);
