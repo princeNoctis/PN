@@ -5,147 +5,133 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let nombreLigne = 20;
-let fps = 10;
-
-let heightG;
-let hud = 100;
-let score = 0;
-
-let x = 1;
-let y = 1;
-
-let xf = 1;
-let yf = 1;
-
-let sizeX;
-let sizeY;
-
-let l = 30;
-let c;
-
-let gameOver;
+let area = [];
+let nx = 0;
+let nx = 0;
+let bx = 125;
+let by = 125;
+let wid = 0;
+let hei = 0;
+let finish = 0;
 
 function setup() {
-	createCanvas(600, 600 + hud);
-	frameRate(fps);
-	background(255);
+	createCanvas(600, 400);
+	//generate area
+	for (let x = 0; x < 50; x++) {
+		area[x] = [];
+		for (let y = 0; y < 50; y++) {
+			if (x < 5 && y < 5 || x > 44 && y > 44) {
+				area[x][y] = 0;
+			}
+			else {
+				if (random(1) < 0.8) {
+					area[x][y] = 0;
+				}
+				else {
+					area[x][y] = 1;
+				}
 
-	heightG = height - hud;
-	gameOver = false;
-
-	sizeX = (width / nombreLigne);
-	sizeY = (heightG / nombreLigne);
-	x = (width / nombreLigne);
-	y = (heightG / nombreLigne);
-
-	xf = random(1, nombreLigne);
-	yf = random(1, nombreLigne);
-
-	fill(255);
-	rect(0, hud, width - 1, height - hud -1);
+			}
+			if (x == 49 && y == 49) {
+				area[x][y] = 2;
+			}
+		}
+	}
 }
-
 
 function draw() {
-	rectMode(CORNER);
-	fill(255, fps+l);
-	rect(0, hud, width - 1, height - hud -1);
-	fill(100);
-	rect(0, 0, width - 1, hud);
-	grid();
-  move();
-	game_over();
-	if(gameOver == true){
-		text('GAME OVER !', 10, 152);
+	//player movment
+	if (keyIsDown(UP_ARROW)) {
+		hei -= 0.05;
 	}
-	snake();
-	food();
-	scoreD();
-}
-
-
-function grid() {
-	for (let i = 1; i <= nombreLigne; i++) {
-		line(sizeX * i , 0 + hud, sizeX * i , height);
-		line(0, sizeY * i + hud, width, sizeY * i + hud);
+	if (keyIsDown(LEFT_ARROW)) {
+		wid -= 0.05;
 	}
-}
-
-
-
-function snake() {
-	rectMode(CENTER);
-	fill(0);
-	rect(x / 2, y / 2 + hud, sizeX - 5, sizeY - 5);
-}
-
-
-function move() {
-	if(gameOver == false)
-	{
-		switch (keyCode)
-		{
-			case 37: //key code for left
-				x -= sizeX * 2;
-				break;
-			case 38: //key code for up
-				y -= sizeY * 2;
-				break;
-			case 39: //key code for right
-				x += sizeX * 2;
-				break;
-			case 40: //key code for down
-				y += sizeY * 2;
-				break;
-		}
-
-		if(x / (sizeX * 2) + 0.5 > nombreLigne){
-			x = sizeX;
-		}
-
-		if(x / (sizeX * 2) + 0.5 <= 0){
-			x = width*2 - sizeX;
-		}
-
-		if(y / (sizeY * 2) + 0.5 > nombreLigne){
-			y = sizeY;
-		}
-
-		if(y / (sizeY * 2) + 0.5 <= 0){
-			y = heightG*2 - sizeY;
+	if (keyIsDown(DOWN_ARROW)) {
+		hei += 0.05;
+	}
+	if (keyIsDown(RIGHT_ARROW)) {
+		wid += 0.05;
+	}
+	wid = wid / 1.03;
+	hei = hei / 1.03;
+	by += hei;
+	bx += wid;
+		//screen movement and safe gaurds
+	if (nx + 10 * 50 < bx) {
+		nx += abs(wid);
+	}
+	if (nx + 2 * 50 > bx) {
+		nx -= abs(wid);
+	}
+	if (nx + 6 * 50 < by) {
+		nx += abs(hei);
+	}
+	if (nx + 2 * 50 > by) {
+		nx -= abs(hei);
+	}
+	if (bx < 0) {
+		bx = 0;
+	}
+	if (by < 0) {
+		by = 0;
+	}
+	if (bx > 50 * 50) {
+		bx = 50 * 50;
+	}
+	if (by > 50 * 50) {
+		by = 50 * 50;
+	}
+	if (nx < 0) {
+		nx = 0;
+	}
+	if (nx < 0) {
+		nx = 0;
+	}
+	if (nx > 37.99 * 50) {
+		nx = 37.99 * 50;
+	}
+	if (nx > 42 * 50) {
+		nx = 42 * 50;
+	}
+	//display area
+	for (let x = round(nx / 50 - 0.5); x < round(nx / 50 - 0.5) + 13; x++) {
+		for (let y = round(nx / 50 - 0.5); y < round(nx / 50 - 0.5) + 9; y++) {
+			if (area[x][y] === 0) {
+				fill(200, 200, 200);
+				rect(x * 50 - nx, y * 50 - nx, 50, 50);
+			} else if (area[x][y] == 1) {
+				fill(0, 0, 0);
+				rect(x * 50 - nx, y * 50 - nx, 50, 50);
+				if (bx > x * 50 && by > y * 50 && bx < x * 50 + 50 && by < y * 50 + 50) {
+					nx = 0;
+					nx = 0;
+					bx = 125;
+					by = 125;
+					wid = 0;
+					hei = 0;
+				}
+			}
+			else {
+				fill(0, 255, 0);
+				rect(x * 50 - nx, y * 50 - nx, 50, 50);
+				if (bx > x * 50 && by > y * 50 && bx < x * 50 + 50 && by < y * 50 + 50 && finish === 0) {
+					finish = 1;
+				}
+			}
 		}
 	}
-}
-
-
-function food() {
-	fill(0);
-	ellipse((sizeX * xf) - (sizeX / 2), (sizeY * yf) - (sizeY / 2) + hud, sizeX - 5, sizeY - 5);
-
-	if (x / (sizeX * 2) + 0.5 == xf & y / (sizeY * 2) + 0.5 == yf) {
-		xf = parseInt(random(1, nombreLigne));
-		yf = parseInt(random(1, nombreLigne));
-		score++;
-		l--;
-	}
-}
-
-
-function scoreD(){
-	textSize(32);
-	fill(255);
-	text('score : ', 10, 30);
-	text(score, 135, 32);
-}
-
-
-function game_over(){
-	c = get(x / 2, y / 2 + hud);
-  fill(255);
-	text('color : ', 10, 82);
-	text(c[0], 135, 82);
-	if(c[0] > 40 & c[0] < 220){
-		gameOver = true;
+	fill(100, 100, 255);
+	ellipse(bx - nx, by - nx, 10, 10);
+		//run finish animtion
+	if (finish > 0) {
+		finish = finish * 1.1;
+		background(255, 255, 255, finish);
+		fill(0);
+		textSize(50);
+		text("YAY you win", 270, 200);
+		if (finish > 255) {
+			noLoop();
+		}
 	}
 }
