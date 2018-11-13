@@ -66,13 +66,7 @@ function movePlayer() {
   }
 }
 
-
-
-function draw() {
-  background(0);
-
-  movePlayer();
-
+function varaibles() {
   nsx = nsx / 1.03;
   nsy = nsy / 1.03;
 
@@ -117,7 +111,14 @@ function draw() {
   if (ny > 42 * 50) {
     ny = 42 * 50;
 
-  }
+  }	
+}
+
+function draw() {
+  background(0);
+
+  movePlayer();
+
 
   //genarate new scene
 
