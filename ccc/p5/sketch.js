@@ -39,7 +39,7 @@ function setup() {
         }
 
       }
-      if (x === 49 && y === 49) {
+      if (x === 50 && y === 50) {
         scene[x][y] = 2;
       }
     }
