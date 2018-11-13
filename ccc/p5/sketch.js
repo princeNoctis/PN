@@ -5,7 +5,7 @@
 //
 
 
-// state the varaibles that are going to be used
+// state the speed that are going to be used
 let scene = [];
 
 let nx = 0;
@@ -49,7 +49,7 @@ function setup() {
 
 function draw() {
   background(0);
-  varaibles();
+  speed();
   generateArea();
   finishCube();
   movePlayer();
@@ -76,7 +76,7 @@ function movePlayer() {
   }
 }
 
-function varaibles() {
+function speed() {
   nsx = nsx / 1.03;
   nsy = nsy / 1.03;
 
