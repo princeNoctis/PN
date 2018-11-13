@@ -1,10 +1,11 @@
-// gridsize assignment
-// Your Name
-// Date
-//
+// maze assignment
+// muhammad saad Sheikh
+// nov.13,2018
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+//
 
+
+// state the varaibles that are going to be used
 let scene = [];
 
 let nx = 0;
@@ -21,7 +22,6 @@ let finish = 0;
 
 function setup() {
   createCanvas(600, 400);
-
   //generate scene
 
   for (let x = 0; x < 50; x++) {
@@ -49,7 +49,6 @@ function setup() {
 
 
 function movePlayer() {
-
   //player movment
 
   if (keyIsDown(UP_ARROW)) {
@@ -165,6 +164,9 @@ function finishCube() {
 
 function draw() {
   background(0);
+  varaibles();
+  generateArea();
+  finishCube();
   movePlayer();
   fill(255);
   ellipse(wid - nx, hei - ny, 10, 10);
