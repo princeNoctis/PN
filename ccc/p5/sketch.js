@@ -147,13 +147,7 @@ function generateArea() {
 
 }
 
-function draw() {
-  background(0);
-
-  movePlayer();
-  fill(255);
-  ellipse(wid - nx, hei - ny, 10, 10);
-
+function finishCube() {
   //run finish animtion
 
   if (finish > 0) {
@@ -166,4 +160,12 @@ function draw() {
       noLoop();
     }
   }
+
+}
+
+function draw() {
+  background(0);
+  movePlayer();
+  fill(255);
+  ellipse(wid - nx, hei - ny, 10, 10);
 }
