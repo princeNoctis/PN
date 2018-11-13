@@ -126,7 +126,8 @@ function draw() {
 			if (scene[x][y] === 0) {
 				fill(200, 200, 0);
 				rect(x * 50 - nx, y * 50 - ny, 50, 50);
-			} else if (scene[x][y] == 1) {
+			}
+			else if (scene[x][y] == 1) {
 				fill(0, 0, 0);
 				rect(x * 50 - nx, y * 50 - ny, 50, 50);
 				if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50) {
