@@ -22,7 +22,7 @@ let finish = 0;
 
 function setup() {
   createCanvas(600, 400);
-  //generate scene
+  //generate array
 
   for (let x = 0; x < 50; x++) {
     scene[x] = [];
@@ -44,6 +44,17 @@ function setup() {
       }
     }
   }
+}
+
+
+function draw() {
+  background(0);
+  varaibles();
+  generateArea();
+  finishCube();
+  movePlayer();
+  fill(255);
+  ellipse(wid - nx, hei - ny, 10, 10);
 }
 
 
@@ -104,8 +115,8 @@ function varaibles() {
   if (ny < 0) {
     ny = 0;
   }
-  if (nx > 37.99 * 50) {
-    nx = 37.99 * 50;
+  if (nx > 42 * 50) {
+    nx = 42 * 50;
   }
   if (ny > 42 * 50) {
     ny = 42 * 50;
@@ -160,14 +171,4 @@ function finishCube() {
     }
   }
 
-}
-
-function draw() {
-  background(0);
-  varaibles();
-  generateArea();
-  finishCube();
-  movePlayer();
-  fill(255);
-  ellipse(wid - nx, hei - ny, 10, 10);
 }
