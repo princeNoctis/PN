@@ -111,15 +111,10 @@ function varaibles() {
   if (ny > 42 * 50) {
     ny = 42 * 50;
 
-  }	
+  }
 }
 
-function draw() {
-  background(0);
-
-  movePlayer();
-
-
+function generateArea() {
   //genarate new scene
 
   for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
@@ -150,6 +145,12 @@ function draw() {
     }
   }
 
+}
+
+function draw() {
+  background(0);
+
+  movePlayer();
   fill(255);
   ellipse(wid - nx, hei - ny, 10, 10);
 
