@@ -10,7 +10,7 @@ class Particle {
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.size = 35;
+    this.size = 25;
     this.dx = random(-10,10);
     this.dy = random(-10,10);
     this.transparency = 255;
@@ -18,6 +18,7 @@ class Particle {
   }
 
   display() {
+    noStroke();
     fill(this.color);
     ellipse(this.x,this.y,this.size,this.size);
   }
@@ -29,18 +30,24 @@ class Particle {
   }
 }
 
-let particle;
-
-
-
+let paarticle;
+let fireworks = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  particle = new Particle(width/2,height/2);
 }
 
 function draw() {
-  particle.update();
   background(0);
-  particle.display();
+  for (let i =0; i < fireworks.length; i++){
+    fireworks[i].display();
+    fireworks[i].update();
+  }
+}
+
+function mouseIsPressed() {
+  for (let i = 0; i < 100; i++) {
+    let newPart = new paarticle(mouseX,mouseY);
+    fireworks.push(newPart);
+  }
 }
