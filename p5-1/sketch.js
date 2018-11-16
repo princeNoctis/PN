@@ -13,6 +13,7 @@ let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
 let lines;
+let stopMove;
 
 function preload() {
   //load level data
@@ -76,7 +77,7 @@ function showTile(location, x, y) {
     image(box, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "F") {
-    fly.position(0,0);
+    fly.position(600,10);
   }
   else if (location === "P") {
     image(p1, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -92,7 +93,7 @@ function showTile(location, x, y) {
 
 function keyPressed(){
   if (keyCode === "RIGHT ARROW"){
-    
+    return stopMove = true;
   }
 }
 
