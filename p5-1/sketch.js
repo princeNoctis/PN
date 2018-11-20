@@ -26,7 +26,6 @@ function preload() {
   coin = loadImage("assets/coin.png");
   box = loadImage("assets/boxItem.png");
   fly = createImg("assets/dragon_flying.gif");
-  p1 = loadImage("assets/p1_front.png");
   slime = loadImage("assets/slimeWalk1.png");
   //empty = loadImage("assets/empty.png");
 }
@@ -77,17 +76,14 @@ function showTile(location, x, y) {
     image(box, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "F") {
-    fly.position(600,10);
-  }
-  else if (location === "P") {
-    image(p1, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    fly.position(50,0);
   }
   else if (location === "S") {
     image(slime, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  // else if ( location === "+") {
-  //   image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
+  else if ( location === "E") {
+    image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
 
 }
 
