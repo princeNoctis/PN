@@ -14,7 +14,7 @@
 let gif_loadImg, gif_createImg;
 let tiles;
 let levelBackground;
-let platform, coin,finish,empty;
+let platform, coin,finish,dirt;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
@@ -30,7 +30,7 @@ function preload() {
   //load tile images
   platform = loadImage("assets/platform.png");
   coin = loadImage("assets/coin.png");
-  empty = loadImage("assets/empty.png");
+  dirt = loadImage("assets/empty.png");
   finish = loadImage("assets/finish.png");
 }
 
@@ -44,7 +44,7 @@ function setup() {
   tileWidth = width / tilesWide;
   tileHeight = height / tilesHigh;
 
-  tiles = createEmpty2dArray(tilesWide, tilesHigh);
+  tiles = createempty2dArray(tilesWide, tilesHigh);
 
   //put values into 2d array of characters
   for (let y = 0; y < tilesHigh; y++) {
@@ -76,22 +76,16 @@ function showTile(location, x, y) {
   else if (location === "C") {
     image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "S") {
-    image(slime, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
   else if ( location === "+") {
-    image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(dirt, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if ( location === "f") {
+    image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 
 }
 
-function keyPressed(){
-  if (keyCode === "RIGHT ARROW"){
-    return stopMove = true;
-  }
-}
-
-function createEmpty2dArray(cols, rows) {
+function createempty2dArray(cols, rows) {
   let randomGrid = [];
   for (let x = 0; x < cols; x++) {
     randomGrid.push([]);
