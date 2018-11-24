@@ -170,8 +170,6 @@ function finishCube() {
       noLoop();
     }
   }
-
-<<<<<<< HEAD
 function draw() {
 	background(0);
 
@@ -268,6 +266,6 @@ function draw() {
 			noLoop();
 		}
 	}
-=======
->>>>>>> 0bc391862ef658971e7483ae0d453e33907e2230
+
+// >>>>>>> 0bc391862ef658971e7483ae0d453e33907e2230
 }

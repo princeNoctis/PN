@@ -20,6 +20,8 @@ let tileWidth, tileHeight;
 let levelToLoad;
 let lines;
 let stopMove;
+let x, y;
+let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 
 function preload() {
   //load level data
@@ -45,7 +47,12 @@ function setup() {
   tileHeight = height / tilesHigh;
 
   tiles = createempty2dArray(tilesWide, tilesHigh);
-
+  x = width/2;
+  y = height/2;
+  isMovingUp = false;
+  isMovingDown = false;
+  isMovingLeft = false;
+  isMovingRight = false;
   //put values into 2d array of characters
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
@@ -57,6 +64,15 @@ function setup() {
 
 function draw() {
   display();
+  ellipseMode(CENTER);
+  ellipse(x,y,tilesWide,tilesWide);
+  movePlayer();
+  if (y >= 600 || y <= 0) {
+    y= y * -1.00001;
+  }
+  if (x  >= 800 || x <= 0) {
+    x= x * -1.00001;
+  }
 }
 
 function display() {
@@ -84,6 +100,22 @@ function showTile(location, x, y) {
   }
 
 }
+
+function movePlayer() {
+  if (keyIsDown(68)) { // "a"
+    x += 5;
+  }
+  if (keyIsDown(65)) { // "d"
+    x -= 5;
+  }
+  if (keyIsDown(83)) { // "w"
+    y += 5;
+  }
+  if (keyIsDown(87)) { // "s"
+    y -= 5;
+  }
+}
+
 
 function createempty2dArray(cols, rows) {
   let randomGrid = [];
