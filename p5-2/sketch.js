@@ -14,7 +14,7 @@
 let gif_loadImg, gif_createImg;
 let tiles;
 let levelBackground;
-let platform, coin, box, fly, p1, slime, empty;
+let platform, coin,finish,empty;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
@@ -30,6 +30,8 @@ function preload() {
   //load tile images
   platform = loadImage("assets/platform.png");
   coin = loadImage("assets/coin.png");
+  empty = loadImage("assets/empty.png");
+  finish = loadImage("assets/finish.png");
 }
 
 function setup() {
@@ -74,16 +76,10 @@ function showTile(location, x, y) {
   else if (location === "C") {
     image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "B") {
-    image(box, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-  else if (location === "F") {
-    fly.position(50,0);
-  }
   else if (location === "S") {
     image(slime, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if ( location === "E") {
+  else if ( location === "+") {
     image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 
