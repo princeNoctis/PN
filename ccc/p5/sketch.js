@@ -72,7 +72,50 @@ function setup() {
 }
 
 
+<<<<<<< HEAD
 function draw() {
+=======
+  hei += nsy;
+  wid += nsx;
+
+  //screen movement and safe gaurds
+
+  if (nx + 10 * 50 < wid) {
+    nx += abs(nsx);
+  }
+  if (nx + 2 * 50 > wid) {
+    nx -= abs(nsx);
+  }
+  if (ny + 6 * 50 < hei) {
+    ny += abs(nsy);
+  }
+  if (ny + 2 * 50 > hei) {
+    ny -= abs(nsy);
+  }
+  if (wid < 0) {
+    wid = 0;
+  }
+  if (hei < 0) {
+    hei = 0;
+  }
+  if (wid > 50 * 50) {
+    wid = 50 * 50;
+  }
+  if (hei > 50 * 50) {
+    hei = 50 * 50;
+  }
+  if (nx < 0) {
+    nx = 0;
+  }
+  if (ny < 0) {
+    ny = 0;
+  }
+  if (nx > 39.99 * 50) {
+    nx = 42 * 50;
+  }
+  if (ny > 39.99 * 50) {
+    ny = 42 * 50;
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 
   // call all the functions
 	background(0);
@@ -86,9 +129,57 @@ function draw() {
 }
 
 
+<<<<<<< HEAD
 function movePlayer() {
 
 	//player movement
+=======
+  for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
+    for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
+      if (scene[x][y] === 0) {
+        fill(200, 200, 0);
+        rect(x * 50 - nx, y * 50 - ny, 50, 50);
+      }
+      else if (scene[x][y] === 1) {
+        fill(0, 0, 0);
+        rect(x * 50 - nx, y * 50 - ny, 50, 50);
+        if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50) {
+          nx = 0;
+          ny = 0;
+          wid = 125;
+          hei = 125;
+          nsx = 0;
+          nsy = 0;
+        }
+      }
+      else {
+        fill(random(255), random(255), random(255));
+        rect(x * 50 - nx, y * 50 - ny, 50, 50);
+        if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50 && finish === 0) {
+          finish = 1;
+        }
+      }
+    }
+  }
+
+}
+
+function finishCube() {
+  //run finish animtion
+
+  if (finish > 0) {
+    finish = finish * 1.1;
+    background(255, 255, 255, finish);
+    fill(255,0,0);
+    textSize(50);
+    text("YAY you win", 270, 200);
+    if (finish > 255) {
+      noLoop();
+    }
+  }
+function draw() {
+	background(0);
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 
 	if (keyIsDown(UP_ARROW)) {
 		nsy -= 0.1;
@@ -228,4 +319,9 @@ function finishcube(){
 		textSize(15);
 		text("YAY, you made it through", width/2, height/2);
 	}
+<<<<<<< HEAD
+=======
+
+// >>>>>>> 0bc391862ef658971e7483ae0d453e33907e2230
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 }
