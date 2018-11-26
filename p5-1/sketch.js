@@ -6,28 +6,53 @@
 // - describe what you did to take this project "above and beyond"
 
 let gif_loadImg, gif_createImg;
+
 let tiles;
+
 let levelBackground;
-let platform, coin, box, fly, p1, slime, empty;
+
+let platform, coin, player,finish;
+let coinsCollected = 0;
+
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
+
 let levelToLoad;
+let py;
+let px;
 let lines;
-let stopMove;
+
+
+class Player {
+  constructor(x,y,onGrund){
+    this.x = x;
+    this.y = y;
+    this.dx = x;
+    this.dy = y;
+    this.onGrund = true;
+  }
+
+}
+
+
+
+class Coin {
+  constructor(x,y,){
+
+  }
+}
 
 function preload() {
   //load level data
   levelToLoad = "assets/22.txt";
   lines = loadStrings(levelToLoad);
   //load background
+  finish = loadImage("assets/finish.png");
+  player = loadImage("assets/player.png");
   levelBackground = loadImage("assets/level_background.png");
   //load tile images
-  platform = loadImage("assets/platform.png");
+  platform = loadImage("assets/empty.png");
   coin = loadImage("assets/coin.png");
-  box = loadImage("assets/boxItem.png");
-  fly = createImg("assets/dragon_flying.gif");
-  slime = loadImage("assets/slimeWalk1.png");
-  //empty = loadImage("assets/empty.png");
 }
 
 function setup() {
@@ -75,23 +100,21 @@ function showTile(location, x, y) {
   else if (location === "B") {
     image(box, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "F") {
-    fly.position(50,0);
+  else if (location === "P") {
+    image(player, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "S") {
-    image(slime, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-  else if ( location === "E") {
-    image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 
 }
 
-function keyPressed(){
-  if (keyCode === "RIGHT ARROW"){
-    return stopMove = true;
-  }
-}
+// function keyPressed(){
+//   if (keyCode === "RIGHT ARROW"){
+//   }
+// }
+
+
 
 function createEmpty2dArray(cols, rows) {
   let randomGrid = [];
@@ -102,4 +125,29 @@ function createEmpty2dArray(cols, rows) {
     }
   }
   return randomGrid;
+}
+
+function bondories(){
+  for (let y=0; y<tilesWide;y++){
+    for (let x=0; x<tilesHigh;x++){
+      py = py++;
+      px = px++;
+    }
+  }
+}
+
+function coins() {
+
+
+
+}
+
+function finishStar(){
+
+}
+
+function onGround() {
+
+
+
 }
