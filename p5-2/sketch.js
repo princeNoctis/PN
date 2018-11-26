@@ -134,46 +134,46 @@ function createempty2dArray(cols, rows) {
 }
 
 function menu() {
-  //This function displayes all of the main menu
-  background(10);
-  // display();
-  //All the menu text stuff
-  fill(0, 255, 0);
-  textSize(55);
-  text("2D PLATFORMER GAME", width/2, 100);
-  textSize(20);
-  text("Press P to pause have fun", width/2, 350);
-
-
-  //Drawing the start button
-  rectMode(CENTER);
-
-  //If the mouse hovers over the button, using a state variable, it will change color.
-  if (collidePointRect(mouseX, mouseY, width/2 - 150, 450, 300, 100)) {
-    hoveringButton = true;
-    if (mouseIsPressed) {
-      gamestate ++;
-      //If they hit the button, the game will begin
-    }
-  }
-  else {
-    hoveringButton = false;
-  }
-
-  if (hoveringButton) {
-    //Changing the fill colors
-    fill(60, 0, 0);
-  }
-  else {
-    fill(255, 0, 0);
-  }
-
-  rect(width/2, 500, 300, 100);
-  //Start button
-  rectMode(CORNER);
-
-  fill(255);
-  textSize(35);
-  text("START", width/2, 510);
-  //Putting text into the button
+  // //This function displayes all of the main menu
+  // background(10);
+  // // display();
+  // //All the menu text stuff
+  // fill(0, 255, 0);
+  // textSize(55);
+  // text("2D PLATFORMER GAME", width/2, 100);
+  // textSize(20);
+  // text("Press P to pause have fun", width/2, 350);
+  //
+  //
+  // //Drawing the start button
+  // rectMode(CENTER);
+  //
+  // //If the mouse hovers over the button, using a state variable, it will change color.
+  // if (dist(mouseX, mouseY, width/2 - 150, 450, 300, 100)) {
+  //   hoveringButton = true;
+  //   if (mouseIsPressed) {
+  //     display();
+  //     //If they hit the button, the game will begin
+  //   }
+  // }
+  // else {
+  //   hoveringButton = false;
+  // }
+  //
+  // if (hoveringButton) {
+  //   //Changing the fill colors
+  //   fill(60, 0, 0);
+  // }
+  // else {
+  //   fill(255, 0, 0);
+  // }
+  //
+  // rect(width/2, 500, 300, 100);
+  // //Start button
+  // rectMode(CORNER);
+  //
+  // fill(255);
+  // textSize(35);
+  // text("START", width/2, 510);
+  // //Putting text into the button
 }
