@@ -65,20 +65,27 @@ function setup() {
   }
 }
 
+
+
 function draw() {
-  menu();
+  movePlayer();
+  if (gamestate === 1) {
+    displayStartScreen();
+  }
+  if (gamestate === 2) {
+    display();
+  }
+}
+
+function display() {
   ellipseMode(CENTER);
   ellipse(x,y,tilesWide,tilesWide);
-  movePlayer();
   if (y >= 600 || y <= 0) {
     y= y * -1.00001;
   }
   if (x  >= 800 || x <= 0) {
     x= x * -1.00001;
   }
-}
-
-function display() {
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
 
@@ -133,47 +140,31 @@ function createempty2dArray(cols, rows) {
   return randomGrid;
 }
 
-function menu() {
-  //This function displayes all of the main menu
-  background(10);
-  // display();
-  //All the menu text stuff
-  fill(0, 255, 0);
-  textSize(55);
-  text("2D PLATFORMER GAME", width/2, 100);
-  textSize(20);
-  text("Press P to pause have fun", width/2, 350);
-
-
-  //Drawing the start button
-  rectMode(CENTER);
-
-  //If the mouse hovers over the button, using a state variable, it will change color.
-  if (collidePointRect(mouseX, mouseY, width/2 - 150, 450, 300, 100)) {
-    hoveringButton = true;
+function displayStartScreen() {
+  let buttonWidth = 400;
+  let buttonHeight = 200;
+  let leftSide = width / 2 - buttonWidth / 2;
+  let topSide = height / 2 - buttonHeight / 2;
+  let rightSide = leftSide + buttonWidth;
+  let bottomSide = topSide + buttonHeight;
+  fill(0);
+  if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
+    fill(125);
     if (mouseIsPressed) {
-      gamestate ++;
-      //If they hit the button, the game will begin
+      gamestate = 2;
     }
   }
-  else {
-    hoveringButton = false;
-  }
 
-  if (hoveringButton) {
-    //Changing the fill colors
-    fill(60, 0, 0);
-  }
-  else {
-    fill(255, 0, 0);
-  }
+  text("hello",width/2,height/2);
+  fill("blue")
 
-  rect(width/2, 500, 300, 100);
-  //Start button
-  rectMode(CORNER);
 
-  fill(255);
-  textSize(35);
-  text("START", width/2, 510);
-  //Putting text into the button
+
+
+
+
+
+
+
+  rect(leftSide, topSide, buttonWidth, buttonHeight);
 }
