@@ -11,7 +11,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let gif_loadImg, gif_createImg;
 let tiles;
 let levelBackground;
 let platform, coin,finish,dirt;
@@ -22,6 +21,9 @@ let lines;
 let stopMove;
 let x, y;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
+let gamestate;
+let hoveringButton;
+
 
 function preload() {
   //load level data
@@ -37,6 +39,7 @@ function preload() {
 }
 
 function setup() {
+  gamestate = 1;
   // keep this a 4:3 ratio, or it will stretch in weird ways
   createCanvas(800, 600);
 
@@ -63,7 +66,7 @@ function setup() {
 }
 
 function draw() {
-  display();
+  menu();
   ellipseMode(CENTER);
   ellipse(x,y,tilesWide,tilesWide);
   movePlayer();
@@ -76,11 +79,13 @@ function draw() {
 }
 
 function display() {
-  image(levelBackground, 0, 0, width, height);
+  if (gamestate === 2){
+    image(levelBackground, 0, 0, width, height);
 
-  for (let y = 0; y < tilesHigh; y++) {
-    for (let x = 0; x < tilesWide; x++) {
-      showTile(tiles[x][y], x, y);
+    for (let y = 0; y < tilesHigh; y++) {
+      for (let x = 0; x < tilesWide; x++) {
+        showTile(tiles[x][y], x, y);
+      }
     }
   }
 }
@@ -126,4 +131,49 @@ function createempty2dArray(cols, rows) {
     }
   }
   return randomGrid;
+}
+
+function menu() {
+  //This function displayes all of the main menu
+  background(10);
+  // display();
+  //All the menu text stuff
+  fill(0, 255, 0);
+  textSize(55);
+  text("2D PLATFORMER GAME", width/2, 100);
+  textSize(20);
+  text("Press P to pause have fun", width/2, 350);
+
+
+  //Drawing the start button
+  rectMode(CENTER);
+
+  //If the mouse hovers over the button, using a state variable, it will change color.
+  if (collidePointRect(mouseX, mouseY, width/2 - 150, 450, 300, 100)) {
+    hoveringButton = true;
+    if (mouseIsPressed) {
+      gamestate ++;
+      //If they hit the button, the game will begin
+    }
+  }
+  else {
+    hoveringButton = false;
+  }
+
+  if (hoveringButton) {
+    //Changing the fill colors
+    fill(60, 0, 0);
+  }
+  else {
+    fill(255, 0, 0);
+  }
+
+  rect(width/2, 500, 300, 100);
+  //Start button
+  rectMode(CORNER);
+
+  fill(255);
+  textSize(35);
+  text("START", width/2, 510);
+  //Putting text into the button
 }
