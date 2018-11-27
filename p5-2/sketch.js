@@ -68,18 +68,28 @@ function setup() {
   }
 }
 
+
+
 function draw() {
   movePlayer();
-  if (gamestate === "+") {
+  if (gamestate === 1) {
     displayStartScreen();
   }
   if (gamestate === 2) {
-    // player();
     display();
   }
 }
 
 function display() {
+  ellipseMode(CENTER);
+  ellipse(x,y,tilesWide,tilesWide);
+  if (y >= 600 || y <= 0) {
+    y= y * -1.00001;
+  }
+  if (gamestate === 2) {
+    // player();
+    display();
+  }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
 
@@ -186,6 +196,7 @@ function keyPressed() {
 }
 
 
+
 function displayStartScreen() {
   let buttonWidth = 400;
   let buttonHeight = 200;
@@ -193,7 +204,6 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
-
   fill(0);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
@@ -201,6 +211,5 @@ function displayStartScreen() {
       gamestate = 2;
     }
   }
-
   rect(leftSide, topSide, buttonWidth, buttonHeight);
 }
