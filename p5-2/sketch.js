@@ -81,15 +81,6 @@ function draw() {
 }
 
 function display() {
-  ellipseMode(CENTER);
-  ellipse(x,y,tilesWide,tilesWide);
-  if (y >= 600 || y <= 0) {
-    y= y * -1.00001;
-  }
-  if (gamestate === 2) {
-    // player();
-    display();
-  }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
 
