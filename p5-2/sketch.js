@@ -81,6 +81,10 @@ function draw() {
 }
 
 function display() {
+  if (gamestate === 2) {
+    // player();
+    displayStartScreen();
+  }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
 
