@@ -158,50 +158,38 @@ function createempty2dArray(cols, rows) {
 function keyPressed() {
   if (keyCode === 87) { //keycode 87 = w
     //condition for checking if the top square is white or green/destination
-    if (tiles[py-1][px] === "+" || tiles[py-1][px] === "f") {
-      tiles[py-1][px] = "S";
-      tiles[py][px] = "+";
-      py -= 1; //changes players current y position after moving
+    if (tiles[y-1][x] === "+" || tiles[y-1][x] === "f") {
+      tiles[y-1][x] = "S";
+      tiles[y][x] = ".";
+      y -= 1; //changes players current y position after moving
     }
   }
   if (keyCode === 65) { //keycode 65 = a
     //condition for checking if the left square is white or green/destination
-    if (tiles[py][px-1] === "+" || tiles[py][px-1] === "f") {
-      tiles[py][px-1] = "S";
-      tiles[py][px] = "+";
-      px -= 1;  //changes players current x position after moving
+    if (tiles[y][x-1] === "+" || tiles[y][x-1] === "f") {
+      tiles[y][x-1] = "S";
+      tiles[y][x] = ".";
+      x -= 1;  //changes players current x position after moving
     }
   }
   if (keyCode === 83) { //keycode 83 = s
     //condition for checking if the bottom square is white or green/destination
-    if (tiles[py+1][px] === "+" || tiles[py+1][px] === "f") {
-      tiles[py+1][px] = "S";
-      tiles[py][px] = "+";
-      py += 1;  //changes players current y position after moving
+    if (tiles[y+1][x] === "+" || tiles[y+1][x] === "f") {
+      tiles[y+1][x] = "S";
+      tiles[y][x] = ".";
+      y += 1;  //changes players current y position after moving
     }
   }
   if (keyCode === 68) { //keycode 68 = d
     //condition for checking if the right square is white or green/destination
-    if (tiles[py][px+1] === "+" || tiles[py][px+1] === "f") {
-      tiles[py][px+1] = "S";
-      tiles[py][px] = "+";
-      px += 1;  //changes players current x position after moving
+    if (tiles[y][x+1] === "+" || tiles[y][x+1] === "f") {
+      tiles[y][x+1] = "S";
+      tiles[y][x] = ".";
+      x += 1;  //changes players current x position after moving
     }
   }
 }
 
-
-function draw() {
-  background(255);
-  noStroke();
-
-  // Bright red
-  fill(255,0,0);
-  ellipse(20,20,16,16);
-
-  // Dark red
-  fill(127,0,0);
-  ellipse(40,20,16,16);
 function displayStartScreen() {
   let buttonWidth = 400;
   let buttonHeight = 200;
@@ -217,4 +205,39 @@ function displayStartScreen() {
     }
   }
   rect(leftSide, topSide, buttonWidth, buttonHeight);
+}
+
+function cur(){
+    let vx = 100,
+    vy = 100,
+    angle1 = 0.0,
+    segLength = 50;
+
+
+    function setup() {
+      createCanvas(710, 400);
+      strokeWeight(20.0);
+      stroke(255, 100);
+    }
+
+    function draw() {
+      background(0);
+
+    let zx = mouseX - x;
+    let zy = mouseY - y;
+    angle1 = atan2(dy, dx);
+    x = mouseX - (cos(angle1) * segLength);
+    y = mouseY - sin(angle1) * segLength;
+
+    segment(x, y, angle1);
+    ellipse(mouseX, mouseY, 20, 20);
+    fill();
+  }
+
+  function segment(x, y, a) {
+    push();
+    translate(x, y);
+    rotate(a);
+    pop();
+  }
 }
