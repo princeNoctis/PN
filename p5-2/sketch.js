@@ -13,13 +13,13 @@
 
 let tiles;
 let levelBackground;
-let platform, coin,finish,dirt;
+let platform, coin,finish,dirt,players;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
 let lines;
 let stopMove;
-let x, y;
+let x, y,px,py;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 let gamestate;
 let hoveringButton;
@@ -36,10 +36,13 @@ function preload() {
   coin = loadImage("assets/coin.png");
   dirt = loadImage("assets/empty.png");
   finish = loadImage("assets/finish.png");
+  players = loadImage("assets/player.gif");
 }
 
 function setup() {
-  gamestate = 1;
+  px = 0;
+  py = 0;
+  gamestate = "+";
   // keep this a 4:3 ratio, or it will stretch in weird ways
   createCanvas(800, 600);
 
@@ -66,15 +69,13 @@ function setup() {
 }
 
 function draw() {
-  menu();
-  ellipseMode(CENTER);
-  ellipse(x,y,tilesWide,tilesWide);
   movePlayer();
-  if (y >= 600 || y <= 0) {
-    y= y * -1.00001;
+  if (gamestate === "+") {
+    displayStartScreen();
   }
-  if (x  >= 800 || x <= 0) {
-    x= x * -1.00001;
+  if (gamestate === 2) {
+    // player();
+    display();
   }
 }
 
@@ -88,7 +89,19 @@ function display() {
       }
     }
   }
+  // player();
 }
+//
+// function player(){
+//   ellipseMode(CENTER);
+//   ellipse(x,y,tilesWide,tilesHigh);
+//   if (y >= 600 || y <= 0) {
+//     y= y * -1.00001;
+//   }
+//   if (x  >= 800 || x <= 0) {
+//     x= x * -1.00001;
+//   }
+// }
 
 function showTile(location, x, y) {
   if (location === "#") {
@@ -102,6 +115,9 @@ function showTile(location, x, y) {
   }
   else if ( location === "f") {
     image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if ( location === "S") {
+    image(players, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 
 }
@@ -133,47 +149,57 @@ function createempty2dArray(cols, rows) {
   return randomGrid;
 }
 
-function menu() {
-  // //This function displayes all of the main menu
-  // background(10);
-  // // display();
-  // //All the menu text stuff
-  // fill(0, 255, 0);
-  // textSize(55);
-  // text("2D PLATFORMER GAME", width/2, 100);
-  // textSize(20);
-  // text("Press P to pause have fun", width/2, 350);
-  //
-  //
-  // //Drawing the start button
-  // rectMode(CENTER);
-  //
-  // //If the mouse hovers over the button, using a state variable, it will change color.
-  // if (dist(mouseX, mouseY, width/2 - 150, 450, 300, 100)) {
-  //   hoveringButton = true;
-  //   if (mouseIsPressed) {
-  //     display();
-  //     //If they hit the button, the game will begin
-  //   }
-  // }
-  // else {
-  //   hoveringButton = false;
-  // }
-  //
-  // if (hoveringButton) {
-  //   //Changing the fill colors
-  //   fill(60, 0, 0);
-  // }
-  // else {
-  //   fill(255, 0, 0);
-  // }
-  //
-  // rect(width/2, 500, 300, 100);
-  // //Start button
-  // rectMode(CORNER);
-  //
-  // fill(255);
-  // textSize(35);
-  // text("START", width/2, 510);
-  // //Putting text into the button
+function keyPressed() {
+  if (keyCode === 87) { //keycode 87 = w
+    //condition for checking if the top square is white or green/destination
+    if (tiles[py-1][px] === "+" || tiles[py-1][px] === "f") {
+      tiles[py-1][px] = 5;
+      tiles[py][px] = "+";
+      py -= "+"; //changes players current y position after moving
+    }
+  }
+  if (keyCode === 65) { //keycode 65 = a
+    //condition for checking if the left square is white or green/destination
+    if (tiles[py][px-1] === "+" || tiles[py][px-1] === "f") {
+      tiles[py][px-1] = 5;
+      tiles[py][px] = "+";
+      px -= "+";  //changes players current x position after moving
+    }
+  }
+  if (keyCode === 83) { //keycode 83 = s
+    //condition for checking if the bottom square is white or green/destination
+    if (tiles[py+1][px] === "+" || tiles[py+1][px] === "f") {
+      tiles[py+1][px] = 5;
+      tiles[py][px] = "+";
+      py += "+";  //changes players current y position after moving
+    }
+  }
+  if (keyCode === 68) { //keycode 68 = d
+    //condition for checking if the right square is white or green/destination
+    if (tiles[py][px+1] === "+" || tiles[py][px+1] === "f") {
+      tiles[py][px+1] = 5;
+      tiles[py][px] = "+";
+      px += "+";  //changes players current x position after moving
+    }
+  }
+}
+
+
+function displayStartScreen() {
+  let buttonWidth = 400;
+  let buttonHeight = 200;
+  let leftSide = width / 2 - buttonWidth / 2;
+  let topSide = height / 2 - buttonHeight / 2;
+  let rightSide = leftSide + buttonWidth;
+  let bottomSide = topSide + buttonHeight;
+
+  fill(0);
+  if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
+    fill(125);
+    if (mouseIsPressed) {
+      gamestate = 2;
+    }
+  }
+
+  rect(leftSide, topSide, buttonWidth, buttonHeight);
 }
