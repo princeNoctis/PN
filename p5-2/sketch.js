@@ -13,13 +13,13 @@
 
 let tiles;
 let levelBackground;
-let platform, coin,finish,dirt;
+let platform, coin,finish,dirt,players;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
 let lines;
 let stopMove;
-let x, y;
+let x, y,px,py;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 let gamestate;
 let hoveringButton;
@@ -36,10 +36,13 @@ function preload() {
   coin = loadImage("assets/coin.png");
   dirt = loadImage("assets/empty.png");
   finish = loadImage("assets/finish.png");
+  players = loadImage("assets/player.gif");
 }
 
 function setup() {
-  gamestate = 1;
+  px = 0;
+  py = 0;
+  gamestate = "+";
   // keep this a 4:3 ratio, or it will stretch in weird ways
   createCanvas(800, 600);
 
@@ -83,8 +86,9 @@ function display() {
   if (y >= 600 || y <= 0) {
     y= y * -1.00001;
   }
-  if (x  >= 800 || x <= 0) {
-    x= x * -1.00001;
+  if (gamestate === 2) {
+    // player();
+    display();
   }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
@@ -95,7 +99,19 @@ function display() {
       }
     }
   }
+  // player();
 }
+//
+// function player(){
+//   ellipseMode(CENTER);
+//   ellipse(x,y,tilesWide,tilesHigh);
+//   if (y >= 600 || y <= 0) {
+//     y= y * -1.00001;
+//   }
+//   if (x  >= 800 || x <= 0) {
+//     x= x * -1.00001;
+//   }
+// }
 
 function showTile(location, x, y) {
   if (location === "#") {
@@ -109,6 +125,9 @@ function showTile(location, x, y) {
   }
   else if ( location === "f") {
     image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if ( location === "S") {
+    image(players, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 
 }
@@ -154,17 +173,5 @@ function displayStartScreen() {
       gamestate = 2;
     }
   }
-
-  text("hello",width/2,height/2);
-  fill("blue")
-
-
-
-
-
-
-
-
-
   rect(leftSide, topSide, buttonWidth, buttonHeight);
 }

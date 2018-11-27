@@ -1,12 +1,23 @@
-// maze assignment
-// muhammad saad Sheikh
+//  ______	 ____     ______   __
+// 0 0 ||  0 |___| 0  |		 | 0 | \   |
+// 0 0 ||  0 |\		 0  |		 | 0 |  \  |  MAZE
+// 0 0 ||	 0 | 	\  0  |____| 0 |   \_|
+
+// grid assignment
+// muhammad sheikh
 // nov.13,2018
+// I used the music from youtube here is the link. all credit goes to Daft Punk
+// https://www.youtube.com/watch?v=YKEZoOjc6to
 // Extra for Experts:
+// - describe what you did to take this project "above and beyond"
 //
 
-
-// state the speed that are going to be used
+// my array var
 let scene = [];
+
+// some other vars
+let appalase;
+let backgroundMusic;
 
 let nx = 0;
 let ny = 0;
@@ -18,68 +29,52 @@ let nsx = 0;
 let nsy = 0;
 
 let finish = 0;
+let bike;
 
+// preload function for our background music
+function preload() {
+  backgroundMusic = loadSound("assets/Daft Punk - The Son of Flynn.mp3");
+}
 
 function setup() {
-  createCanvas(600, 400);
-  //generate array
 
-  for (let x = 0; x < 50; x++) {
-    scene[x] = [];
-    for (let y = 0; y < 50; y++) {
-      if (x < 5 && y < 5 || x > 44 && y > 44) {
-        scene[x][y] = 0;
-      }
-      else {
-        if (random(1) < 0.9) {
-          scene[x][y] = 0;
-        }
-        else {
-          scene[x][y] = 1;
-        }
+  // back ground volume
+  backgroundMusic.setVolume(0.5);
+  backgroundMusic.loop();
 
-      }
-      if (x === 50 && y === 50) {
-        scene[x][y] = 2;
-      }
-    }
-  }
+  //canvas size
+	createCanvas(600, 400);
+
+	//generate grid and make the area 50 by 50 max
+
+	for (let x = 0; x < 50; x++) {
+		scene[x] = [];
+		for (let y = 0; y < 50; y++) {
+			if (x < 5 && y < 5 || x > 44 && y > 44) {
+				scene[x][y] = 0;
+			}
+			else {
+
+        // number of black squares on the grid
+				if (random(2) < 1.6) {
+					scene[x][y] = 0;
+				}
+				else {
+					scene[x][y] = 1;
+				}
+
+			}
+			if (x === 49 && y === 49) {
+				scene[x][y] = 2;
+			}
+		}
+	}
 }
 
 
+<<<<<<< HEAD
 function draw() {
-  background(0);
-  speed();
-  generateArea();
-  finishCube();
-  movePlayer();
-  fill(255);
-  ellipse(wid - nx, hei - ny, 10, 10);
-}
-
-
-
-function movePlayer() {
-  //player movment
-
-  if (keyIsDown(UP_ARROW)) {
-    nsy -= 0.1;
-  }
-  if (keyIsDown(LEFT_ARROW)) {
-    nsx -= 0.1;
-  }
-  if (keyIsDown(DOWN_ARROW)) {
-    nsy += 0.1;
-  }
-  if (keyIsDown(RIGHT_ARROW)) {
-    nsx += 0.1;
-  }
-}
-
-function speed() {
-  nsx = nsx / 1.03;
-  nsy = nsy / 1.03;
-
+=======
   hei += nsy;
   wid += nsx;
 
@@ -120,13 +115,25 @@ function speed() {
   }
   if (ny > 39.99 * 50) {
     ny = 42 * 50;
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 
-  }
+  // call all the functions
+	background(0);
+	movePlayer();
+	generateMaze();
+	finishcube();
+	playerModel();
+	fill(255);
+  textSize(10);
+  text("black cubes are LAVA and the blue is land, suppose you are on a tron light bike  ", 10, 10);
 }
 
-function generateArea() {
-  //genarate new scene
 
+<<<<<<< HEAD
+function movePlayer() {
+
+	//player movement
+=======
   for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
     for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
       if (scene[x][y] === 0) {
@@ -172,17 +179,28 @@ function finishCube() {
   }
 function draw() {
 	background(0);
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 
-	movePlayer();
+	if (keyIsDown(UP_ARROW)) {
+		nsy -= 0.1;
+	}
+	if (keyIsDown(LEFT_ARROW)) {
+		nsx -= 0.1;
+	}
+	if (keyIsDown(DOWN_ARROW)) {
+		nsy += 0.1;
+	}
+	if (keyIsDown(RIGHT_ARROW)) {
+		nsx += 0.1;
+	}
 
+  // speed of the player/bike
 	nsx = nsx / 1.03;
 	nsy = nsy / 1.03;
-
 	hei += nsy;
 	wid += nsx;
 
 		//screen movement and safe gaurds
-
 	if (nx + 10 * 50 < wid) {
 		nx += abs(nsx);
 	}
@@ -219,20 +237,54 @@ function draw() {
 	if (ny > 42 * 50) {
 		ny = 42 * 50;
 
-	}
+  }
+}
 
-	//genarate new scene
 
+// function for our tron bike+
+function tronBike(){
+
+  // push and pop soo the stroke only applies to player and bike
+	push();
+	fill(50, 130, 255);
+  stroke(0);
+	strokeWeight(2);
+	ellipseMode(CENTER);
+	bike = ellipse(wid - nx, hei - ny, 5, 20);
+	pop();
+}
+
+function playerModel(){
+
+  // same thing as the tron bike function
+  push();
+	fill(random(255));
+  stroke(0);
+	strokeWeight(2);
+	tronBike();
+  ellipse(wid - nx, hei - ny, 5, 5);
+  pop();
+}
+
+function generateMaze() {
+
+  // the most diffcult part, generate new holes when moving closer to the end of the canvas
 	for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
 		for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
 			if (scene[x][y] === 0) {
-				fill(200, 200, 0);
+
+        // grid color excluding the holes
+				fill(50, 130, 255);
 				rect(x * 50 - nx, y * 50 - ny, 50, 50);
 			}
-			else if (scene[x][y] == 1) {
+			else if (scene[x][y] === 1) {
+
+        // holes aka black squares
 				fill(0, 0, 0);
 				rect(x * 50 - nx, y * 50 - ny, 50, 50);
 				if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50) {
+
+          // if the player is on or near the holes reset the location
 					nx = 0;
 					ny = 0;
 					wid = 125;
@@ -241,31 +293,35 @@ function draw() {
 					nsy = 0;
 				}
 			}
-			else {
-				fill(random(255), random(255), random(255));
-				rect(x * 50 - nx, y * 50 - ny, 50, 50);
-				if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50 && finish === 0) {
-					finish = 1;
+      else {
+
+        // and this is the finish cube
+        fill(random(255), random(255), random(255));
+        rect(x * 50 - nx, y * 50 - ny, 50, 50);
+        if (wid > x * 50 && hei > y * 50 && wid < x * 50 + 50 && hei < y * 50 + 50 && finish === 0) {
+          finish = 1;
 				}
 			}
 		}
 	}
+}
 
-	fill(255);
-	ellipse(wid - nx, hei - ny, 10, 10);
-
-		//run finish animtion
+// function for the finish cube
+function finishcube(){
+  // this if statement is saying if the var finish is greater than 0
+  // which it is when the player goes over it. change the state and display the ending
+  // screen.
 
 	if (finish > 0) {
 		finish = finish * 1.1;
 		background(255, 255, 255, finish);
 		fill(255,0,0);
-		textSize(50);
-		text("YAY you win", 270, 200);
-		if (finish > 255) {
-			noLoop();
-		}
+		textSize(15);
+		text("YAY, you made it through", width/2, height/2);
 	}
+<<<<<<< HEAD
+=======
 
 // >>>>>>> 0bc391862ef658971e7483ae0d453e33907e2230
+>>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 }
