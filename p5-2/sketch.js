@@ -153,33 +153,33 @@ function keyPressed() {
   if (keyCode === 87) { //keycode 87 = w
     //condition for checking if the top square is white or green/destination
     if (tiles[py-1][px] === "+" || tiles[py-1][px] === "f") {
-      tiles[py-1][px] = 5;
+      tiles[py-1][px] = "S";
       tiles[py][px] = "+";
-      py -= "+"; //changes players current y position after moving
+      py -= 1; //changes players current y position after moving
     }
   }
   if (keyCode === 65) { //keycode 65 = a
     //condition for checking if the left square is white or green/destination
     if (tiles[py][px-1] === "+" || tiles[py][px-1] === "f") {
-      tiles[py][px-1] = 5;
+      tiles[py][px-1] = "S";
       tiles[py][px] = "+";
-      px -= "+";  //changes players current x position after moving
+      px -= 1;  //changes players current x position after moving
     }
   }
   if (keyCode === 83) { //keycode 83 = s
     //condition for checking if the bottom square is white or green/destination
     if (tiles[py+1][px] === "+" || tiles[py+1][px] === "f") {
-      tiles[py+1][px] = 5;
+      tiles[py+1][px] = "S";
       tiles[py][px] = "+";
-      py += "+";  //changes players current y position after moving
+      py += 1;  //changes players current y position after moving
     }
   }
   if (keyCode === 68) { //keycode 68 = d
     //condition for checking if the right square is white or green/destination
     if (tiles[py][px+1] === "+" || tiles[py][px+1] === "f") {
-      tiles[py][px+1] = 5;
+      tiles[py][px+1] = "S";
       tiles[py][px] = "+";
-      px += "+";  //changes players current x position after moving
+      px += 1;  //changes players current x position after moving
     }
   }
 }
