@@ -42,7 +42,7 @@ function preload() {
 function setup() {
   px = 0;
   py = 0;
-  gamestate = "+";
+  gamestate = 1;
   // keep this a 4:3 ratio, or it will stretch in weird ways
   createCanvas(800, 600);
 
@@ -81,14 +81,8 @@ function draw() {
 }
 
 function display() {
-  ellipseMode(CENTER);
-  ellipse(x,y,tilesWide,tilesWide);
-  if (y >= 600 || y <= 0) {
-    y= y * -1.00001;
-  }
-  if (gamestate === 2) {
-    // player();
-    display();
+  if (gamestate === 1) {
+    displayStartScreen();
   }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
@@ -195,7 +189,17 @@ function keyPressed() {
 }
 
 
+function draw() {
+  background(255);
+  noStroke();
 
+  // Bright red
+  fill(255,0,0);
+  ellipse(20,20,16,16);
+
+  // Dark red
+  fill(127,0,0);
+  ellipse(40,20,16,16);
 function displayStartScreen() {
   let buttonWidth = 400;
   let buttonHeight = 200;
@@ -203,7 +207,7 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
-  fill(0);
+  fill(255,0,0);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
