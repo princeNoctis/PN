@@ -23,7 +23,7 @@ let x, y,px,py;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 let gamestate;
 let hoveringButton;
-
+let song;
 
 function preload() {
   //load level data
@@ -191,13 +191,34 @@ function keyPressed() {
 }
 
 function displayStartScreen() {
-  let buttonWidth = 400;
-  let buttonHeight = 200;
+  let buttonWidth = 300;
+  let buttonHeight = 150;
   let leftSide = width / 2 - buttonWidth / 2;
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
   fill(255,0,0);
+  background(255,0,0);
+
+  function setup() {
+    song = loadSoun"3');
+    createCanvas(720, 200);
+    background(255,0,0);
+  }
+
+  function mousePressed() {
+    if ( song.isPlaying() ) { // .isPlaying() returns a boolean
+      song.stop();
+      background(255,0,0);
+
+
+
+
+    } else {
+      song.play();
+      background(0,255,0);
+    }
+  }
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
