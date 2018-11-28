@@ -198,25 +198,23 @@ function displayStartScreen() {
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
   fill(255,0,0);
-  background(255,0,0);
+  background(255,50,0);
 
   function setup() {
-    song = loadSoun"3');
+    // song = loadSound"3');
     createCanvas(720, 200);
-    background(255,0,0);
   }
 
   function mousePressed() {
     if ( song.isPlaying() ) { // .isPlaying() returns a boolean
       song.stop();
-      background(255,0,0);
 
 
 
 
-    } else {
+    }
+    else {
       song.play();
-      background(0,255,0);
     }
   }
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
@@ -226,39 +224,4 @@ function displayStartScreen() {
     }
   }
   rect(leftSide, topSide, buttonWidth, buttonHeight);
-}
-
-function cur(){
-  let vx = 100,
-    vy = 100,
-    angle1 = 0.0,
-    segLength = 50;
-
-
-  function setup() {
-    createCanvas(710, 400);
-    strokeWeight(20.0);
-    stroke(255, 100);
-  }
-
-  function draw() {
-    background(0);
-
-    let zx = mouseX - x;
-    let zy = mouseY - y;
-    angle1 = atan2(vy, vx);
-    x = mouseX - cos(angle1) * segLength;
-    y = mouseY - sin(angle1) * segLength;
-
-    segment(x, y, angle1);
-    ellipse(mouseX, mouseY, 20, 20);
-    fill();
-  }
-
-  function segment(x, y, a) {
-    push();
-    translate(x, y);
-    rotate(a);
-    pop();
-  }
 }
