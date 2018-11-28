@@ -208,25 +208,25 @@ function displayStartScreen() {
 }
 
 function cur(){
-    let vx = 100,
+  let vx = 100,
     vy = 100,
     angle1 = 0.0,
     segLength = 50;
 
 
-    function setup() {
-      createCanvas(710, 400);
-      strokeWeight(20.0);
-      stroke(255, 100);
-    }
+  function setup() {
+    createCanvas(710, 400);
+    strokeWeight(20.0);
+    stroke(255, 100);
+  }
 
-    function draw() {
-      background(0);
+  function draw() {
+    background(0);
 
     let zx = mouseX - x;
     let zy = mouseY - y;
-    angle1 = atan2(dy, dx);
-    x = mouseX - (cos(angle1) * segLength);
+    angle1 = atan2(vy, vx);
+    x = mouseX - cos(angle1) * segLength;
     y = mouseY - sin(angle1) * segLength;
 
     segment(x, y, angle1);
