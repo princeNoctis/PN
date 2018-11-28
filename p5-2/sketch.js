@@ -212,6 +212,7 @@ function displayStartScreen() {
   // if (gamestate === 2){
   //   // noLoop(song);
   // }
+  
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
