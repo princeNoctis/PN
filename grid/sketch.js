@@ -1,57 +1,65 @@
-let rows = 10;
-let cols = 10;
-let grid;
-let cellSize;
+let x=500;
+let y=500;
+let gravity = 0;
+let keys = [];
+let img,player;
+
+
+
+function preload() {
+  img = loadImage("assets/player.gif");
+}
+
+function keyPressed() {
+  keys[keyCode] = true;
+}
+
+function keyReleased() {
+  keys[keyCode] = false;
+}
 
 function setup() {
-  createCanvas(600, 600);
-  cellSize = width / cols;
-  grid = createRandom2dArray(cols, rows);
+  createCanvas(windowWidth, windowHeight);
+
+
+}
+
+function mayNotWork(x,y){
+  player = image(img,x,y,100,100);
+}
+
+function block(x,y,w,h){
+  rect(x,y,w,h);
+
 }
 
 function draw() {
-  background(255);
-  displayGrid();
-}
+	background(50,255,70);
+	fill(255,100,0);
+	mayNotWork(x,y-100);
+	text(y,200,200);
 
-function mousePressed() {
-  let x = floor(mouseX / cellSize);
-  let y = floor(mouseY / cellSize);
+	if(keys[LEFT_ARROW]){
+	x = x - 5;
+	}
 
-  if (grid[y][x] === 1) {
-    grid[y][x] = 0;
-  }
-  else if (grid[y][x] === 0) {
-    grid[y][x] = 1;
-  }
-}
+	if(keys[RIGHT_ARROW]){
+	x = x + 5;
+	}
 
-function displayGrid() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === 0) {
-        fill(0);
-      }
-      else {
-        fill(255);
-      }
-      rect(x*cellSize, y*cellSize, cellSize, cellSize);
-    }
-  }
-}
+	gravity = gravity + 0.192;
 
-function createRandom2dArray(cols, rows) {
-  let randomGrid = [];
-  for (let y = 0; y < rows; y++) {
-    randomGrid.push([]);
-    for (let x = 0; x < cols; x++) {
-      if (random(100) < 50) {
-        randomGrid[y].push(0);
-      }
-      else {
-        randomGrid[y].push(1);
-      }
-    }
-  }
-  return randomGrid;
+	y = y + gravity;
+
+	if(keys[UP_ARROW] && y >= 500){
+	gravity = -7;
+	}
+
+	if(y > 500){
+	y = 500;
+	if(keys[UP_ARROW] === false){
+	gravity = 0;
+	}
+	}
+
 }

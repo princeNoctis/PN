@@ -1,0 +1,197 @@
+var wide=7, high=6, sqSize=100, player=1, textLinger=0, cooldownTimer=0, winner = 0;
+var needsWarn = false, display = true;
+var grid = [];
+var pumpkin;
+var ghost;
+
+function setup() {
+  print('is it dead?');
+  for (var i=0; i<high; i++) {
+  	grid[i] = [];
+    for (var j=0; j<wide; j++) {
+      grid[i][j] = 0;
+    }
+  }
+  createCanvas(high*100+100, wide*100);
+  ellipseMode(CORNER);
+  background(255);
+  ghost = loadImage('ghost.png');
+  pumpkin = loadImage('pumpkin.png');
+}
+
+function draw() {
+    //print('displaying');
+  if (mouseIsPressed) {
+    if (mouseY < 600) {
+	  playPiece(floor(mouseX/sqSize), 25);
+    } else {
+      restart();
+    }
+  }
+  if (keyIsDown(82)) {
+    playPiece(floor(random(7)), 8);
+  }
+  if (display) {
+    for (var h=0; h<high; h++) {
+      for (var w=0; w<wide; w++ ) {
+        fill(255);
+        rect(w*sqSize, h*sqSize, sqSize, sqSize);
+        if (grid[h][w] > 0) {
+          if (grid[h][w] == 1) {
+          	image(pumpkin, w*sqSize, h*sqSize, 100, 100);
+          } else {
+          	image(ghost, w*sqSize, h*sqSize, 100, 100);
+          }
+        }
+      }
+    }
+  }
+  if (cooldownTimer > 0) {
+  	cooldownTimer--;
+    //print(cooldownTimer);
+  }
+  if (winner != 0) {
+    display = false;
+    if (winner == -1) {
+      textSize(80);
+      fill(0);
+      text("Looks like we \nhave a tie", 30, 200);
+    } else  {
+      displayWinner(winner);
+    }
+  }
+  if (needsWarn == true && textLinger < 60) {
+    showWarnText();
+    display = false;
+    textLinger++;
+  } 
+  if (textLinger >= 60) {
+    print("resetting warning\n");
+    needsWarn = false;
+    display = true;
+    textLinger = 0;
+  }
+  fill(0);
+  rect(0, high*100, wide*100, 100);
+  fill(255);
+  textSize(30);
+  text("Click the black bar \ndown here to restart", 20, high*100+40);
+  textSize(40);
+  text("Turn: ", 460, high*100+40);
+  displayTurn(player);
+}
+
+function keyPressed() {
+  if (keyCode == 32) {
+    restart();
+  }
+  if (keyCode == 82) {
+    playPiece(floor(random(7)), 20);
+  }
+  if (keyCode >= 49 && keyCode <= 49+wide-1) {
+  	//println('number pressed: ' + (keyCode-49));
+    playPiece(keyCode-49, 20);
+  }
+  //println('key is pressed: ' + keyCode);
+  return null;
+}
+
+function playPiece(col, timer) {
+  if (cooldownTimer < 1 && display) {
+    cooldownTimer = timer;
+    var row = openSpot(col);
+    print(col + " row: " + row + "\n");
+    if (row >= 0) {
+      grid[row][col] = player;
+      player = player==1 ? 2 : 1;
+      winner = checkPlayerWon();
+    } else {
+      needsWarn = true;
+      print ("player F up\n");
+    }
+  }
+}
+
+function ch(rowForC, colForC) {
+  //checks what player is at coord and if location is legal
+  if (rowForC < 0 || colForC < 0 || rowForC >= high || colForC >= wide) {
+    return -1;
+  }
+  return grid[rowForC][colForC];
+}
+
+function openSpot(column) {
+  for (var spot = high-1; spot>=0; spot--) {
+    if (grid[spot][column]==0) {
+      return spot;
+    }
+  }
+  print('no open slot found');
+  return -1;
+}
+
+function checkPlayerWon() {
+  var yesMoves = -1;
+  for (var r=0; r<high; r++) {
+    for (var c=0; c<wide; c++) {
+      if (ch(r, c) == 0) {
+        yesMoves = 0; //if this never happens (all spaces full) it's a tie
+      }
+      if (ch(r,c)>0 && ch(r,c)==ch(r+1,c) && ch(r,c)==ch(r+2,c) && ch(r,c)==ch(r+3,c)) {
+        return ch(r, c); //declare winner vertical
+      }
+      for (var i = -1; i < 2; i += 1) {
+        // checks down horizontal and diagonals
+        if (ch(r, c)>0 && ch(r,c)==ch(r+i*1,c+1) && ch(r,c)==ch(r+i*2,c+2) && ch(r,c)==ch(r+i*3,c+3)) {
+          return ch(r,c );
+        }
+      }
+    }
+  }
+  //print('win? ' + yesMoves);
+  return yesMoves;
+}
+
+function showWarnText() {
+  textSize(95);
+  fill(0);
+  text("Can't play a \npiece there", 75, 200);
+}
+
+function displayTurn(turn) {
+  textSize(40);
+  if (turn==1) {
+  	fill(255, 69, 00);
+  } else {
+  	fill(255);
+  }
+  text("Player " + turn, wide*50, high*100+83);
+}
+
+function displayWinner(win) {
+  //print(win);
+  fill(0);
+  textSize(96);
+  text("The winner is:", 20, 180);
+  fill(0);
+  rect(160, 260, 380, 100);
+  if (win==1) {
+  	fill(255, 69, 00);
+  } else {
+  	fill(255);
+  }
+  text("Player " + win, 170, 340);
+  //print('winner displayed\n');
+}
+
+function restart() {
+  for (var h = 0; h < grid.length; h++) {
+    for (var w = 0; w < grid[h].length; w++) {
+      grid[h][w] = 0;
+    }
+  }
+  player = 1;
+  display = true;
+  winner = 0;
+  print('board reset ');
+}
