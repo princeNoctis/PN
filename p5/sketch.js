@@ -1,67 +1,65 @@
-class Ball {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.radius = 50;
-    this.dx = random(-10, 10);
-    this.dy = random(-10, 10);
-    this.color = color(random(255), random(255), random(255), 120);
-    this.isCollidingRightNow = false;
-  }
+let x=500;
+let y=500;
+let gravity = 0;
+let keys = [];
+let img,player;
 
-  display() {
-    noStroke();
-    if (this.isCollidingRightNow) {
-      fill(255, 0, 0, 255);
-    }
-    else {
-      fill(this.color);
-    }
-    ellipse(this.x, this.y, this.radius*2, this.radius*2);
-  }
 
-  update() {
-    this.x += this.dx;
-    this.y += this.dy;
 
-    if (this.y <= 0 + this.radius || this.y >= height - this.radius) {
-      this.dy *= -1;
-    }
-    if (this.x <= 0 + this.radius || this.x >= width - this.radius) {
-      this.dx *= -1;
-    }
-  }
-
-  checkForCollision(otherBall) {
-    if (dist(this.x, this.y, otherBall.x, otherBall.y) <= this.radius + otherBall.radius) {
-      // the balls are colliding!!
-      this.isCollidingRightNow = true;
-    }
-  }
+function preload() {
+  img = loadImage("assets/player.gif");
 }
 
-let ballArray = [];
+function keyPressed() {
+  keys[keyCode] = true;
+}
+
+function keyReleased() {
+  keys[keyCode] = false;
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+
+}
+
+function mayNotWork(x,y){
+  player = image(img,x,y,100,100);
+}
+
+function block(x,y,w,h){
+  rect(x,y,w,h);
+
 }
 
 function draw() {
-  background(0);
-  for (let i = ballArray.length - 1; i >= 0; i--) {
-    ballArray[i].isCollidingRightNow = false;
-    for (let j = 0; j < ballArray.length; j++) {
-      if (i !== j) {  //don't check collision against self...
-        ballArray[i].checkForCollision(ballArray[j]);
-      }
-    }
-    ballArray[i].update();
-    ballArray[i].display();
-  }
-}
+	background(50,255,70);
+	fill(255,100,0);
+	mayNotWork(x,y-100);
+	text(y,200,200);
 
-function mousePressed() {
-  let someBall = new Ball(mouseX, mouseY);
-  ballArray.push(someBall);
+	if(keys[LEFT_ARROW]){
+	x = x - 5;
+	}
+
+	if(keys[RIGHT_ARROW]){
+	x = x + 5;
+	}
+
+	gravity = gravity + 0.192;
+
+	y = y + gravity;
+
+	if(keys[UP_ARROW] && y >= 500){
+	gravity = -7;
+	}
+
+	if(y > 500){
+	y = 500;
+	if(keys[UP_ARROW] === false){
+	gravity = 0;
+	}
+	}
+
 }

@@ -13,34 +13,22 @@
 
 let tiles;
 let levelBackground;
-let platform, coin,finish,dirt,players;
+let plat,platform,coin,finish,dirt;
+let player,img,character;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let levelToLoad;
-let lines;
+let lines,circles;
 let stopMove;
-let x, y;
+let x, y,gravity;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 let gamestate;
 let hoveringButton;
+let bugs = [];
+let px,py,pw,ph;
 // let song;
 
-class Jitter {
-  constructor(x,y,diameter,speed){
-    this.x = random(width);
-    this.y = random(height);
-    this.diameter = random(10, 30);
-    this.speed = 1;
-  }
-  move() {
-    this.x += random(-this.speed, this.speed);
-    this.y += random(-this.speed, this.speed);
-  }
 
-  displayjit() {
-    ellipse(this.x, this.y, this.diameter, this.diameter);
-  }
-}
 
 
 function preload() {
@@ -50,17 +38,17 @@ function preload() {
   //load background
   levelBackground = loadImage("assets/level_background.png");
   //load tile images
-  platform = loadImage("assets/platform.png");
+  plat = loadImage("assets/platform.png");
   coin = loadImage("assets/coin.png");
   dirt = loadImage("assets/empty.png");
   finish = loadImage("assets/finish.png");
-  players = loadImage("assets/player.gif");
   // song = loadSound("assets/song.mp3");
+  img = loadImage("assets/player.gif");
 }
 
 function setup() {
-  x = 0;
-  y = 0;
+  px = 200;
+  py = 200;
   // song.setVolume(0.5);
   gamestate = 1;
   // keep this a 4:3 ratio, or it will stretch in weird ways
@@ -98,16 +86,17 @@ function draw() {
   }
   if (gamestate === 2) {
     display();
+    p1();
   }
 }
 
 function display() {
+
   if (gamestate === 1) {
     displayStartScreen();
   }
   if (gamestate === 2){
     image(levelBackground, 0, 0, width, height);
-
     for (let y = 0; y < tilesHigh; y++) {
       for (let x = 0; x < tilesWide; x++) {
         showTile(tiles[x][y], x, y);
@@ -120,7 +109,7 @@ function display() {
 
 function showTile(location, x, y) {
   if (location === "#") {
-    image(platform, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    platform = image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "C") {
     image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -131,10 +120,6 @@ function showTile(location, x, y) {
   else if ( location === "f") {
     image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if ( location === "S") {
-    image(players, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-
 }
 
 function movePlayer() {
@@ -153,6 +138,38 @@ function movePlayer() {
 }
 
 
+function p1(){
+  player = image(img,px,py,100,100);
+
+  if (keyIsDown(65)) { // "a"
+    px -= 5;
+  }
+  if (keyIsDown(68)) { // "d"
+    px += 5;
+  }
+  if (keyIsDown(87)) { // "w"
+    py -= 5;
+  }
+  if (keyIsDown(83)) { // "s"
+    py += 5;
+  }
+
+  if(keyIsDown(87) && y >= 50){
+    gravity = -7;
+  }
+
+  gravity = gravity + 0.3;
+
+  y = y + gravity;
+
+  if(y > 500){
+    y = 500;
+    if(keyIsDown(87) === false){
+      gravity = 0;
+    }
+  }
+}
+
 function createempty2dArray(cols, rows) {
   let randomGrid = [];
   for (let x = 0; x < cols; x++) {
@@ -164,41 +181,6 @@ function createempty2dArray(cols, rows) {
   return randomGrid;
 }
 
-function keyPressed() {
-  if (keyCode === 87) { //keycode 87 = w
-    //condition for checking if the top square is white or green/destination
-    if (tiles[y-1][x] === "+" || tiles[y-1][x] === "f") {
-      tiles[y-1][x] = "S";
-      tiles[y][x] = "#";
-      y -= 1; //changes players current y position after moving
-    }
-  }
-  if (keyCode === 65) { //keycode 65 = a
-    //condition for checking if the left square is white or green/destination
-    if (tiles[y][x-1] === "+" || tiles[y][x-1] === "f") {
-      tiles[y][x-1] = "S";
-      tiles[y][x] = "#";
-      x -= 1;  //changes players current x position after moving
-    }
-  }
-  if (keyCode === 83) { //keycode 83 = s
-    //condition for checking if the bottom square is white or green/destination
-    if (tiles[y+1][x] === "+" || tiles[y+1][x] === "f") {
-      tiles[y+1][x] = "S";
-      tiles[y][x] = "#";
-      y += 1;  //changes players current y position after moving
-    }
-  }
-  if (keyCode === 68) { //keycode 68 = d
-    //condition for checking if the right square is white or green/destination
-    if (tiles[y][x+1] === "+" || tiles[y][x+1] === "f") {
-      tiles[y][x+1] = "S";
-      tiles[y][x] = "#";
-      x += 1;  //changes players current x position after moving
-    }
-  }
-}
-
 function displayStartScreen() {
   background(0,0,255);
   let buttonWidth = 300;
@@ -207,12 +189,10 @@ function displayStartScreen() {
   let topSide = height / 2 - buttonHeight / 2;
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
-  let bugs = [];
   fill(255,0,0);
   // if (gamestate === 2){
   //   // noLoop(song);
-  // }
-
+  //
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
@@ -220,11 +200,6 @@ function displayStartScreen() {
     }
   }
   rect(leftSide, topSide, buttonWidth, buttonHeight);
-  for (let i=0; i<bugs.length; i++) {
-    bugs.move();
-    bugs.displayjit();
-  }
-  for (let i=0; i<50; i++) {
-    bugs.push(new Jitter());
-  }
+
+
 }
