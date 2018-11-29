@@ -20,9 +20,11 @@ let tileWidth, tileHeight;
 let levelToLoad;
 let lines,circles;
 let stopMove;
-let x, y,gravity;
+let keys = [];
+let x, y;
 let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
 let gamestate;
+let gravity = 0;
 let hoveringButton;
 let bugs = [];
 let px,py,pw,ph;
@@ -47,8 +49,8 @@ function preload() {
 }
 
 function setup() {
-  px = 200;
-  py = 200;
+  px = 0;
+  py = 0;
   // song.setVolume(0.5);
   gamestate = 1;
   // keep this a 4:3 ratio, or it will stretch in weird ways
@@ -107,6 +109,14 @@ function display() {
 
 }
 
+function keyPressed() {
+  keys[keyCode] = true;
+}
+
+function keyReleased() {
+  keys[keyCode] = false;
+}
+
 function showTile(location, x, y) {
   if (location === "#") {
     platform = image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -123,17 +133,36 @@ function showTile(location, x, y) {
 }
 
 function movePlayer() {
-  if (keyIsDown(68)) { // "a"
-    x += 5;
+  if(keys[LEFT_ARROW]){
+    px = px - 5;
   }
-  if (keyIsDown(65)) { // "d"
-    x -= 5;
+
+  if(keys[RIGHT_ARROW]){
+    px = px + 5;
   }
-  if (keyIsDown(83)) { // "w"
-    y += 5;
+
+  gravity = gravity + 0.192;
+
+  py = py + gravity;
+
+  if(keys[UP_ARROW] && py >= 325){
+    gravity = -7;
   }
-  if (keyIsDown(87)) { // "s"
-    y -= 5;
+  if (px >= 725) {
+    px = 725;
+  }
+  if (px < -30){
+    px = -30;
+  }
+  if (py < tilesWide){
+    px = tilesWide;
+  }
+
+  if(py > 430){
+    py = 430;
+    if(keys[UP_ARROW] === false){
+      gravity = 0;
+    }
   }
 }
 
@@ -141,33 +170,6 @@ function movePlayer() {
 function p1(){
   player = image(img,px,py,100,100);
 
-  if (keyIsDown(65)) { // "a"
-    px -= 5;
-  }
-  if (keyIsDown(68)) { // "d"
-    px += 5;
-  }
-  if (keyIsDown(87)) { // "w"
-    py -= 5;
-  }
-  if (keyIsDown(83)) { // "s"
-    py += 5;
-  }
-
-  if(keyIsDown(87) && y >= 50){
-    gravity = -7;
-  }
-
-  gravity = gravity + 0.3;
-
-  y = y + gravity;
-
-  if(y > 500){
-    y = 500;
-    if(keyIsDown(87) === false){
-      gravity = 0;
-    }
-  }
 }
 
 function createempty2dArray(cols, rows) {

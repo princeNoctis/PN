@@ -72,9 +72,8 @@ function setup() {
 }
 
 
-<<<<<<< HEAD
 function draw() {
-=======
+
   hei += nsy;
   wid += nsx;
 
@@ -115,8 +114,7 @@ function draw() {
   }
   if (ny > 39.99 * 50) {
     ny = 42 * 50;
->>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
-
+  }
   // call all the functions
 	background(0);
 	movePlayer();
@@ -129,11 +127,9 @@ function draw() {
 }
 
 
-<<<<<<< HEAD
 function movePlayer() {
 
 	//player movement
-=======
   for (let x = round(nx / 50 - 0.4); x < round(nx / 50 - 1) + 13; x++) {
     for (let y = round(ny / 50 - 0.4); y < round(ny / 50 - 1) + 9; y++) {
       if (scene[x][y] === 0) {
@@ -179,7 +175,7 @@ function finishCube() {
   }
 function draw() {
 	background(0);
->>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
+
 
 	if (keyIsDown(UP_ARROW)) {
 		nsy -= 0.1;
@@ -319,9 +315,4 @@ function finishcube(){
 		textSize(15);
 		text("YAY, you made it through", width/2, height/2);
 	}
-<<<<<<< HEAD
-=======
-
-// >>>>>>> 0bc391862ef658971e7483ae0d453e33907e2230
->>>>>>> 9b40baa41db383f9bd4474d9d67bf006d116907d
 }
