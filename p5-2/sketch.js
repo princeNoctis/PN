@@ -117,7 +117,7 @@ function keyReleased() {
 
 function showTile(location, x, y) {
   if (location === "#") {
-    platform = image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "C") {
     image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -155,20 +155,19 @@ function movePlayer() {
 }
 
 function collideWithPlayer(){
-  for (let by = 0; by < tilesHigh; by++){
-    for(let bx = 0; bx < tilesWide; bx++){
-      if (tiles[x][y] === "+"){
-        rect(bx,by,tilesWide,tilesHigh);
-      }
-      if ( py > by){
-        py = by;
-        if(keys[UP_ARROW] === false){
-          gravity = 0;
-        }
-      }
+  if (tiles[x][y] === "+"){
+    rect(bx,by,tilesWide,tilesHigh);
+  }
+  if ( py > by){
+    py = by;
+    if(keys[UP_ARROW] === false){
+      gravity = 0;
     }
   }
 }
+
+
+
 
 function p1(){
   player = image(img,px,py,100,100);
