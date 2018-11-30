@@ -31,8 +31,6 @@ let px,py,pw,ph;
 // let song;
 
 
-
-
 function preload() {
   //load level data
   levelToLoad = "assets/22.txt";
@@ -148,24 +146,29 @@ function movePlayer() {
   if(keys[UP_ARROW] && py >= 325){
     gravity = -7;
   }
-  if (px >= 725) {
-    px = 725;
-  }
+  // if (px >= 725) {
+  //   px = 725;
+  // }
   if (px < -30){
     px = -30;
   }
-  if (py < tilesWide){
-    px = tilesWide;
-  }
+}
 
-  if(py > 430){
-    py = 430;
-    if(keys[UP_ARROW] === false){
-      gravity = 0;
+function collideWithPlayer(){
+  for (let by = 0; by < tilesHigh; by++){
+    for(let bx = 0; bx < tilesWide; bx++){
+      if (tiles[x][y] === "+"){
+        rect(bx,by,tilesWide,tilesHigh);
+      }
+      if ( py > by){
+        py = by;
+        if(keys[UP_ARROW] === false){
+          gravity = 0;
+        }
+      }
     }
   }
 }
-
 
 function p1(){
   player = image(img,px,py,100,100);
