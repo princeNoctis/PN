@@ -194,9 +194,8 @@ function displayStartScreen() {
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
   fill(255,0,0);
-  // if (gamestate === 2){
-  //   // noLoop(song);
-  //
+  textSize(15);
+  text("hello so we made the basic version of mario game click in the button to start the game and enjoy",buttonWidth,buttonHeight,leftSide,topSide);
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
