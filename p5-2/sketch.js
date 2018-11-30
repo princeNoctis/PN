@@ -28,6 +28,7 @@ let gravity = 0;
 let hoveringButton;
 let bugs = [];
 let px,py,pw,ph;
+let bx,by;
 // let song;
 
 
@@ -72,6 +73,15 @@ function setup() {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
       tiles[x][y] = tileType;
+      if (tiles[x][y] === "+") {
+        rect(bx * tileWidth,bx* tileWidth,tilesWide,tilesHigh);
+      }
+      if (py > by * tileWidth){
+        py = by * tileWidth;
+        if(keys[UP_ARROW] === false){
+          gravity = 0;
+        }
+      }
     }
   }
 }
@@ -79,6 +89,7 @@ function setup() {
 
 
 function draw() {
+  // collideWithPlayer();
   movePlayer();
   if (gamestate === 1) {
     displayStartScreen();
@@ -143,7 +154,7 @@ function movePlayer() {
 
   py = py + gravity;
 
-  if(keys[UP_ARROW] && py >= 325){
+  if(keys[UP_ARROW] && py >= y * tileWidth){
     gravity = -7;
   }
   // if (px >= 725) {
@@ -152,19 +163,18 @@ function movePlayer() {
   if (px < -30){
     px = -30;
   }
+
 }
 
-function collideWithPlayer(){
-  if (tiles[x][y] === "+"){
-    rect(bx,by,tilesWide,tilesHigh);
-  }
-  if ( py > by){
-    py = by;
-    if(keys[UP_ARROW] === false){
-      gravity = 0;
-    }
-  }
-}
+// function collideWithPlayer(){
+//   if (py > y * tileWidth){
+//     py = y * tileWidth;
+//     if(keys[UP_ARROW] === false){
+//       gravity = 0;
+//     }
+//   }
+// }
+
 
 
 
