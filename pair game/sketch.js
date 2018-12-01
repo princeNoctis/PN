@@ -5,15 +5,15 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let scene = 0;
-let start, groundSmash, death, resp;
+let state = 0;
+let start, onGround, died, resp;
 let tickSpeed = 10;
-let inAir = false;
+let offGround = false;
 let poly = [];
 let score = 0;
 
 
-let player = {
+let cube = {
 	x: 150,
 	y: 300,
 	velocity: 0,
@@ -22,7 +22,7 @@ let player = {
 	jump: 14,
 }
 
-let spike = {
+let pointyThing = {
 	x: -300,
 	y: 400,
 	s: 25,
@@ -30,44 +30,44 @@ let spike = {
 
 }
 
-function updateTriPos() {
+function newTri() {
 	//at first this stuff was a bit touch and go...
-	poly[0] = createVector(spike.x - spike.s, spike.y)
-	poly[1] = createVector(spike.x + spike.s, spike.y)
-	poly[2] = createVector(spike.x, spike.y - spike.s * 2)
-	death = collideRectPoly(player.x - player.size, player.y - player.size, player.size, player.size, poly);
-	//println(death);
+	poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y)
+	poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y)
+	poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2)
+	died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
+	//println(died);
 
 }
 
 function resetPos() {
-  spike.x = 1000
+  pointyThing.x = 1000;
   score = 0;
 
 }
 
 function setup() {
-	createCanvas(800, 500);
+	createCanvas(800, 600);
 
 }
 
 function mousePressed() {
   start = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
-  if (start === true && scene === 0) {
-    scene = 1;
+  if (start === true && state === 0) {
+    state = 1;
 
 	}
 	resp = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
-	if (resp === true && scene === 2) {
-		scene = 1;
+	if (resp === true && state === 2) {
+		state = 1;
 		resetPos();
 	}
 }
 
 function keyPressed() {
-	if (key === " " && scene === 1 && inAir === false) {
-		player.velocity = -player.jump;
-		inAir = true;
+	if (key === " " && state === 1 && offGround === false) {
+		cube.velocity = -cube.jump;
+		offGround = true;
 	}
 
 }
@@ -82,9 +82,9 @@ function draw() {
 	rect(0, 0, width, height);
 
 	//---------------------------------------------------------------------
-	//scene #1 (start page)
+	//state #1 (start page)
 
-	if (scene === 0) {
+	if (state === 0) {
 		rectMode(CORNER);
 		fill("green");
 		strokeWeight(5);
@@ -92,77 +92,77 @@ function draw() {
 		textSize(60);
 		fill("black");
 		noStroke();
-		text("Play!", 337, 270);
+		text("play", 337, 270);
 
 		//text on the home screen...
 		fill("black");
 		textSize(20);
-		text("A pair programing Project by Santanu Deb and Muhammad", 10, 490);
+		text("A pair programing Project by Santanu Deb and Muhammad .S", 10, 490);
 
 		fill(8, 173, 55);
 		strokeWeight(5);
 		stroke("darkgreen");
 		textSize(60);
 
-		text("Shape Dash!", 200, 150);
+		text("Mini Geometry Dash!", 200, 150);
 
 	}
 
 	//------------------------------------------------------------------------
-	//scene #2 (game screen)
+	//state #2 (game screen)
 
-	if (scene === 1) {
+	if (state === 1) {
 		rectMode(CORNER);
 		//ground
-		fill("darkblue");
+		fill("blue");
 		stroke(4, 90, 226);
 		rect(-50, 400, 10000, 200);
-		//the player physics IE: gravity.                              ps i am afraid to make a jumping mecanisim... (i survived makin' it..)
+		//the cube physics IE: gravity.
 
-		for (i = 0; i < tickSpeed; i++) {
-			//checks if the player is hitting the spike.
-			updateTriPos();
-			//makes the spike move...
-			if (death === false) {
-				spike.x -= spike.speed / tickSpeed;
+		for (let i = 0; i < tickSpeed; i++) {
+			//checks if the cube is hitting the pointyThing.
+			newTri();
+			//makes the pointyThing move...
+			if (died === false) {
+				pointyThing.x -= pointyThing.speed / tickSpeed;
 
 			}
-			if (death === true) {
-				scene = 2;
+			if (died === true) {
+				state = 2;
 			}
 
-			player.y += player.velocity / tickSpeed;
-			groundSmash = collideRectRect(-50, 400, 10000, 200, player.x - player.size, player.y - player.size, player.size, player.size);
-			if (groundSmash === false) {
-				player.velocity += player.g / tickSpeed;
+			cube.y += cube.velocity / tickSpeed;
+			onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+			if (onGround === false) {
+				cube.velocity += cube.g / tickSpeed;
 
 				//draw the spiki boi
 				fill("red");
 				stroke("darkred");
 				strokeWeight(10);
-				triangle(spike.x - spike.s, spike.y, spike.x + spike.s, spike.y, spike.x, spike.y - spike.s * 2);
+				triangle(pointyThing.x - pointyThing.s, pointyThing.y, pointyThing.x + pointyThing.s, pointyThing.y, pointyThing.x, pointyThing.y - pointyThing.s * 2);
 
 			}
-			if (groundSmash === true) {
-				player.y -= player.velocity;
-				player.velocity = 0;
-				inAir = false;
+			if (onGround === true) {
+				cube.y -= cube.velocity;
+				cube.velocity = 0;
+				offGround = false;
 
-				if (spike.x < -100) {
-					spike.x = random(1500, 2000);
+				if (pointyThing.x < -100) {
+					pointyThing.x = random(1500, 2000);
 
 				}
 
 			}
 
-			player.y += player.velocity / tickSpeed;
+			cube.y += cube.velocity / tickSpeed;
 
 		}
 
-		//draws player
+		//draws cube
 		stroke("darkgreen");
 		fill("green");
-		rect(player.x - player.size, player.y - player.size, player.size, player.size);
+		rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
 
 		//shows the score
 		score++;
@@ -172,17 +172,17 @@ function draw() {
 		fill("yellow");
 		text("Points: " + round(score / 10), 10, 40);
 
-		//sets the spike speed
-		spike.speed = score / 30;
-		if (spike.speed > 35) {
-			spike.speed = 35;
+		//sets the pointyThing speed
+		pointyThing.speed = score / 30;
+		if (pointyThing.speed > 35) {
+			pointyThing.speed = 35;
 		}
 	}
 
 	//--------------------------------------------------------------------------------------------------------
-	//scene #3 (death sceen)\
+	//state #3 (died sceen)\
 
-	if (scene === 2) {
+	if (state === 2) {
 		//respawn button
 		rectMode(CORNER);
 		fill("green");
