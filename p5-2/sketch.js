@@ -73,9 +73,6 @@ function setup() {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
       tiles[x][y] = tileType;
-      if (tiles[x][y] === "+") {
-        rect(bx * tileWidth,bx* tileWidth,tilesWide,tilesHigh);
-      }
       if (py > by * tileWidth){
         py = by * tileWidth;
         if(keys[UP_ARROW] === false){
@@ -89,7 +86,7 @@ function setup() {
 
 
 function draw() {
-  // collideWithPlayer();
+  collideWithPlayer();
   movePlayer();
   if (gamestate === 1) {
     displayStartScreen();
@@ -166,14 +163,19 @@ function movePlayer() {
 
 }
 
-// function collideWithPlayer(){
-//   if (py > y * tileWidth){
-//     py = y * tileWidth;
-//     if(keys[UP_ARROW] === false){
-//       gravity = 0;
-//     }
-//   }
-// }
+function collideWithPlayer(){
+  for (let y = 0; y < tilesHigh; y++) {
+    for (let x = 0; x < tilesWide; x++) {
+      if (tiles[y][x] === "+"){
+        rect(x,y,tileWidth,tileHeight);
+        if (px > x && py > y){
+          px = x*tileWidth;
+          py = y*tileHeight;
+        }
+      }
+    }
+  }
+}
 
 
 
