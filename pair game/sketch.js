@@ -11,108 +11,306 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let tiles;
-let levelBackground;
-let plat,platform,coin,finish,dirt;
-let player,img,character;
-let tilesHigh, tilesWide;
-let tileWidth, tileHeight;
-let levelToLoad;
-let lines,circles;
-let stopMove;
+let b=1;//block
+let p=2;//player
+let g=3;//goal
+let f=4;//death
+let t=5;//standstill goal
+let px=0;
+let py=0;
+let dir=0;
+let start = [];
+let stage=0;
 let keys = [];
-let x, y;
-let isMovingUp, isMovingDown, isMovingLeft, isMovingRight;
-let gamestate;
-let gravity = 0;
-let hoveringButton;
-let bugs = [];
-let px,py,pw,ph;
-let bx,by;
-// let song;
 
-
-function preload() {
-  //load level data
-  levelToLoad = "assets/22.txt";
-  lines = loadStrings(levelToLoad);
-  //load background
-  levelBackground = loadImage("assets/level_background.png");
-  //load tile images
-  plat = loadImage("assets/platform.png");
-  coin = loadImage("assets/coin.png");
-  dirt = loadImage("assets/empty.png");
-  finish = loadImage("assets/finish.png");
-  // song = loadSound("assets/song.mp3");
-  img = loadImage("assets/player.gif");
-}
+let level = {
+  {
+    {1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 3, 1},
+    {1, 0, 0, 0, 0, 0, 1},
+    {1, 2, 0, 0, 1, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1},
+  },
+  {
+    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 1, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+    {0, 2, 0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 3, 1, 0, 0},
+  },
+  {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+  },
+  {
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 1, 0, 0, 0, 1},
+    {1, 0, 4, 0, 0, 0, 0, 1},
+    {1, 1, 0, 0, 0, 0, 4, 1},
+    {1, 0, 5, 0, 2, 1, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1}, 
+    {1, 1, 1, 1, 1, 1, 1, 1},
+  },
+  {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 4, 5, 1, 1, 0, 1, 0, 1},
+    {1, 0, 1, 1, 0, 0, 2, 0, 0, 0, 1, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 0, 0, 4, 0, 0, 0, 1, 4, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1},
+    {1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 4, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+  },
+};
 
 function setup() {
-  px = 0;
-  py = 0;
-  // song.setVolume(0.5);
-  gamestate = 1;
-  // keep this a 4:3 ratio, or it will stretch in weird ways
-  createCanvas(800, 600);
+  createCanvas(windowWidth, windowHeight);
+  start = new [level.length][2];
+  findstart();
+}
+function draw() {
+  moveplayer();
+  background(55);
+  player();
+  if (level[stage][py][px]==7&&dir==0) {
+    level[stage][py][px] -= 2 ;
+    stage++;
+    stage%=level.length;
+    level[stage][start[stage][0]][start[stage][1]]+=2;
+  }
+  if (dir!=0) {
+    move();
+  }
+  displaymap();
+}
 
-  tilesHigh = lines.length;
-  tilesWide = lines[0].length;
+function displaymap() {
+  strokeWeight(0);
+  for (let i=0; i<level[stage].length; i++) {
+    for (let j=0; j<level[stage][i].length; j++) {
+      if (level[stage][i][j]==1) {
+        fill(255);
+        stroke(255);
+      }
+      else if (level[stage][i][j]==2) {
+        fill(0, 0, 255);
+        stroke(0, 0, 255);
+      }
+      else if (level[stage][i][j]==3) {
+        fill(0, 255, 0);
+        stroke(0, 255, 0);
+      }
+      else if (level[stage][i][j]==4) {
+        fill(255, 0, 0);
+        stroke(255, 0, 0);
+      }
+      else if (level[stage][i][j]==5) {
+        fill(255, 255, 0);
+        stroke(255, 255, 0);
+      }
+      else{
+        noStroke();
+        fill(55);
+      }
+      x = width/level[stage][i].length;
+      y = height/level[stage].length;
+      rect(x*j, y*i, x, y);
+    }
+  }
+}
 
-  tileWidth = width / tilesWide;
-  tileHeight = height / tilesHigh;
-
-  tiles = createempty2dArray(tilesWide, tilesHigh);
-  x = width/2;
-  y = height/2;
-  isMovingUp = false;
-  isMovingDown = false;
-  isMovingLeft = false;
-  isMovingRight = false;
-  //put values into 2d array of characters
-  for (let y = 0; y < tilesHigh; y++) {
-    for (let x = 0; x < tilesWide; x++) {
-      let tileType = lines[y][x];
-      tiles[x][y] = tileType;
-      if (py > by * tileWidth){
-        py = by * tileWidth;
-        if(keys[UP_ARROW] === false){
-          gravity = 0;
+function player() {
+  for (let i=0; i<level[stage].length; i++) {
+    for (let j=0; j<level[stage][i].length; j++) {
+      if (level[stage][i][j]==2||level[stage][i][j]==7) {
+        px=j;
+        py=i;
+        return;
+      }
+    }
+  }
+}
+function findstart() {
+  for (let k=0; k<level.length; k++) {
+    for (let i=0; i<level[k].length; i++) {
+      for (let j=0; j<level[k][i].length; j++) {
+        if (level[k][i][j]==2) {
+          start[k][0]=i;
+          start[k][1]=j;
+          if (k!=0) {
+            level[k][i][j]=0;
+          }
         }
       }
     }
   }
 }
 
-
-
-function draw() {
-  collideWithPlayer();
-  movePlayer();
-  if (gamestate === 1) {
-    displayStartScreen();
-    // song.loop();
-  }
-  if (gamestate === 2) {
-    display();
-    p1();
-  }
-}
-
-function display() {
-
-  if (gamestate === 1) {
-    displayStartScreen();
-  }
-  if (gamestate === 2){
-    image(levelBackground, 0, 0, width, height);
-    for (let y = 0; y < tilesHigh; y++) {
-      for (let x = 0; x < tilesWide; x++) {
-        showTile(tiles[x][y], x, y);
+function move() {
+  if (dir==1) {
+    if (py==0) {
+      level[stage][start[stage][0]][start[stage][1]]+=2;
+      level[stage][py][px]-=2;
+      dir=0;
+      return;
+    }
+    else {
+      if (level[stage][py-1][px]==1) {
+        dir=0;
+        return;
+      }
+      else if (level[stage][py-1][px]==3) {
+        level[stage][py][px]-=2;
+        stage++;
+        stage%=level.length;
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        dir=0;
+        return;
+      }
+      else if (level[stage][py-1][px]==4) {
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        level[stage][py][px]-=2;
+        player();
+        dir=0;
+        return;
+      } else {
+        level[stage][py][px]-=2;
+        level[stage][py-1][px]+=2;
+        return;
       }
     }
   }
-  // player();
+  if (dir==2) {
+    if (px==level[stage][py].length-1) {
+      level[stage][start[stage][0]][start[stage][1]]+=2;
+      level[stage][py][px]-=2;
+      dir=0;
+      return;
+    }
+    else {
+      if (level[stage][py][px+1]==1) {
+        dir=0;
+        return;
+      }
+      else if (level[stage][py][px+1]==3) {
+        level[stage][py][px]-=2;
+        stage++;
+        stage%=level.length;
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        dir=0;
+        return;
+      }
+      else if (level[stage][py][px+1]==4) {
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        level[stage][py][px]-=2;
+        player();
+        dir=0;
+        return;
+      }
+      else {
+        level[stage][py][px]-=2;
+        level[stage][py][px+1]+=2;
+        return;
+      }
+    }
+  }
 
+  if (dir==3) {
+    if (py==level[stage].length-1) {
+      level[stage][start[stage][0]][start[stage][1]]+=2;
+      level[stage][py][px]-=2;
+      dir=0;
+      return;
+    }
+    else {
+      if (level[stage][py+1][px]==1) {
+        dir=0;
+        return;
+      }
+      else if (level[stage][py+1][px]==3) {
+        level[stage][py][px]-=2;
+        stage++;
+        stage%=level.length;
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        dir=0;
+        return;
+      }
+      else if (level[stage][py+1][px]==4) {
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        level[stage][py][px]-=2;
+        player();
+        dir=0;
+        return;
+      }
+      else {
+        level[stage][py][px]-=2;
+        level[stage][py+1][px]+=2;
+        return;
+      }
+    }
+  }
+
+  if (dir==4) {
+    if (px==0) {
+      level[stage][start[stage][0]][start[stage][1]]+=2;
+      level[stage][py][px]-=2;
+      dir=0;
+      return;
+    }
+    else {
+      if (level[stage][py][px-1]==1) {
+        dir=0;
+      }
+      else if (level[stage][py][px-1]==3) {
+        level[stage][py][px]-=2;
+        stage++;
+        stage%=level.length;
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        dir=0;
+      }
+      else if (level[stage][py][px-1]==4) {
+        level[stage][start[stage][0]][start[stage][1]]+=2;
+        level[stage][py][px]-=2;
+        player();
+        dir=0;
+        return;
+      }
+      else {
+        level[stage][py][px]-=2;
+        level[stage][py][px-1]+=2;
+      }
+    }
+  }
 }
 
 function keyPressed() {
@@ -123,56 +321,25 @@ function keyReleased() {
   keys[keyCode] = false;
 }
 
-function showTile(location, x, y) {
-  if (location === "#") {
-    image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-  else if (location === "C") {
-    image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-  else if ( location === "+") {
-    image(dirt, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-  else if ( location === "f") {
-    image(finish, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
-}
-
-function movePlayer() {
-  if(keys[LEFT_ARROW]){
-    px = px - 5;
-  }
-
-  if(keys[RIGHT_ARROW]){
-    px = px + 5;
-  }
-
-  gravity = gravity + 0.192;
-
-  py = py + gravity;
-
-  if(keys[UP_ARROW] && py >= y * tileWidth){
-    gravity = -7;
-  }
-  // if (px >= 725) {
-  //   px = 725;
-  // }
-  if (px < -30){
-    px = -30;
-  }
-
-}
-
-function collideWithPlayer(){
-  for (let y = 0; y < tilesHigh; y++) {
-    for (let x = 0; x < tilesWide; x++) {
-      if (tiles[y][x] === "+"){
-        rect(x,y,tileWidth,tileHeight);
-        if (px > x && py > y){
-          px = x*tileWidth;
-          py = y*tileHeight;
-        }
-      }
+function moveplayer(){
+  if (dir === 0){
+    if(keys[LEFT_ARROW]){
+      dir = 4;
+    }
+    else if(keys[RIGHT_ARROW]){
+      dir = 2;
+    }
+    else if(keys[UP_ARROW]){
+      dir = 1;
+    }
+    else if(keys[DOWN_ARROW]){
+      dir = 3;
+    }
+    else if (keys["r"]){
+      level[stage][start[stage][0]][start[stage][1]]+=2;
+      level[stage][py][px]-=2;
+      player();
+      dir=0;
     }
   }
 }
@@ -180,41 +347,25 @@ function collideWithPlayer(){
 
 
 
-
-function p1(){
-  player = image(img,px,py,100,100);
-
-}
-
-function createempty2dArray(cols, rows) {
-  let randomGrid = [];
-  for (let x = 0; x < cols; x++) {
-    randomGrid.push([]);
-    for (let y = 0; y < rows; y++) {
-      randomGrid[x].push(0);
-    }
-  }
-  return randomGrid;
-}
-
-function displayStartScreen() {
-  background(0,0,255);
-  let buttonWidth = 300;
-  let buttonHeight = 150;
-  let leftSide = width / 2 - buttonWidth / 2;
-  let topSide = height / 2 - buttonHeight / 2;
-  let rightSide = leftSide + buttonWidth;
-  let bottomSide = topSide + buttonHeight;
-  fill(255,0,0);
-  textSize(15);
-  text("hello so we made the basic version of mario game click in the button to start the game and enjoy",buttonWidth,buttonHeight,leftSide,topSide);
-  if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
-    fill(125);
-    if (mouseIsPressed) {
-      gamestate = 2;
-    }
-  }
-  rect(leftSide, topSide, buttonWidth, buttonHeight);
-
-
-}
+// function keyPressed() [
+//   if (dir==0) [
+//     if (key=='w'||key=='W') [
+//       dir=1;
+//     ]
+//     else if (key=='d'||key=='D') [
+//       dir=2;
+//     ]
+//     else if (key=='s'||key=='S') [
+//       dir=3;
+// 		]
+//     else if (key=='a'||key=='A') [
+//       dir=4;
+//     ]
+//     else if (key=='r'||key=='R') [
+//     level[stage][start[stage][0]][start[stage][1]]+=2;
+//     level[stage][py][px]-=2;
+//     player();
+//     dir=0;
+//   }
+//   }
+// }
