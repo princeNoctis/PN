@@ -1,9 +1,16 @@
-// Project Title
-// Your Name
-// Date
-//
+// paired programing assignment
+// Muhammad Sheikh, Santanu Deb
+// 12/2/2018
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+// BY Muhammad and Santanu
+// STATE TWO WAS MADE BY : Muhammad
+//
+//
+// STATE ONE AND THREE WAS BY Santanu
+
+
+
 
 let state = 0;
 let start, onGround, died, resp;
@@ -20,7 +27,7 @@ let cube = {
 	g: 1,
 	size: 60,
 	jump: 14,
-}
+};
 
 let pointyThing = {
 	x: -300,
@@ -28,13 +35,13 @@ let pointyThing = {
 	s: 25,
 	speed: 2,
 
-}
+};
 
 function newTri() {
-	//at first this stuff was a bit touch and go...
-	poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y)
-	poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y)
-	poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2)
+	// new vectors
+	poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
+	poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
+	poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
 	died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
 	//println(died);
 
@@ -116,7 +123,7 @@ function draw() {
 		//ground
 		fill("blue");
 		stroke(4, 90, 226);
-		rect(-50, 400, 10000, 200);
+		rect(-50, 400, 1000, 200);
 		//the cube physics IE: gravity.
 
 		for (let i = 0; i < tickSpeed; i++) {
@@ -158,7 +165,6 @@ function draw() {
 			cube.y += cube.velocity / tickSpeed;
 
 		}
-
 		//draws cube
 		stroke("darkgreen");
 		fill("green");
@@ -170,7 +176,7 @@ function draw() {
 		textSize(30);
 		noStroke();
 		fill("yellow");
-		text("Points: " + round(score / 10), 10, 40);
+		text("score: " + score , 10, 40);
 
 		//sets the pointyThing speed
 		pointyThing.speed = score / 30;
@@ -194,7 +200,7 @@ function draw() {
 		text("Restart", 330, 265);
 
 		//happy message
-		textSize(60);
+		textSize(50);
 		stroke("darkred");
 		fill("red");
 		text("u is ded!", 290, 145);
@@ -202,9 +208,7 @@ function draw() {
 		//shows the score
 		fill("yellow");
 		noStroke();
-		text("You got: " + round(score / 10) + " points!", 175, 400);
+		text("You got: " + score + " points!", 175, 400);
 
 	}
-
-
 }
