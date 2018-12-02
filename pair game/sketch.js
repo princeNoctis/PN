@@ -10,7 +10,7 @@
 // STATE ONE AND THREE WAS BY Santanu
 
 
-
+///////////////////////////////////////////////////////////////////////////////////////////
 
 let state = 0;
 let start, onGround, died, resp;
@@ -18,82 +18,105 @@ let tickSpeed = 10;
 let offGround = false;
 let poly = [];
 let score = 0;
+let playerImg;
+let font;
 
+//////////////////////////////////////////////////////////////////////////////////////////
 
 let cube = {
-	x: 150,
-	y: 300,
-	velocity: 0,
-	g: 1,
-	size: 60,
-	jump: 14,
+  x: 150,
+  y: 300,
+  velocity: 0,
+  g: 1,
+  size: 60,
+  jump: 14,
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////
 
 let pointyThing = {
-	x: -300,
-	y: 400,
-	s: 25,
-	speed: 2,
-
+  x: -300,
+  y: 400,
+  s: 25,
+  speed: 2,
 };
 
-function newTri() {
-	// new vectors
-	poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
-	poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
-	poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
-	died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
-	//println(died);
+////////////////////////////////////////////////////////////////////////////////////////////
 
+function preload() {
+  // is loaded before setup() and draw() are called
+  font = loadFont("assets/strasua.ttf");
 }
+
+// /////////////////////////////////////////////////////////////////////////////////////////
+//
+function newTri() {
+  // new vectors
+  poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
+  poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
+  poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
+  died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 function resetPos() {
   pointyThing.x = 1000;
   score = 0;
-
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 function setup() {
-	createCanvas(800, 600);
-
+	textFont(font);
+  createCanvas(800, 600);
+  playerImg = loadImage("assets/gear.png");
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 function mousePressed() {
   start = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
   if (start === true && state === 0) {
     state = 1;
 
-	}
-	resp = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
-	if (resp === true && state === 2) {
-		state = 1;
-		resetPos();
-	}
+  }
+  resp = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
+  if (resp === true && state === 2) {
+    state = 1;
+    resetPos();
+  }
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 function keyPressed() {
-	if (key === " " && state === 1 && offGround === false) {
-		cube.velocity = -cube.jump;
-		offGround = true;
-	}
-
+  if (keyCode === 32 && state === 1 && offGround === false) {
+    cube.velocity = -cube.jump;
+    offGround = true;
+  }
 }
 
-//--------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////
 
 function draw() {
 	stroke(0);
-	background(100);
 	strokeWeight(10);
-	fill("teal");
+	fill("darkblue");
 	rect(0, 0, width, height);
 
-	//---------------------------------------------------------------------
-	//state #1 (start page)
+///////////////////////////////////////////////////////////////////////////////////////
+//state #1
 
-	if (state === 0) {
+  if (state === 0) {
+    let hitbox = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
+    if (hitbox) {
+      fill("lightgreen");
+    }
+    else {
+			fill("green");
+    }
 		rectMode(CORNER);
-		fill("green");
 		strokeWeight(5);
 		rect(300, 200, 200, 100);
 		textSize(60);
@@ -103,20 +126,20 @@ function draw() {
 
 		//text on the home screen...
 		fill("black");
-		textSize(20);
-		text("A pair programing Project by Santanu Deb and Muhammad .S", 10, 490);
+		textSize(15);
+		text("A pair programing Project by Santanu Deb and Muhammad .S", 50, 550);
 
-		fill(8, 173, 55);
+		fill(8, 200, 55);
 		strokeWeight(5);
-		stroke("darkgreen");
+		stroke("cyan");
 		textSize(60);
 
-		text("Mini Geometry Dash!", 200, 150);
+		text("Geometry jump!", 80, 150);
 
 	}
 
-	//------------------------------------------------------------------------
-	//state #2 (game screen)
+/////////////////////////////////////////////////////////////////////////////////////
+//state #2
 
 	if (state === 1) {
 		rectMode(CORNER);
@@ -165,11 +188,11 @@ function draw() {
 			cube.y += cube.velocity / tickSpeed;
 
 		}
-		//draws cube
-		stroke("darkgreen");
-		fill("green");
-		rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
 
+		//draws cube
+		stroke("black");
+		fill(random(255),random(255),random(255));
+		rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
 		//shows the score
 		score++;
 
@@ -185,30 +208,30 @@ function draw() {
 		}
 	}
 
-	//--------------------------------------------------------------------------------------------------------
-	//state #3 (died sceen)\
+/////////////////////////////////////////////////////////////////////////////////////////
+//state #3
 
 	if (state === 2) {
 		//respawn button
 		rectMode(CORNER);
-		fill("green");
+		fill("PURPLE");
 		stroke("darkgreen");
 		rect(300, 200, 200, 100);
 		textSize(40);
 		noStroke();
-		fill(0);
-		text("Restart", 330, 265);
+    fill(0);
+    text("Restart", 330, 265);
 
-		//happy message
-		textSize(50);
-		stroke("darkred");
-		fill("red");
-		text("u is ded!", 290, 145);
+    //happy message
+    textSize(50);
+    stroke("darkred");
+    fill("red");
+    text("you is died!", 290, 145);
 
-		//shows the score
-		fill("yellow");
-		noStroke();
-		text("You got: " + score + " points!", 175, 400);
+    //shows the score
+    fill("yellow");
+    noStroke();
+    text("You got: " + score + " points!", 175, 400);
 
-	}
+  }
 }
