@@ -22,7 +22,7 @@
 // STATING letAIABLES
 
 let state = 0;
-let easyMode, onGround, died, resp,changeMode;
+let easyMode, onGround, died, deathScreen,changeMode;
 let tickSpeed = 8;
 let offGround = false;
 let poly = [];
@@ -35,6 +35,7 @@ let hardButtonX = 200;
 let hardButtonY = 250;
 let angle = 0.0;
 let jitter = 0.0;
+let menuMusic,gameMusic,endMusic,dieSound;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -62,10 +63,22 @@ function preload() {
   // is loaded before setup() and draw() are called
   font = loadFont("assets/strasua.ttf");
   hardFont = loadFont("assets/Curse of the Zombie.ttf");
+  menuMusic = loadSound("assets/music1.mp3");
+  gameMusic = loadSound("assets/music2.mp3");
+  dieSound = loadSound("assets/die.mp3");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+function setup() {
+  textFont(font);
+  createCanvas(800, 600);
+  menuMusic.setVolume(0.2);
+  menuMusic.loop();
+  gameMusic.setVolume(0.2);
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
-//
 function newTri() {
   // new vectors for pointyThing
   poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
@@ -81,27 +94,26 @@ function resetPos() {
   score = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-
-function setup() {
-  textFont(font);
-  createCanvas(800, 600);
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mousePressed() {
   easyMode = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
   if (easyMode === true && state === 0){
+    gameMusic.play();
+    menuMusic.stop();
     state = 1;
   }
-  resp = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
-  if (resp === true && state === 2) {
+  deathScreen = collidePointRect(mouseX, mouseY, 300, 200, 250, 100);
+  if (deathScreen === true && state === 2) {
     state = 0;
+    gameMusic.stop();
+    menuMusic.play();
     resetPos();
   }
   changeMode = collidePointRect(mouseX,mouseY,hardButtonX,hardButtonY,150,50);
   if (changeMode === true){
+    menuMusic.stop();
+    gameMusic.play();
     state = 1;
     return changeMode = true;
   }
@@ -119,14 +131,13 @@ function keyPressed() {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 function draw() {
-  stroke("lightgray");
+  stroke("black");
   strokeWeight(10);
-  fill("skyblue");
+  fill("purple");
   rect(0, 0, width, height);
 
   ///////////////////////////////////////////////////////////////////////////////////////
-  //state #1
-
+  //state #0
   if (state === 0) {
     let hitbox = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
     if (hitbox) {
@@ -142,7 +153,6 @@ function draw() {
     fill("black");
     noStroke();
     text("play",499,289);
-
     //text on the home screen...
     fill("black");
     textSize(15);
@@ -160,7 +170,7 @@ function draw() {
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
-  //state #2
+  //state #1
 
   if (state === 1) {
     rectMode(CORNER);
@@ -176,9 +186,11 @@ function draw() {
       //makes the pointyThing move...
       if (died === false) {
         pointyThing.x -= pointyThing.speed / tickSpeed;
-
       }
       if (died === true) {
+        dieSound.setVolume(0.1);
+        dieSound.play();
+        gameMusic.stop();
         state = 2;
       }
 
@@ -213,7 +225,7 @@ function draw() {
     //draws cube
     stroke("black");
     fill(random(255),random(255),random(255));
-    rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+    ellipse(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
     //shows the score
     score++;
 
@@ -233,7 +245,7 @@ function draw() {
     }
   }
   /////////////////////////////////////////////////////////////////////////////////////////
-  //state #3
+  //state #DEATH
 
   if (state === 2) {
     let hitbox = collidePointRect(mouseX, mouseY, 320, 200, 200, 100);
@@ -243,10 +255,10 @@ function draw() {
     else {
       fill("PURPLE");
     }
-    //respawn button
+    //deathScreenawn button
     rectMode(CORNER);
     stroke("darkgreen");
-    rect(300, 200, 200, 100);
+    rect(300, 200, 250, 100);
     textSize(20);
     noStroke();
     fill(0);
@@ -273,14 +285,14 @@ function hardtext(){
   // Hard option for try hards
   let hitboxtwo = collidePointRect(mouseX, mouseY, hardButtonX, hardButtonY, 150, 50);
   if (hitboxtwo) {
-    fill("gray");
+    fill("lightgreen");
   }
   else {
-    fill("black");
+    fill(8, 200, 55);
   }
-  textSize(30);
+  textSize(25);
   strokeWeight(9);
-  stroke("white");
+  stroke("black");
   textFont(hardFont);
   rect(hardButtonX,hardButtonY,150,50);
   fill("red");
@@ -292,7 +304,7 @@ function hardtext(){
 
 function spinningThingy(){
   stroke("green");
-  fill("skyblue");
+  fill("purple");
   push();
   if (second() % 1 === 0) {
     jitter = (-0.1, 0.1);
