@@ -223,7 +223,7 @@ function draw() {
     text("score: " + score , 10, 40);
 
     if (changeMode === true) {
-      pointyThing.speed += 3;
+      pointyThing.speed = score/3;
     }
     else {
       pointyThing.speed = score / 10;
