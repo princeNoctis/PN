@@ -2,24 +2,37 @@
 // Muhammad Sheikh, Santanu Deb
 // 12/2/2018
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+//
 // BY Muhammad and Santanu
-// STATE TWO WAS MADE BY : Muhammad
+// STATE TWO WAS MADE by : Muhammad
+//
+// STATE ONE AND THREE WAS by Santanu
+//
+// directed by Muhammad
+//
+// developed by Muhammad and Santanu
+//
+// Designed by Santanu
 //
 //
-// STATE ONE AND THREE WAS BY Santanu
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+// STATING VARAIABLES
+
 let state = 0;
-let start, onGround, died, resp;
-let tickSpeed = 10;
+let easyMode, onGround, died, resp,changeMode;
+let tickSpeed = 8;
 let offGround = false;
 let poly = [];
 let score = 0;
 let playerImg;
-let font;
+let font,hardFont;
+let easyButtonX = 450;
+let easyButtonY = 250;
+let hardButtonX = 200;
+let hardButtonY = 250;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,12 +59,13 @@ let pointyThing = {
 function preload() {
   // is loaded before setup() and draw() are called
   font = loadFont("assets/strasua.ttf");
+  hardFont = loadFont("assets/Curse of the Zombie.ttf");
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 //
 function newTri() {
-  // new vectors
+  // new vectors for pointyThing
   poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
   poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
   poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
@@ -68,23 +82,26 @@ function resetPos() {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 function setup() {
-	textFont(font);
+  textFont(font);
   createCanvas(800, 600);
-  playerImg = loadImage("assets/gear.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mousePressed() {
-  start = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
-  if (start === true && state === 0) {
+  easyMode = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
+  if (easyMode === true && state === 0){
     state = 1;
-
   }
   resp = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
   if (resp === true && state === 2) {
-    state = 1;
+    state = 0;
     resetPos();
+  }
+  changeMode = collidePointRect(mouseX,mouseY,hardButtonX,hardButtonY,150,50);
+  if (changeMode === true){
+    state = 1;
+    return changeMode = true;
   }
 }
 
@@ -92,7 +109,7 @@ function mousePressed() {
 
 function keyPressed() {
   if (keyCode === 32 && state === 1 && offGround === false) {
-    cube.velocity = -cube.jump;
+    cube.velocity -= cube.jump;
     offGround = true;
   }
 }
@@ -100,138 +117,172 @@ function keyPressed() {
 /////////////////////////////////////////////////////////////////////////////////////
 
 function draw() {
-	stroke(0);
-	strokeWeight(10);
-	fill("darkblue");
-	rect(0, 0, width, height);
+  stroke(0);
+  strokeWeight(10);
+  fill("skyblue");
+  rect(0, 0, width, height);
 
-///////////////////////////////////////////////////////////////////////////////////////
-//state #1
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //state #1
 
   if (state === 0) {
-    let hitbox = collidePointRect(mouseX, mouseY, 300, 200, 200, 100);
+    let hitbox = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
     if (hitbox) {
       fill("lightgreen");
     }
     else {
-			fill("green");
+      fill("green");
     }
-		rectMode(CORNER);
-		strokeWeight(5);
-		rect(300, 200, 200, 100);
-		textSize(60);
-		fill("black");
-		noStroke();
-		text("play", 337, 270);
+    rectMode(CORNER);
+    strokeWeight(5);
+    rect(easyButtonX, easyButtonY, 150, 50);
+    textSize(25);
+    fill("black");
+    noStroke();
+    text("play",499,289);
 
-		//text on the home screen...
-		fill("black");
-		textSize(15);
-		text("A pair programing Project by Santanu Deb and Muhammad .S", 50, 550);
+    //text on the home screen...
+    fill("black");
+    textSize(15);
+    text("A pair programing Project by Santanu Deb and Muhammad .S", 50, 550);
+    fill(8, 200, 55);
+    strokeWeight(5);
+    stroke("red");
+    textSize(60);
+    rect(50,125,700,30);
 
-		fill(8, 200, 55);
-		strokeWeight(5);
-		stroke("cyan");
-		textSize(60);
+    fill("black");
+    text("Geometry jump!", 130, 150);
+    hardtext();
+  }
 
-		text("Geometry jump!", 80, 150);
+  /////////////////////////////////////////////////////////////////////////////////////
+  //state #2
 
-	}
+  if (state === 1) {
+    rectMode(CORNER);
+    //ground
+    fill("blue");
+    stroke(4, 90, 226);
+    rect(-50, 400, 1000, 200);
+    //the cube physics
 
-/////////////////////////////////////////////////////////////////////////////////////
-//state #2
+    for (let i = 0; i < tickSpeed; i++) {
+      //checks if the cube is hitting the pointyThing.
+      newTri();
+      //makes the pointyThing move...
+      if (died === false) {
+        pointyThing.x -= pointyThing.speed / tickSpeed;
 
-	if (state === 1) {
-		rectMode(CORNER);
-		//ground
-		fill("blue");
-		stroke(4, 90, 226);
-		rect(-50, 400, 1000, 200);
-		//the cube physics IE: gravity.
+      }
+      if (died === true) {
+        state = 2;
+      }
 
-		for (let i = 0; i < tickSpeed; i++) {
-			//checks if the cube is hitting the pointyThing.
-			newTri();
-			//makes the pointyThing move...
-			if (died === false) {
-				pointyThing.x -= pointyThing.speed / tickSpeed;
+      cube.y += cube.velocity / tickSpeed;
+      onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+      if (onGround === false) {
+        cube.velocity += cube.g / tickSpeed;
 
-			}
-			if (died === true) {
-				state = 2;
-			}
+        //draw the spiki boi
+        fill("red");
+        stroke("darkred");
+        strokeWeight(10);
+        triangle(pointyThing.x - pointyThing.s, pointyThing.y, pointyThing.x + pointyThing.s, pointyThing.y, pointyThing.x, pointyThing.y - pointyThing.s * 2);
 
-			cube.y += cube.velocity / tickSpeed;
-			onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
-			if (onGround === false) {
-				cube.velocity += cube.g / tickSpeed;
+      }
+      if (onGround === true) {
+        cube.y -= cube.velocity;
+        cube.velocity = 0;
+        offGround = false;
 
-				//draw the spiki boi
-				fill("red");
-				stroke("darkred");
-				strokeWeight(10);
-				triangle(pointyThing.x - pointyThing.s, pointyThing.y, pointyThing.x + pointyThing.s, pointyThing.y, pointyThing.x, pointyThing.y - pointyThing.s * 2);
+        if (pointyThing.x < -100) {
+          pointyThing.x = random(1500, 2000);
 
-			}
-			if (onGround === true) {
-				cube.y -= cube.velocity;
-				cube.velocity = 0;
-				offGround = false;
+        }
 
-				if (pointyThing.x < -100) {
-					pointyThing.x = random(1500, 2000);
+      }
 
-				}
+      cube.y += cube.velocity / tickSpeed;
 
-			}
+    }
 
-			cube.y += cube.velocity / tickSpeed;
+    //draws cube
+    stroke("black");
+    fill(random(255),random(255),random(255));
+    rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+    //shows the score
+    score++;
 
-		}
+    textSize(30);
+    noStroke();
+    fill("yellow");
+    text("score: " + score , 10, 40);
 
-		//draws cube
-		stroke("black");
-		fill(random(255),random(255),random(255));
-		rect(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
-		//shows the score
-		score++;
+    if (changeMode === true) {
+      pointyThing.speed += 3;
+    }
+    else {
+      pointyThing.speed = score / 10;
+    }
+    if (pointyThing.speed > 35) {
+      pointyThing.speed = 35;
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //state #3
 
-		textSize(30);
-		noStroke();
-		fill("yellow");
-		text("score: " + score , 10, 40);
-
-		//sets the pointyThing speed
-		pointyThing.speed = score / 30;
-		if (pointyThing.speed > 35) {
-			pointyThing.speed = 35;
-		}
-	}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//state #3
-
-	if (state === 2) {
-		//respawn button
-		rectMode(CORNER);
-		fill("PURPLE");
-		stroke("darkgreen");
-		rect(300, 200, 200, 100);
-		textSize(40);
-		noStroke();
+  if (state === 2) {
+    let hitbox = collidePointRect(mouseX, mouseY, 320, 200, 200, 100);
+    if (hitbox) {
+      fill("#EE82EE");
+    }
+    else {
+      fill("PURPLE");
+    }
+    //respawn button
+    rectMode(CORNER);
+    stroke("darkgreen");
+    rect(300, 200, 200, 100);
+    textSize(20);
+    noStroke();
     fill(0);
-    text("Restart", 330, 265);
+    text("return to main menu", 310, 265);
 
     //happy message
-    textSize(50);
+    textSize(40);
     stroke("darkred");
     fill("red");
-    text("you is died!", 290, 145);
+    text(" you   are    died! ", 200, 145);
 
     //shows the score
     fill("yellow");
     noStroke();
-    text("You got: " + score + " points!", 175, 400);
+    text("You got: " + score + " points!", 150, 400);
 
   }
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+function hardtext(){
+  push();
+  // Hard option for try hards
+  let hitboxtwo = collidePointRect(mouseX, mouseY, hardButtonX, hardButtonY, 150, 50);
+  if (hitboxtwo) {
+    fill("gray");
+  }
+  else {
+    fill("black");
+  }
+  textSize(30);
+  strokeWeight(9);
+  stroke("white");
+  textFont(hardFont);
+  rect(hardButtonX,hardButtonY,150,50);
+  fill("red");
+  text("HARD",hardButtonX/0.840,hardButtonY/0.870);
+  fill("black");
+  pop();
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
