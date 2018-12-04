@@ -72,6 +72,15 @@ function setup() {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
       tiles[x][y] = tileType;
+<<<<<<< HEAD
+=======
+      if (py > by * tileWidth){
+        py = by * tileWidth;
+        if(keys[UP_ARROW] === false){
+          gravity = 0;
+        }
+      }
+>>>>>>> 656cef33468e8c855d18fa7d04026cd024ec8019
     }
   }
 }
@@ -156,6 +165,7 @@ function movePlayer() {
 }
 
 function collideWithPlayer(){
+<<<<<<< HEAD
   for (let by = 0; by < tilesHigh; by++){
     for(let bx = 0; bx < tilesWide; bx++){
       if (tiles[x][y] === "+"){
@@ -165,11 +175,27 @@ function collideWithPlayer(){
         py = by;
         if(keys[UP_ARROW] === false){
           gravity = 0;
+=======
+  for (let y = 0; y < tilesHigh; y++) {
+    for (let x = 0; x < tilesWide; x++) {
+      if (tiles[y][x] === "+"){
+        rect(x,y,tileWidth,tileHeight);
+        if (px > x && py > y){
+          px = x*tileWidth;
+          py = y*tileHeight;
+>>>>>>> 656cef33468e8c855d18fa7d04026cd024ec8019
         }
       }
     }
   }
 }
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> 656cef33468e8c855d18fa7d04026cd024ec8019
 
 function p1(){
   player = image(img,px,py,100,100);
