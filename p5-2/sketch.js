@@ -28,7 +28,6 @@ let gravity = 0;
 let hoveringButton;
 let bugs = [];
 let px,py,pw,ph;
-let bx,by;
 // let song;
 
 
@@ -73,15 +72,6 @@ function setup() {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
       tiles[x][y] = tileType;
-      if (tiles[x][y] === "+") {
-        rect(bx * tileWidth,bx* tileWidth,tilesWide,tilesHigh);
-      }
-      if (py > by * tileWidth){
-        py = by * tileWidth;
-        if(keys[UP_ARROW] === false){
-          gravity = 0;
-        }
-      }
     }
   }
 }
@@ -89,7 +79,7 @@ function setup() {
 
 
 function draw() {
-  // collideWithPlayer();
+  collideWithPlayer();
   movePlayer();
   if (gamestate === 1) {
     displayStartScreen();
@@ -128,7 +118,7 @@ function keyReleased() {
 
 function showTile(location, x, y) {
   if (location === "#") {
-    image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    platform = image(plat, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "C") {
     image(coin, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -154,7 +144,7 @@ function movePlayer() {
 
   py = py + gravity;
 
-  if(keys[UP_ARROW] && py >= y * tileWidth){
+  if(keys[UP_ARROW] && py >= 325){
     gravity = -7;
   }
   // if (px >= 725) {
@@ -163,21 +153,23 @@ function movePlayer() {
   if (px < -30){
     px = -30;
   }
-
 }
 
-// function collideWithPlayer(){
-//   if (py > y * tileWidth){
-//     py = y * tileWidth;
-//     if(keys[UP_ARROW] === false){
-//       gravity = 0;
-//     }
-//   }
-// }
-
-
-
-
+function collideWithPlayer(){
+  for (let by = 0; by < tilesHigh; by++){
+    for(let bx = 0; bx < tilesWide; bx++){
+      if (tiles[x][y] === "+"){
+        rect(bx,by,tilesWide,tilesHigh);
+      }
+      if ( py > by){
+        py = by;
+        if(keys[UP_ARROW] === false){
+          gravity = 0;
+        }
+      }
+    }
+  }
+}
 
 function p1(){
   player = image(img,px,py,100,100);
@@ -204,8 +196,9 @@ function displayStartScreen() {
   let rightSide = leftSide + buttonWidth;
   let bottomSide = topSide + buttonHeight;
   fill(255,0,0);
-  textSize(15);
-  text("hello so we made the basic version of mario game click in the button to start the game and enjoy",buttonWidth,buttonHeight,leftSide,topSide);
+  // if (gamestate === 2){
+  //   // noLoop(song);
+  //
   if (mouseX >= leftSide && mouseX <= rightSide && mouseY >= topSide && mouseY <= bottomSide) {
     fill(125);
     if (mouseIsPressed) {
