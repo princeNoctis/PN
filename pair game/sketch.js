@@ -19,7 +19,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-// STATING VARAIABLES
+// STATING letAIABLES
 
 let state = 0;
 let easyMode, onGround, died, resp,changeMode;
@@ -33,6 +33,8 @@ let easyButtonX = 450;
 let easyButtonY = 250;
 let hardButtonX = 200;
 let hardButtonY = 250;
+let angle = 0.0;
+let jitter = 0.0;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +77,7 @@ function newTri() {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 function resetPos() {
-  pointyThing.x = 1000;
+  pointyThing.x = 899;
   score = 0;
 }
 
@@ -105,7 +107,7 @@ function mousePressed() {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
 
 function keyPressed() {
   if (keyCode === 32 && state === 1 && offGround === false) {
@@ -114,10 +116,10 @@ function keyPressed() {
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
 function draw() {
-  stroke(0);
+  stroke("lightgray");
   strokeWeight(10);
   fill("skyblue");
   rect(0, 0, width, height);
@@ -131,7 +133,7 @@ function draw() {
       fill("lightgreen");
     }
     else {
-      fill("green");
+      fill(8, 200, 55);
     }
     rectMode(CORNER);
     strokeWeight(5);
@@ -154,9 +156,10 @@ function draw() {
     fill("black");
     text("Geometry jump!", 130, 150);
     hardtext();
+    spinningThingy();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////
   //state #2
 
   if (state === 1) {
@@ -183,9 +186,9 @@ function draw() {
       onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
       if (onGround === false) {
         cube.velocity += cube.g / tickSpeed;
-
+        //////////////////////////////////////////////////////////////////////////////////////////
         //draw the spiki boi
-        fill("red");
+        fill("blue");
         stroke("darkred");
         strokeWeight(10);
         triangle(pointyThing.x - pointyThing.s, pointyThing.y, pointyThing.x + pointyThing.s, pointyThing.y, pointyThing.x, pointyThing.y - pointyThing.s * 2);
@@ -206,7 +209,7 @@ function draw() {
       cube.y += cube.velocity / tickSpeed;
 
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////
     //draws cube
     stroke("black");
     fill(random(255),random(255),random(255));
@@ -286,3 +289,25 @@ function hardtext(){
   pop();
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+function spinningThingy(){
+  stroke("green");
+  fill("skyblue");
+  push();
+  if (second() % 1 === 0) {
+    jitter = (-0.1, 0.1);
+  }
+  //increase the angle value using the most recent jitter value
+  angle = angle + jitter;
+  //use cosine to get a smooth CW and CCW motion when not jittering
+  let c = sin(angle)-720;
+  //move the shape to the center of the canvas
+  translate(750, 550);
+  //apply the final rotation
+  rotate(c);
+  rectMode(CENTER);
+  rect(0, 0, 25, 25);
+  ellipse(0,0,7.5,7.5);
+  ellipseMode(CENTER);
+  pop();
+}
