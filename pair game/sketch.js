@@ -39,12 +39,12 @@ let menuMusic,gameMusic,endMusic,dieSound;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-let circle = {
+let cube = {
   x: 150,
-  y: 298,
+  y: 300,
   velocity: 0,
   g: 1,
-  size: 30,
+  size: 60,
   jump: 14,
 };
 
@@ -66,11 +66,10 @@ function preload() {
   menuMusic = loadSound("assets/music1.mp3");
   gameMusic = loadSound("assets/music2.mp3");
   dieSound = loadSound("assets/die.mp3");
-  playerImg = loadImage("assets/player.png");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-
+// setup function setting up the music volume and text font
 function setup() {
   textFont(font);
   createCanvas(800, 600);
@@ -80,23 +79,24 @@ function setup() {
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
+// vectors for the pointyThing
 function newTri() {
   // new vectors for pointyThing
   poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
   poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
   poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
-  died = collideRectPoly(circle.x - circle.size, circle.y - circle.size, circle.size, circle.size, poly);
+  died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-
+// reset the postion of player and game
 function resetPos() {
   pointyThing.x = 899;
   score = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
+// mosue pressed function for the main menu and reset menu
 function mousePressed() {
   easyMode = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
   if (easyMode === true && state === 0){
@@ -121,16 +121,16 @@ function mousePressed() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-
+// move the the playyer with the space key
 function keyPressed() {
   if (keyCode === 32 && state === 1 && offGround === false) {
-    circle.velocity -= circle.jump;
+    cube.velocity -= cube.jump;
     offGround = true;
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+// draw function with the main code
 function draw() {
   stroke("black");
   strokeWeight(10);
@@ -139,6 +139,7 @@ function draw() {
 
   ///////////////////////////////////////////////////////////////////////////////////////
   //state #0
+
   if (state === 0) {
     let hitbox = collidePointRect(mouseX, mouseY, easyButtonX, easyButtonY, 150, 50);
     if (hitbox) {
@@ -171,7 +172,7 @@ function draw() {
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
-  //state #1
+  //state #1 main state for the game aka actual gameplay
 
   if (state === 1) {
     rectMode(CORNER);
@@ -179,15 +180,20 @@ function draw() {
     fill("blue");
     stroke(4, 90, 226);
     rect(-50, 400, 1000, 200);
-    //the circle physics
+    //the cube physics
 
     for (let i = 0; i < tickSpeed; i++) {
-      //checks if the circle is hitting the pointyThing.
+
+      //checks if the cube is hitting the pointyThing.
+
       newTri();
+
       //makes the pointyThing move...
+
       if (died === false) {
         pointyThing.x -= pointyThing.speed / tickSpeed;
       }
+
       if (died === true) {
         dieSound.setVolume(0.1);
         dieSound.play();
@@ -195,41 +201,46 @@ function draw() {
         state = 2;
       }
 
-      circle.y += circle.velocity / tickSpeed;
-      onGround = collideRectRect(-50, 400, 10000, 200, circle.x - circle.size, circle.y - circle.size, circle.size, circle.size);
+      cube.y += cube.velocity / tickSpeed;
+
+      onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+
       if (onGround === false) {
-        circle.velocity += circle.g / tickSpeed;
+
+        cube.velocity += cube.g / tickSpeed;
+
         //////////////////////////////////////////////////////////////////////////////////////////
-        //draw the spiki boi
+        //draw the pointyThing
+
         fill("blue");
         stroke("darkred");
         strokeWeight(10);
         triangle(pointyThing.x - pointyThing.s, pointyThing.y, pointyThing.x + pointyThing.s, pointyThing.y, pointyThing.x, pointyThing.y - pointyThing.s * 2);
-
       }
       if (onGround === true) {
-        circle.y -= circle.velocity;
-        circle.velocity = 0;
+        cube.y -= cube.velocity;
+        cube.velocity = 0;
         offGround = false;
 
         if (pointyThing.x < -100) {
           pointyThing.x = random(1500, 2000);
-
         }
-
       }
 
-      circle.y += circle.velocity / tickSpeed;
+      cube.y += cube.velocity / tickSpeed;
 
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////
-    //draws circle
+    //draws cube
+
     stroke("black");
-    strokeWeight(1);
     fill(random(255),random(255),random(255));
-    ellipse(circle.x - circle.size, circle.y - circle.size, circle.size, circle.size);
+    ellipse(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+
     //shows the score
     score++;
+
     textSize(30);
     noStroke();
     fill("yellow");
@@ -245,6 +256,7 @@ function draw() {
       pointyThing.speed = 35;
     }
   }
+
   /////////////////////////////////////////////////////////////////////////////////////////
   //state #DEATH
 
@@ -256,7 +268,9 @@ function draw() {
     else {
       fill("PURPLE");
     }
-    //deathScreen button
+
+    //deathScreenawn button
+
     rectMode(CORNER);
     stroke("darkgreen");
     rect(300, 200, 250, 100);
@@ -275,22 +289,26 @@ function draw() {
     fill("yellow");
     noStroke();
     text("You got: " + score + " points!", 150, 400);
-
   }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
+// text for the hardmode
 
 function hardtext(){
   push();
+
   // Hard option for try hards
+
   let hitboxtwo = collidePointRect(mouseX, mouseY, hardButtonX, hardButtonY, 150, 50);
+
   if (hitboxtwo) {
     fill("lightgreen");
   }
   else {
     fill(8, 200, 55);
   }
+
   textSize(25);
   strokeWeight(9);
   stroke("black");
@@ -302,21 +320,31 @@ function hardtext(){
   pop();
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
+// the random thing we added near the bottom right of the main menu
 
 function spinningThingy(){
   stroke("green");
   fill("purple");
   push();
+
   if (second() % 1 === 0) {
     jitter = (-0.1, 0.1);
   }
+
   //increase the angle value using the most recent jitter value
+
   angle = angle + jitter;
+
   //use cosine to get a smooth CW and CCW motion when not jittering
+
   let c = sin(angle)-720;
+
   //move the shape to the center of the canvas
+
   translate(750, 550);
+
   //apply the final rotation
+
   rotate(c);
   rectMode(CENTER);
   rect(0, 0, 25, 25);
