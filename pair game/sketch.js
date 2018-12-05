@@ -39,7 +39,7 @@ let menuMusic,gameMusic,endMusic,dieSound;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-let cube = {
+let circle = {
   x: 150,
   y: 298,
   velocity: 0,
@@ -85,7 +85,7 @@ function newTri() {
   poly[0] = createVector(pointyThing.x - pointyThing.s, pointyThing.y);
   poly[1] = createVector(pointyThing.x + pointyThing.s, pointyThing.y);
   poly[2] = createVector(pointyThing.x, pointyThing.y - pointyThing.s * 2);
-  died = collideRectPoly(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size, poly);
+  died = collideRectPoly(circle.x - circle.size, circle.y - circle.size, circle.size, circle.size, poly);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ function mousePressed() {
 
 function keyPressed() {
   if (keyCode === 32 && state === 1 && offGround === false) {
-    cube.velocity -= cube.jump;
+    circle.velocity -= circle.jump;
     offGround = true;
   }
 }
@@ -179,10 +179,10 @@ function draw() {
     fill("blue");
     stroke(4, 90, 226);
     rect(-50, 400, 1000, 200);
-    //the cube physics
+    //the circle physics
 
     for (let i = 0; i < tickSpeed; i++) {
-      //checks if the cube is hitting the pointyThing.
+      //checks if the circle is hitting the pointyThing.
       newTri();
       //makes the pointyThing move...
       if (died === false) {
@@ -195,10 +195,10 @@ function draw() {
         state = 2;
       }
 
-      cube.y += cube.velocity / tickSpeed;
-      onGround = collideRectRect(-50, 400, 10000, 200, cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+      circle.y += circle.velocity / tickSpeed;
+      onGround = collideRectRect(-50, 400, 10000, 200, circle.x - circle.size, circle.y - circle.size, circle.size, circle.size);
       if (onGround === false) {
-        cube.velocity += cube.g / tickSpeed;
+        circle.velocity += circle.g / tickSpeed;
         //////////////////////////////////////////////////////////////////////////////////////////
         //draw the spiki boi
         fill("blue");
@@ -208,8 +208,8 @@ function draw() {
 
       }
       if (onGround === true) {
-        cube.y -= cube.velocity;
-        cube.velocity = 0;
+        circle.y -= circle.velocity;
+        circle.velocity = 0;
         offGround = false;
 
         if (pointyThing.x < -100) {
@@ -219,14 +219,15 @@ function draw() {
 
       }
 
-      cube.y += cube.velocity / tickSpeed;
+      circle.y += circle.velocity / tickSpeed;
 
     }
     /////////////////////////////////////////////////////////////////////////////////////////
-    //draws cube
+    //draws circle
     stroke("black");
+    strokeWeight(1);
     fill(random(255),random(255),random(255));
-    ellipse(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
+    ellipse(circle.x - circle.size, circle.y - circle.size, circle.size, circle.size);
     //shows the score
     score++;
     textSize(30);
