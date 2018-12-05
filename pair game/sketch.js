@@ -41,10 +41,10 @@ let menuMusic,gameMusic,endMusic,dieSound;
 
 let cube = {
   x: 150,
-  y: 300,
+  y: 298,
   velocity: 0,
   g: 1,
-  size: 60,
+  size: 30,
   jump: 14,
 };
 
@@ -66,6 +66,7 @@ function preload() {
   menuMusic = loadSound("assets/music1.mp3");
   gameMusic = loadSound("assets/music2.mp3");
   dieSound = loadSound("assets/die.mp3");
+  playerImg = loadImage("assets/player.png");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +229,6 @@ function draw() {
     ellipse(cube.x - cube.size, cube.y - cube.size, cube.size, cube.size);
     //shows the score
     score++;
-
     textSize(30);
     noStroke();
     fill("yellow");
@@ -255,7 +255,7 @@ function draw() {
     else {
       fill("PURPLE");
     }
-    //deathScreenawn button
+    //deathScreen button
     rectMode(CORNER);
     stroke("darkgreen");
     rect(300, 200, 250, 100);
